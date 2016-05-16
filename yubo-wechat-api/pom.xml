@@ -1,0 +1,47 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.yubo</groupId>
+		<artifactId>yubo-wechat</artifactId>
+		<version>${yubo-version}</version>
+	</parent>
+	<artifactId>yubo-wechat-api</artifactId>
+	<description>对接微信平台</description>
+	<packaging>war</packaging>
+
+	<properties>
+		<spring-framework-version>4.1.2.RELEASE</spring-framework-version>
+	</properties>
+
+	<dependencies>
+		<!-- spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring-framework-version}</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>com.yubo</groupId>
+			<artifactId>yubo-wechat-pet</artifactId>
+			<version>${yubo-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.yubo</groupId>
+			<artifactId>yubo-wechat-user</artifactId>
+			<version>${yubo-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.yubo</groupId>
+			<artifactId>yubo-wechat-content</artifactId>
+			<version>${yubo-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+		</dependency>
+	</dependencies>
+</project>

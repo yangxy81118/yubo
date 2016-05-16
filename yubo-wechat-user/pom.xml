@@ -1,0 +1,10 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.yubo</groupId>
+    <artifactId>yubo-wechat</artifactId>
+    <version>${yubo-version}</version>
+  </parent>
+  <artifactId>yubo-wechat-user</artifactId>
+  <description>提供用户相关信息，基础信息，认证信息，宠物好感度，聊天记录等等</description>
+</project>
