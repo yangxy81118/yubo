@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
- * 微信信息派发接口
+ * 微信信息派发接口 	
  * @author young.jason
  *
  */
@@ -16,10 +16,10 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/msg")
 public class MsgController {
 
-	@RequestMapping("/")
+	@RequestMapping("")
 	public ModelAndView shopIndex(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-
+		System.out.println("访问msg");
 		return null;
 	}
 }
