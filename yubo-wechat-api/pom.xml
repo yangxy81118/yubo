@@ -10,19 +10,7 @@
 	<description>对接微信平台</description>
 	<packaging>war</packaging>
 
-	<properties>
-		<spring-framework-version>4.1.2.RELEASE</spring-framework-version>
-	</properties>
-
 	<dependencies>
-		<!-- spring -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-webmvc</artifactId>
-			<version>${spring-framework-version}</version>
-		</dependency>
-
-
 		<dependency>
 			<groupId>com.yubo</groupId>
 			<artifactId>yubo-wechat-pet</artifactId>

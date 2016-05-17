@@ -14,16 +14,22 @@
 
 	<properties>
 		<yubo-version>1.0.0-SNAPSHOT</yubo-version>
+		<spring-framework-version>4.1.2.RELEASE</spring-framework-version>
 	</properties>
-	
-	<dependencies>
-		<!-- <dependency>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-war-plugin</artifactId>
-			<version>2.4</version>
-		</dependency>
-		 -->
 
+
+	<dependencies>
+		<!-- spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring-framework-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring-framework-version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -35,8 +41,13 @@
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.6.2</version>
 		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+		</dependency>
 	</dependencies>
-	
+
 	<build>
 		<pluginManagement>
 			<plugins>

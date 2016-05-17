@@ -43,6 +43,9 @@ public class MsgController {
 		String requestBody = buildRequestBody(request);
 		logger.info("Request:\n{}", requestBody);
 
+		//首先将微信号转换为用户ID
+		String userId = "";
+		
 		// 首先判断用户触发类型
 		WeChatEventType eventType = checkEventType(requestBody);
 

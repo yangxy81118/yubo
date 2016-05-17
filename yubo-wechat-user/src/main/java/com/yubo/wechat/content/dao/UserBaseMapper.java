@@ -1,7 +1,10 @@
 package com.yubo.wechat.content.dao;
 
+import org.springframework.stereotype.Repository;
+
 import com.yubo.wechat.content.dao.pojo.UserBase;
 
+@Repository
 public interface UserBaseMapper {
 
 	/**

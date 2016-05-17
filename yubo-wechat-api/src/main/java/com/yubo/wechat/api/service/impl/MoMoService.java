@@ -25,7 +25,7 @@ public class MoMoService implements MessageHandler {
 			EventMsgRequest request = XMLHelper.parseXml(requestBody, EventMsgRequest.class);
 			
 			TextResponse response = new TextResponse();
-			response.setContent("YUBO..涅磐");
+			response.setContent("被摸了 = =");
 			response.setCreateTime(System.currentTimeMillis());
 			response.setFromUserName(request.getToUserName());
 			response.setToUserName(request.getFromUserName());
