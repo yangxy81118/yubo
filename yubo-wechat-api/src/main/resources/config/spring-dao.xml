@@ -10,6 +10,11 @@
 		<property name="jdbcUrl" value="${jdbc.url}" />
 		<property name="user" value="${jdbc.user}" />
 		<property name="password" value="${jdbc.pwd}" />
+		<property name="maxPoolSize" value="${jdbc.maxPoolSize}" />
+		<property name="acquireIncrement" value="${jdbc.acquireIncrement}" />
+		<property name="initialPoolSize" value="${jdbc.minPoolSize}" />
+		<property name="minPoolSize" value="${jdbc.minPoolSize}" />
+		<property name="maxIdleTime" value="${jdbc.maxIdleTime}" />
 		<property name="autoCommitOnClose" value="${jdbc.autoCommit:false}" />
 		<property name="checkoutTimeout" value="${c3p0.checkoutTimeout:3000}" />
 		<property name="maxIdleTimeExcessConnections" value="${c3p0.maxIdleTimeExcessConnections}" />
@@ -20,7 +25,7 @@
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 		<property name="configLocation"
-			value="classpath:/bbg-search-core/mybatis/sqlmap-config.xml" />
+			value="classpath:/config/sqlmap-config.xml" />
 	</bean>
-
+	
 </beans>
