@@ -1,7 +1,14 @@
 package com.yubo.wechat.api.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.yubo.wechat.api.service.MessageHandler;
 import com.yubo.wechat.api.service.vo.MsgHandlerResult;
+import com.yubo.wechat.api.xml.XMLHelper;
+import com.yubo.wechat.api.xml.request.EventMsgRequest;
+import com.yubo.wechat.api.xml.request.TextMsgRequest;
+import com.yubo.wechat.api.xml.response.TextResponse;
 
 /**
  * 文本消息处理
@@ -10,8 +17,27 @@ import com.yubo.wechat.api.service.vo.MsgHandlerResult;
  */
 public class TextMsgService implements MessageHandler {
 
+	private static final Logger logger = LoggerFactory.getLogger(TextMsgService.class);
+	
 	public MsgHandlerResult execute(String requestBody) {
 
+		try {
+			TextMsgRequest request = XMLHelper.parseXml(requestBody, TextMsgRequest.class);
+			
+			TextResponse response = new TextResponse();
+			response.setContent("这是一个文本回复");
+			response.setCreateTime(System.currentTimeMillis());
+			response.setFromUserName(request.getToUserName());
+			response.setToUserName(request.getFromUserName());
+			
+			MsgHandlerResult result = new MsgHandlerResult();
+			result.setXmlResponse(XMLHelper.buildXMLStr(response, TextResponse.class));
+			
+			return result;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		// 2-文本回复
 				// 2.1 - 激活码回复
 				// 进入激活码验证流程

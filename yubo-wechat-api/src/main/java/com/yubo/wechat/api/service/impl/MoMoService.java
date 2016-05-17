@@ -1,6 +1,7 @@
 package com.yubo.wechat.api.service.impl;
 
-import javax.xml.bind.JAXBException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.yubo.wechat.api.service.MessageHandler;
 import com.yubo.wechat.api.service.vo.MsgHandlerResult;
@@ -15,6 +16,8 @@ import com.yubo.wechat.api.xml.response.TextResponse;
  */
 public class MoMoService implements MessageHandler {
 
+	private static final Logger logger = LoggerFactory.getLogger(MoMoService.class);
+	
 	public MsgHandlerResult execute(String requestBody) {
 
 		

@@ -3,11 +3,12 @@ package com.yubo.wechat.api.controller;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,8 @@ import com.yubo.wechat.api.WeChatEventType;
 import com.yubo.wechat.api.service.MessageHandler;
 import com.yubo.wechat.api.service.impl.DefaultService;
 import com.yubo.wechat.api.service.impl.MoMoService;
+import com.yubo.wechat.api.service.impl.MyFavorService;
+import com.yubo.wechat.api.service.impl.TextMsgService;
 import com.yubo.wechat.api.service.vo.MsgHandlerResult;
 
 /**
@@ -29,19 +32,33 @@ import com.yubo.wechat.api.service.vo.MsgHandlerResult;
 @RequestMapping("/msg")
 public class MsgController {
 
+	private static final Logger logger = LoggerFactory
+			.getLogger(MsgController.class);
+
 	@RequestMapping("")
 	public ModelAndView msgAction(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
 		request.setCharacterEncoding("UTF-8");
 		String requestBody = buildRequestBody(request);
+		logger.info("Request:\n{}", requestBody);
 
 		// 首先判断用户触发类型
 		WeChatEventType eventType = checkEventType(requestBody);
 
 		MessageHandler messageHandler = new DefaultService();
-		if (eventType == WeChatEventType.CLICK_MOMO) {
+		switch (eventType) {
+		case CLICK_MOMO:
 			messageHandler = new MoMoService();
+			break;
+		case TEXT:
+			messageHandler = new TextMsgService();
+			break;
+		case CLICK_MY_FAVOR:
+			messageHandler = new MyFavorService();
+			break;
+		default:
+			break;
 		}
 
 		MsgHandlerResult result = messageHandler.execute(requestBody);
