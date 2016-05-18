@@ -138,6 +138,7 @@ public class TextHunter extends TimerTask {
 
 		logger.info("下一个回复内容获取定时任务，periodId={},约{}分钟后执行", nextPeriodId,
 				(int) (delay / (60 * 1000)));
+		
 	}
 
 	/**

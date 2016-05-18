@@ -1,10 +1,19 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>com.yubo</groupId>
-    <artifactId>yubo-wechat</artifactId>
-    <version>${yubo-version}</version>
-  </parent>
-  <artifactId>yubo-wechat-pet</artifactId>
-  <description>宠物相关成长信息</description>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.yubo</groupId>
+		<artifactId>yubo-wechat</artifactId>
+		<version>${yubo-version}</version>
+	</parent>
+	<artifactId>yubo-wechat-pet</artifactId>
+	<description>宠物相关成长信息</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.yubo</groupId>
+			<artifactId>yubo-wechat-support</artifactId>
+			<version>${yubo-version}</version>
+		</dependency>
+	</dependencies>
 </project>
