@@ -11,6 +11,7 @@ import com.yubo.wechat.api.xml.XMLHelper;
 import com.yubo.wechat.api.xml.request.EventMsgRequest;
 import com.yubo.wechat.api.xml.response.TextResponse;
 import com.yubo.wechat.content.service.ReplyService;
+import com.yubo.wechat.user.service.impl.UserPetFavorService;
 
 /**
  * 摸Mo业务处理
@@ -25,6 +26,9 @@ public class MoMoService implements MessageHandler {
 	@Autowired
 	ReplyService replyService;
 	
+	@Autowired
+	UserPetFavorService userPetFavorService;
+	
 	public MsgHandlerResult execute(String requestBody) {
 
 		logger.info("摸Mo业务处理");
@@ -33,7 +37,7 @@ public class MoMoService implements MessageHandler {
 			EventMsgRequest request = XMLHelper.parseXml(requestBody, EventMsgRequest.class);
 			
 			TextResponse response = new TextResponse();
-			response.setContent(replyService.replyText(null));
+			response.setContent(buildContent());
 			response.setCreateTime(System.currentTimeMillis());
 			response.setFromUserName(request.getToUserName());
 			response.setToUserName(request.getFromUserName());
@@ -53,6 +57,27 @@ public class MoMoService implements MessageHandler {
 		
 		
 		return null;
+	}
+
+	/**
+	 * 构建内容
+	 * @return
+	 */
+	private String buildContent() {
+
+		StringBuffer content = new StringBuffer("");
+		
+		//主要回复内容
+		String mainText = replyService.replyText(null);
+		content.append(mainText);
+		
+		//添加亲密度
+		int favorPoint = userPetFavorService.favorIncrease(null);
+		if(favorPoint>0){
+			content.append("【YUBO亲密度+").append(favorPoint).append("】");
+		}
+		
+		return content.toString();
 	}
 
 }

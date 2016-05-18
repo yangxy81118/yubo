@@ -118,6 +118,7 @@ public class TextHunter extends TimerTask {
 				if (workdaySchedule.get(i).periodId == periodId) {
 					// 如果超过最大了，也就是说达到顶点了，重新开始
 					if (i + 1 >= workdaySchedule.size()) {
+						allDaysAddOne(workdaySchedule);
 						nextPeriodId = 0;
 						nextEntry = workdaySchedule.get(0);
 					} else {
@@ -139,6 +140,17 @@ public class TextHunter extends TimerTask {
 		logger.info("下一个回复内容获取定时任务，periodId={},约{}分钟后执行", nextPeriodId,
 				(int) (delay / (60 * 1000)));
 		
+	}
+
+	/**
+	 * 新的一天要到来了，所有日期都要向后延一天
+	 * @param workdaySchedule
+	 */
+	private void allDaysAddOne(List<TextScdlEntry> workdaySchedule) {
+		for (TextScdlEntry textScdlEntry : workdaySchedule) {
+			textScdlEntry.startTime += 24 * 60 * 60 * 1000;
+			textScdlEntry.endTime += 24 * 60 * 60 * 1000;
+		}
 	}
 
 	/**

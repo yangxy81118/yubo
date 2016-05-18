@@ -4,6 +4,7 @@ import javax.xml.bind.JAXBException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.yubo.wechat.api.service.MessageHandler;
@@ -22,6 +23,14 @@ import com.yubo.wechat.api.xml.response.TextResponse;
 public class TextMsgService implements MessageHandler {
 
 	private static final Logger logger = LoggerFactory.getLogger(TextMsgService.class);
+	
+	/**
+	 * 简单对话的Redis缓存时间（秒）
+	 */
+	private static final int REDIS_SIMPLETALK_EXPIRES = 60 * 15;
+	
+//	@Autowired
+//	UserB
 	
 	public MsgHandlerResult execute(String requestBody) {
 
