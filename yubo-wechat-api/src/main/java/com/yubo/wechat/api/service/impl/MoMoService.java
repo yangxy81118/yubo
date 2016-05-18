@@ -13,6 +13,8 @@ import com.yubo.wechat.api.xml.request.EventMsgRequest;
 import com.yubo.wechat.api.xml.response.TextResponse;
 import com.yubo.wechat.content.service.ReplyService;
 import com.yubo.wechat.user.service.UserPetFavorService;
+import com.yubo.wechat.user.service.UserService;
+import com.yubo.wechat.user.vo.UserVO;
 
 /**
  * 摸Mo业务处理
@@ -28,6 +30,9 @@ public class MoMoService implements MessageHandler {
 	ReplyService replyService;
 	
 	@Autowired
+	UserService userService;
+	
+	@Autowired
 	UserPetFavorService userPetFavorService;
 	
 	public MsgHandlerResult execute(MsgInputParam param) {
@@ -38,7 +43,7 @@ public class MoMoService implements MessageHandler {
 			EventMsgRequest request = XMLHelper.parseXml(param.requestBody, EventMsgRequest.class);
 			
 			TextResponse response = new TextResponse();
-			response.setContent(buildContent());
+			response.setContent(buildContent(param));
 			response.setCreateTime(System.currentTimeMillis());
 			response.setFromUserName(request.getToUserName());
 			response.setToUserName(request.getFromUserName());
@@ -62,9 +67,10 @@ public class MoMoService implements MessageHandler {
 
 	/**
 	 * 构建内容
+	 * @param param 
 	 * @return
 	 */
-	private String buildContent() {
+	private String buildContent(MsgInputParam param) {
 
 		StringBuffer content = new StringBuffer("");
 		
@@ -72,8 +78,10 @@ public class MoMoService implements MessageHandler {
 		String mainText = replyService.replyText(null);
 		content.append(mainText);
 		
+		UserVO userVO = userService.getUserVOByUserId(param.userId);
+		
 		//添加亲密度
-		int favorPoint = userPetFavorService.favorIncrease(null);
+		int favorPoint = userPetFavorService.favorIncrease(param.userId,1);
 		if(favorPoint>0){
 			content.append("【YUBO亲密度+").append(favorPoint).append("】");
 		}

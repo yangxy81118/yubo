@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.yubo.wechat.user.dao.UserBaseMapper;
 import com.yubo.wechat.user.dao.pojo.UserBase;
+import com.yubo.wechat.user.vo.UserVO;
 
 /**
  * 用户常规服务
@@ -38,21 +39,38 @@ public class UserService {
 		return userId;
 	}
 
+	/**
+	 * 根据用户ID获取用户的集合信息
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public UserVO getUserVOByUserId(int userId) {
+		UserBase userBase = userBaseMapper.selectByPrimaryKey(userId);
+
+		UserVO vo = new UserVO();
+		vo.setUserId(userId);
+		vo.setWechatId(userBase.getWechatId());
+		return vo;
+	}
+
 	private Integer getUserIdFromDB(String wechatID) {
 
 		Integer userId = null;
-		
+
 		UserBase param = new UserBase();
 		param.setWechatId(wechatID);
 		List<UserBase> list = userBaseMapper.selectByParam(param);
-		
-		if(list.size() > 0){
+
+		if (list.size() > 0) {
 			return list.get(0).getUserId();
-		}else{
+		} else {
 			UserBase record = new UserBase();
 			record.setWechatId(wechatID);
+			record.setPetId(1); // 目前宠物默认都是1
 			userBaseMapper.insertSelective(record);
-			logger.info("微信用户{}第一次访问校宠系统，分配用户ID为{}",wechatID,record.getUserId());
+			logger.info("微信用户{}第一次访问校宠系统，分配用户ID为{}", wechatID,
+					record.getUserId());
 			return record.getUserId();
 		}
 	}
