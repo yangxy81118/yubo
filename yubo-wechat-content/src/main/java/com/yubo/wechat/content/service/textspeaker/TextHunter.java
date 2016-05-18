@@ -1,9 +1,12 @@
 package com.yubo.wechat.content.service.textspeaker;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -56,25 +59,38 @@ public class TextHunter extends TimerTask {
 
 	private List<String> getContentList() {
 		List<String> allList = new ArrayList<>();
-		int totalCount = getCount();
-		int pageCount = CatsAndDogs.pageCount(totalCount, DB_FETCH_ROWCOUNT);
 
-		for (int i = 0; i < pageCount; i++) {
-			Map<String, Object> param = new HashMap<>();
-			param.put("periodId", 0);
-			param.put("startRow", i * DB_FETCH_ROWCOUNT);
-			param.put("rowCount", DB_FETCH_ROWCOUNT);
-			List<String> thisBatch = messageTextMapper
-					.pageContentByParam(param);
-			allList.addAll(thisBatch);
+		allList.addAll(getListByPeriodId(0));
+
+		if (periodId > 0) {
+			allList.addAll(getListByPeriodId(periodId));
 		}
 
 		return allList;
 	}
 
-	private int getCount() {
+	private Collection<? extends String> getListByPeriodId(int periodIdArgs) {
+
+		int totalCount = getTotalCount(periodIdArgs);
+		int pageCount = CatsAndDogs.pageCount(totalCount, DB_FETCH_ROWCOUNT);
+
+		List<String> thisPeriodList = new ArrayList<>();
+		for (int i = 0; i < pageCount; i++) {
+			Map<String, Object> param = new HashMap<>();
+			param.put("periodId", periodIdArgs);
+			param.put("startRow", i * DB_FETCH_ROWCOUNT);
+			param.put("rowCount", DB_FETCH_ROWCOUNT);
+			List<String> thisBatch = messageTextMapper
+					.pageContentByParam(param);
+			thisPeriodList.addAll(thisBatch);
+		}
+
+		return thisPeriodList;
+	}
+
+	private int getTotalCount(int periodIdArgs) {
 		Map<String, Object> param = new HashMap<>();
-		param.put("periodId", 0);
+		param.put("periodId", periodIdArgs);
 		return messageTextMapper.countByParam(param);
 	}
 
@@ -82,20 +98,31 @@ public class TextHunter extends TimerTask {
 		List<TextScdlEntry> workdaySchedule = TextPrepareJob
 				.getWorkdaySchedule();
 
-		int nextPeriodId = 0;
+		// 如果为0，说明数据库里对当前时间段并没有做任何配置，所以需要将自己伪装成上一个已有配置的period
+		if (periodId == 0) {
+			backToPrevPeriodId(workdaySchedule);
+		}
+
+		int nextPeriodId = -1;
 		TextScdlEntry nextEntry = null;
 
-		for (int i = 0; i < workdaySchedule.size(); i++) {
+		// 在经过backToPrevPeriodId之后，还是-1，说明在所有时间区间的最前面，直接指定workdaySchedule中第一个元素就好
+		if (periodId == -1) {
+			nextPeriodId = workdaySchedule.get(0).periodId;
+		} else {
+			for (int i = 0; i < workdaySchedule.size(); i++) {
 
-			// 如果找到了自己的位置，说明下一个就是nextPeriodId
-			if (workdaySchedule.get(i).periodId == periodId) {
-				// 如果超过最大了，也就是说达到顶点了，重新开始
-				if (i + 1 >= workdaySchedule.size()) {
-					nextPeriodId = 0;
-					nextEntry = workdaySchedule.get(0);
-				} else {
-					nextPeriodId = workdaySchedule.get(i + 1).periodId;
-					nextEntry = workdaySchedule.get(i + 1);
+				// 如果找到了自己的位置，说明下一个就是nextPeriodId
+				if (workdaySchedule.get(i).periodId == periodId) {
+					// 如果超过最大了，也就是说达到顶点了，重新开始
+					if (i + 1 >= workdaySchedule.size()) {
+						nextPeriodId = 0;
+						nextEntry = workdaySchedule.get(0);
+					} else {
+						nextPeriodId = workdaySchedule.get(i + 1).periodId;
+						nextEntry = workdaySchedule.get(i + 1);
+					}
+					break;
 				}
 			}
 		}
@@ -108,6 +135,47 @@ public class TextHunter extends TimerTask {
 		timer.schedule(nextHunter,
 				(nextEntry.startTime - System.currentTimeMillis()));
 
+	}
+
+	/**
+	 * |---1---|OOO|OOO|---2---|000|--3---|
+	 * 
+	 * @param workdaySchedule
+	 * @return
+	 */
+	private void backToPrevPeriodId(List<TextScdlEntry> workdaySchedule) {
+
+		
+		
+		long now = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"))
+				.getTimeInMillis();
+
+		for (int i = 0; i < workdaySchedule.size(); i++) {
+			TextScdlEntry thisOne = workdaySchedule.get(i);
+
+			// 落在1
+			if (i == 0 && thisOne.startTime > now) {
+				periodId = -1;
+				break;
+			}
+
+			// 落在3
+			if (i == (workdaySchedule.size() - 1) && thisOne.endTime < now) {
+				periodId = thisOne.periodId;
+				break;
+			}
+
+			// 落在2
+			if ((i + 1) < workdaySchedule.size()) {
+				TextScdlEntry nextOne = workdaySchedule.get(i + 1);
+				// 落在一个区间里
+				if ((thisOne.endTime < now) && (nextOne.startTime > now)) {
+					periodId = thisOne.periodId;
+					break;
+				}
+			}
+			logger.info("目前时间并没有进行内容配置，定位上一个最近的配置时间区间{}",periodId);
+		}
 	}
 
 }

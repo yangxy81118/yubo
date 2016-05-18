@@ -84,7 +84,7 @@ public class TextPrepareJob {
 				currentPeriodId = entry.periodId;
 			}
 		}
-
+		
 		return currentPeriodId;
 	}
 
