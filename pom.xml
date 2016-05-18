@@ -10,7 +10,7 @@
 		<module>yubo-wechat-api</module>
 		<module>yubo-wechat-pet</module>
 		<module>yubo-wechat-content</module>
-		<module>com.yubo.wechat.support</module>
+		<module>yubo-wechat-support</module>
 	</modules>
 
 	<properties>
