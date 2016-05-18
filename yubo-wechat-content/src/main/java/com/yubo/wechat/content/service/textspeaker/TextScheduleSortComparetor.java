@@ -14,7 +14,7 @@ public class TextScheduleSortComparetor implements Comparator<TextScdlEntry> {
 	 * 按照entry.index从小到大排列
 	 */
 	public int compare(TextScdlEntry entry1, TextScdlEntry entry2) {
-		return -(entry1.index - entry2.index);
+		return entry1.periodId - entry2.periodId;
 	}
 
 }

@@ -1,5 +1,8 @@
 package com.yubo.wechat.content.dao;
 
+import java.util.List;
+import java.util.Map;
+
 import com.yubo.wechat.content.dao.pojo.MessageText;
 
 public interface MessageTextMapper {
@@ -50,4 +53,34 @@ public interface MessageTextMapper {
      * @mbggenerated Mon May 16 19:53:42 PDT 2016
      */
     int updateByPrimaryKey(MessageText record);
+    
+    
+    /**
+     * 根据条件查询，默认查询valid=1<br/>
+     * 可加入条件,period_id,startRow,rowCount
+     * 
+     * @param param
+     * @return
+     */
+    List<MessageText> pageByParam(Map<String,Object> param);
+    
+    /**
+     * 快捷入口<br/>
+     * 根据条件查询，只查询内容，默认查询valid=1<br/>
+     * 可加入条件,period_id,startRow,rowCount
+     * 
+     * @param param
+     * @return
+     */
+    List<String> pageContentByParam(Map<String,Object> param);
+    
+    /**
+     * 根据条件计数，默认查询valid=1<br/>
+     * 可加入条件,period_id
+     * 
+     * @param param
+     * @return
+     */
+    int countByParam(Map<String,Object> param);
+    
 }

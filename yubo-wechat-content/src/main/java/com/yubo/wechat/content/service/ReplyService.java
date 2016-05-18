@@ -2,6 +2,7 @@ package com.yubo.wechat.content.service;
 
 import org.springframework.stereotype.Service;
 
+import com.yubo.wechat.content.service.textspeaker.TextContentPool;
 import com.yubo.wechat.content.vo.ReplyInput;
 
 /**
@@ -20,8 +21,6 @@ public class ReplyService {
 	 */
 	public String replyText(ReplyInput replyInput) {
 
-		
-		
-		return null;
+		return TextContentPool.getRandomText();
 	}
 }

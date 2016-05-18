@@ -1,5 +1,7 @@
 package com.yubo.wechat.api.service.impl;
 
+import org.springframework.stereotype.Service;
+
 import com.yubo.wechat.api.service.MessageHandler;
 import com.yubo.wechat.api.service.vo.MsgHandlerResult;
 
@@ -8,6 +10,7 @@ import com.yubo.wechat.api.service.vo.MsgHandlerResult;
  * @author young.jason
  *
  */
+@Service
 public class MyFavorService implements MessageHandler {
 
 	public MsgHandlerResult execute(String requestBody) {

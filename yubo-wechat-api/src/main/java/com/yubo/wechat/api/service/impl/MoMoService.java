@@ -2,30 +2,38 @@ package com.yubo.wechat.api.service.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.yubo.wechat.api.service.MessageHandler;
 import com.yubo.wechat.api.service.vo.MsgHandlerResult;
 import com.yubo.wechat.api.xml.XMLHelper;
 import com.yubo.wechat.api.xml.request.EventMsgRequest;
 import com.yubo.wechat.api.xml.response.TextResponse;
+import com.yubo.wechat.content.service.ReplyService;
 
 /**
  * 摸Mo业务处理
  * @author young.jason
  *
  */
+@Service
 public class MoMoService implements MessageHandler {
 
 	private static final Logger logger = LoggerFactory.getLogger(MoMoService.class);
 	
+	@Autowired
+	ReplyService replyService;
+	
 	public MsgHandlerResult execute(String requestBody) {
 
+		logger.info("摸Mo业务处理");
 		
 		try {
 			EventMsgRequest request = XMLHelper.parseXml(requestBody, EventMsgRequest.class);
 			
 			TextResponse response = new TextResponse();
-			response.setContent("被摸了 = =");
+			response.setContent(replyService.replyText(null));
 			response.setCreateTime(System.currentTimeMillis());
 			response.setFromUserName(request.getToUserName());
 			response.setToUserName(request.getFromUserName());

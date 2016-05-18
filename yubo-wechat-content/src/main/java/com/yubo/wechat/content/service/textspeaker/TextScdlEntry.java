@@ -6,7 +6,7 @@ package com.yubo.wechat.content.service.textspeaker;
  *
  */
 public class TextScdlEntry {
-	int index;
+	int periodId;
 	long startTime;
 	long endTime;
 }

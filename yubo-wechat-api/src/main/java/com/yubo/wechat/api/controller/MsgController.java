@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,13 +53,13 @@ public class MsgController {
 		MessageHandler messageHandler = new DefaultService();
 		switch (eventType) {
 		case CLICK_MOMO:
-			messageHandler = new MoMoService();
+			messageHandler = moMoService;
 			break;
 		case TEXT:
-			messageHandler = new TextMsgService();
+			messageHandler = textMsgService;
 			break;
 		case CLICK_MY_FAVOR:
-			messageHandler = new MyFavorService();
+			messageHandler = myFavorService;
 			break;
 		default:
 			break;
@@ -149,4 +150,13 @@ public class MsgController {
 		// 其余均认为未知
 		return WeChatEventType.UNKNOWN;
 	}
+	
+	@Autowired
+	MoMoService moMoService;
+	
+	@Autowired
+	TextMsgService textMsgService;
+	
+	@Autowired
+	MyFavorService myFavorService;
 }
