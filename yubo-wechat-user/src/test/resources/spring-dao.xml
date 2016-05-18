@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd"
+	default-lazy-init="false" default-autowire="byName">
+
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close" primary="true">
+		<property name="driverClass" value="${jdbc.driverClass:com.mysql.jdbc.Driver}" />
+		<property name="jdbcUrl" value="jdbc:mysql://139.129.58.4/db_yubo" />
+		<property name="user" value="yubo_manager" />
+		<property name="password" value="yubo2016" />
+		<property name="autoCommitOnClose" value="false" />
+		<property name="checkoutTimeout" value="${c3p0.checkoutTimeout:3000}" />
+		<property name="maxIdleTimeExcessConnections" value="60" />
+		<property name="idleConnectionTestPeriod" value="80" />
+	</bean>
+
+
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation" value="classpath:/sqlmap-config.xml" />
+	</bean>
+	
+	<bean id="userBaseMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.yubo.wechat.user.dao.UserBaseMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+
+</beans>

@@ -7,8 +7,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.yubo.wechat.content.dao.UserBaseMapper;
-import com.yubo.wechat.content.dao.pojo.UserBase;
+import com.yubo.wechat.user.dao.UserBaseMapper;
+import com.yubo.wechat.user.dao.pojo.UserBase;
 
 /**
  * @author huangGuotao
@@ -16,7 +16,7 @@ import com.yubo.wechat.content.dao.pojo.UserBase;
  * @date 2014年7月15日
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath:spring/spring-config.xml")
+@ContextConfiguration(locations = "classpath:spring-test.xml")
 public class UserBaseTest extends AbstractJUnit4SpringContextTests {
 
     @Autowired

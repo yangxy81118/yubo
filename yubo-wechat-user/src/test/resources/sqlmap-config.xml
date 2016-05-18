@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<setting name="lazyLoadingEnabled" value="false" />
+		<!-- 全局延迟加载 ,在启用延迟加载的同时，需要禁用"aggressiveLazyLoading"项 -->
+		<setting name="aggressiveLazyLoading" value="false" />
+		<!-- 这个设置项在用户手册当中的定义当启用时，有延迟加载属性的对象在被 调用时将会完全加载任意属性。否则，每种属性将会按需要加载。 -->
+		<setting name="lazyLoadTriggerMethods" value="clone" />
+		<setting name="defaultExecutorType" value="BATCH" />
+	</settings>
+	<mappers>
+		<mapper resource="sql-mapping/SchoolBaseMapper.xml" />
+		<mapper resource="sql-mapping/TalkHistoryMapper.xml" />
+		<mapper resource="sql-mapping/UserBaseMapper.xml" />
+		<mapper resource="sql-mapping/UserIdentificationMapper.xml" />
+		<mapper resource="sql-mapping/UserPetFavorMapper.xml" />
+	</mappers>
+</configuration>
