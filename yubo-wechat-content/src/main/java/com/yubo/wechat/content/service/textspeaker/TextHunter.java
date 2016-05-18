@@ -30,7 +30,7 @@ public class TextHunter extends TimerTask {
 
 	private MessageTextMapper messageTextMapper;
 
-	private static final int DB_FETCH_ROWCOUNT = 5;
+	private static final int DB_FETCH_ROWCOUNT = 30;
 
 	public TextHunter(int thisPeriodId, MessageTextMapper messageTextMapper) {
 		super();
