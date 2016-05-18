@@ -1,4 +1,4 @@
-package com.yubo.wechat.user.service.impl;
+package com.yubo.wechat.user.service;
 
 import org.springframework.stereotype.Component;
 

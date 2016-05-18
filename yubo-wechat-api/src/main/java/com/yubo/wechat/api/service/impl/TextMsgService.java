@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.yubo.wechat.api.service.MessageHandler;
 import com.yubo.wechat.api.service.vo.MsgHandlerResult;
+import com.yubo.wechat.api.service.vo.MsgInputParam;
 import com.yubo.wechat.api.xml.XMLHelper;
 import com.yubo.wechat.api.xml.request.EventMsgRequest;
 import com.yubo.wechat.api.xml.request.TextMsgRequest;
@@ -32,10 +33,10 @@ public class TextMsgService implements MessageHandler {
 //	@Autowired
 //	UserB
 	
-	public MsgHandlerResult execute(String requestBody) {
+	public MsgHandlerResult execute(MsgInputParam param) {
 
 		try {
-			TextMsgRequest request = XMLHelper.parseXml(requestBody, TextMsgRequest.class);
+			TextMsgRequest request = XMLHelper.parseXml(param.requestBody, TextMsgRequest.class);
 			
 			if(!isAuthorizing()){
 				

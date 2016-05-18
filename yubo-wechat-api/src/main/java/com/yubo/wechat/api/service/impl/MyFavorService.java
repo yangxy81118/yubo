@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import com.yubo.wechat.api.service.MessageHandler;
 import com.yubo.wechat.api.service.vo.MsgHandlerResult;
+import com.yubo.wechat.api.service.vo.MsgInputParam;
 
 /**
  * 我和宠物的亲密度业务处理
@@ -13,7 +14,7 @@ import com.yubo.wechat.api.service.vo.MsgHandlerResult;
 @Service
 public class MyFavorService implements MessageHandler {
 
-	public MsgHandlerResult execute(String requestBody) {
+	public MsgHandlerResult execute(MsgInputParam param) {
 
 		
 		return null;

@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.bind.JAXBException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,10 @@ import com.yubo.wechat.api.service.impl.MoMoService;
 import com.yubo.wechat.api.service.impl.MyFavorService;
 import com.yubo.wechat.api.service.impl.TextMsgService;
 import com.yubo.wechat.api.service.vo.MsgHandlerResult;
+import com.yubo.wechat.api.service.vo.MsgInputParam;
+import com.yubo.wechat.api.xml.XMLHelper;
+import com.yubo.wechat.api.xml.request.UserWeChatIdHelper;
+import com.yubo.wechat.user.service.UserService;
 
 /**
  * 微信信息派发接口
@@ -44,13 +49,17 @@ public class MsgController {
 		String requestBody = buildRequestBody(request);
 		logger.info("Request:\n{}", requestBody);
 
-		//首先将微信号转换为用户ID
-		String userId = "";
-		
-		// 首先判断用户触发类型
-		WeChatEventType eventType = checkEventType(requestBody);
-
+		// 首先将微信号转换为用户ID，并准备参数
+		String weChatId = getWeChatID(requestBody);
+		int userId = userService.getUserIdByWeChatId(weChatId);
 		MessageHandler messageHandler = new DefaultService();
+		MsgInputParam inputParam = new MsgInputParam();
+		inputParam.userId = userId;
+		inputParam.wechatId = weChatId;
+		inputParam.requestBody = requestBody;
+
+		// 根据用户触发类型进行具体业务处理
+		WeChatEventType eventType = checkEventType(requestBody);
 		switch (eventType) {
 		case CLICK_MOMO:
 			messageHandler = moMoService;
@@ -65,7 +74,7 @@ public class MsgController {
 			break;
 		}
 
-		MsgHandlerResult result = messageHandler.execute(requestBody);
+		MsgHandlerResult result = messageHandler.execute(inputParam);
 
 		String xmlResponseStr = result.getXmlResponse();
 		if (!StringUtils.isEmpty(xmlResponseStr)) {
@@ -98,6 +107,12 @@ public class MsgController {
 
 		// 3-我的亲密度回复
 
+	}
+
+	private String getWeChatID(String requestBody) throws JAXBException {
+		UserWeChatIdHelper helper = XMLHelper.parseXml(requestBody,
+				UserWeChatIdHelper.class);
+		return helper.getFromUserName();
 	}
 
 	private String buildRequestBody(HttpServletRequest request)
@@ -150,13 +165,17 @@ public class MsgController {
 		// 其余均认为未知
 		return WeChatEventType.UNKNOWN;
 	}
-	
+
 	@Autowired
 	MoMoService moMoService;
-	
+
 	@Autowired
 	TextMsgService textMsgService;
-	
+
 	@Autowired
 	MyFavorService myFavorService;
+
+	@Autowired
+	UserService userService;
+
 }

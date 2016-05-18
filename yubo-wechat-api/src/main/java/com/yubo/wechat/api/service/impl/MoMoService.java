@@ -7,11 +7,12 @@ import org.springframework.stereotype.Service;
 
 import com.yubo.wechat.api.service.MessageHandler;
 import com.yubo.wechat.api.service.vo.MsgHandlerResult;
+import com.yubo.wechat.api.service.vo.MsgInputParam;
 import com.yubo.wechat.api.xml.XMLHelper;
 import com.yubo.wechat.api.xml.request.EventMsgRequest;
 import com.yubo.wechat.api.xml.response.TextResponse;
 import com.yubo.wechat.content.service.ReplyService;
-import com.yubo.wechat.user.service.impl.UserPetFavorService;
+import com.yubo.wechat.user.service.UserPetFavorService;
 
 /**
  * 摸Mo业务处理
@@ -29,12 +30,12 @@ public class MoMoService implements MessageHandler {
 	@Autowired
 	UserPetFavorService userPetFavorService;
 	
-	public MsgHandlerResult execute(String requestBody) {
+	public MsgHandlerResult execute(MsgInputParam param) {
 
 		logger.info("摸Mo业务处理");
 		
 		try {
-			EventMsgRequest request = XMLHelper.parseXml(requestBody, EventMsgRequest.class);
+			EventMsgRequest request = XMLHelper.parseXml(param.requestBody, EventMsgRequest.class);
 			
 			TextResponse response = new TextResponse();
 			response.setContent(buildContent());
