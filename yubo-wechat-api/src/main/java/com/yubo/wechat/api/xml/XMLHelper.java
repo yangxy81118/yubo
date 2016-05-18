@@ -38,8 +38,8 @@ public class XMLHelper {
 		marshaller.marshal(bean, writer);
 
 		// TODO 这个有性能隐患，之后要想办法解决
-		String xmlResult = writer.toString().replace("&lt;![", "<![")
-				.replace("]]&gt;", "]]>");
+		String xmlResult = writer.toString().replace("&lt;", "<")
+				.replace("&gt;", ">");
 		return xmlResult;
 	}
 
