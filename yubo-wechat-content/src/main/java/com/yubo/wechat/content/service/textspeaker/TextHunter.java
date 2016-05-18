@@ -48,6 +48,7 @@ public class TextHunter extends TimerTask {
 
 		// 数据库加载本次对应的文本数据
 		List<String> contentList = getContentList();
+		logger.info("共加载回复内容{}条", contentList.size());
 
 		// 覆盖掉上一次的文本内容
 		TextContentPool.setCurrentTextList(contentList);
@@ -62,6 +63,7 @@ public class TextHunter extends TimerTask {
 
 		allList.addAll(getListByPeriodId(0));
 
+		// 为0表示之前并没有定位到有配置的时间
 		if (periodId > 0) {
 			allList.addAll(getListByPeriodId(periodId));
 		}
@@ -127,14 +129,15 @@ public class TextHunter extends TimerTask {
 			}
 		}
 
-		logger.info("下一个回复内容获取定时任务，periodId={}", nextPeriodId);
-
 		// 执行一次
 		Timer timer = new Timer();
 		TextHunter nextHunter = new TextHunter(nextPeriodId, messageTextMapper);
-		timer.schedule(nextHunter,
-				(nextEntry.startTime - System.currentTimeMillis()));
+		long delay = (nextEntry.startTime - System.currentTimeMillis());
+		
+		timer.schedule(nextHunter, delay);
 
+		logger.info("下一个回复内容获取定时任务，periodId={},约{}分钟后执行", nextPeriodId,
+				(int) (delay / (60 * 1000)));
 	}
 
 	/**
@@ -145,8 +148,6 @@ public class TextHunter extends TimerTask {
 	 */
 	private void backToPrevPeriodId(List<TextScdlEntry> workdaySchedule) {
 
-		
-		
 		long now = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"))
 				.getTimeInMillis();
 
@@ -174,8 +175,10 @@ public class TextHunter extends TimerTask {
 					break;
 				}
 			}
-			logger.info("目前时间并没有进行内容配置，定位上一个最近的配置时间区间{}",periodId);
+
 		}
+
+		logger.info("目前时间并没有进行内容配置，定位上一个最近的配置时间区间{}", periodId);
 	}
 
 }

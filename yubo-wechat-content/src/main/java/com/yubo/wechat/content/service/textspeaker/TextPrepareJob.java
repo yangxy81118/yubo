@@ -82,6 +82,7 @@ public class TextPrepareJob {
 			TextScdlEntry entry = workdaySchedule.get(i);
 			if (nowTime >= entry.startTime && nowTime < entry.endTime) {
 				currentPeriodId = entry.periodId;
+				break;
 			}
 		}
 		
