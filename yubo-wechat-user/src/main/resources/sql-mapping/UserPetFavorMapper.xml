@@ -143,4 +143,18 @@
       last_modify = #{lastModify,jdbcType=TIMESTAMP}
     where favor_id = #{favorId,jdbcType=INTEGER}
   </update>
+  
+  
+   <select id="selectByParam" parameterType="com.yubo.wechat.user.dao.pojo.UserPetFavor" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user_pet_favor
+    where valid = 1
+	    <if test="userId!=null">
+	    	AND user_id=#{userId,jdbcType=INTEGER}
+	    </if>
+	    <if test="petId!=null">
+	    	AND pet_id=#{petId,jdbcType=INTEGER}
+	    </if>
+  </select>
 </mapper>

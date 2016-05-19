@@ -11,4 +11,5 @@ public class MsgInputParam {
 	public String requestBody;
 	public int userId;
 	public String wechatId;
+	public int petId = 1;
 }

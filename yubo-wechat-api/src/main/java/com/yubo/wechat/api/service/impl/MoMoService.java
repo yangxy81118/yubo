@@ -48,6 +48,9 @@ public class MoMoService implements MessageHandler {
 	@Value("${simpletalk.redis.cache.duration:900}")
 	private int simpleTalkCacheDuration;
 	
+	@Value("${favor.lock.duration:1800}")
+	private int favorLockDuration;
+	
 	public MsgHandlerResult execute(MsgInputParam param) {
 
 		logger.info("摸Mo业务处理");
@@ -121,13 +124,30 @@ public class MoMoService implements MessageHandler {
 		
 		UserVO userVO = userService.getUserVOByUserId(param.userId);
 		
-		//添加亲密度
-		int favorPoint = userPetFavorService.favorIncrease(param.userId,1);
-		if(favorPoint>0){
-			content.append("【YUBO亲密度+").append(favorPoint).append("】");
+		//去缓存中检查，如果没有亲密度的标记了，则说明可以增加亲密度了
+		if(!favorLock(param)){
+			int favorPoint = userPetFavorService.getFavorPoint(param.userId,param.petId);
+			if(favorPoint>0){
+				//加入半个小时的锁，不允许半小时内再增加亲密度
+				addFavorLock(param);
+				userPetFavorService.addFavor(param.userId,param.petId,favorPoint);
+				content.append("【YUBO亲密度+").append(favorPoint).append("】");
+			}
 		}
-		
 		return content.toString();
+	}
+
+	private void addFavorLock(MsgInputParam param) {
+		Jedis redis= redisHandler.getRedisClient();
+		String key = RedisKeyBuilder.buildFavorLockKey(param.userId, param.petId);
+		redis.set(key, "1");
+		redis.expire(key, favorLockDuration);
+	}
+
+	private boolean favorLock(MsgInputParam param) {
+		Jedis redis= redisHandler.getRedisClient();
+		String lock = redis.get(RedisKeyBuilder.buildFavorLockKey(param.userId, param.petId));
+		return lock!=null;
 	}
 	
 	

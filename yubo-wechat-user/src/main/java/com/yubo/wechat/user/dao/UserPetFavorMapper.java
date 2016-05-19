@@ -1,5 +1,7 @@
 package com.yubo.wechat.user.dao;
 
+import java.util.List;
+
 import com.yubo.wechat.user.dao.pojo.UserPetFavor;
 
 public interface UserPetFavorMapper {
@@ -39,4 +41,12 @@ public interface UserPetFavorMapper {
 	 * @mbggenerated  Tue May 17 08:27:43 PDT 2016
 	 */
 	int updateByPrimaryKey(UserPetFavor record);
+	
+	/**
+	 * 根据条件获取
+	 * 
+	 * @param record
+	 * @return
+	 */
+	List<UserPetFavor> selectByParam(UserPetFavor record);
 }

@@ -1,9 +1,12 @@
 package com.yubo.wechat.user.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.yubo.wechat.user.dao.UserPetFavorMapper;
+import com.yubo.wechat.user.dao.pojo.UserPetFavor;
 
 /**
  * 亲密度服务
@@ -20,19 +23,35 @@ public class UserPetFavorService {
 	UserPetFavorMapper userPetFavorMapper;
 
 	/**
+	 * 创建一个亲密度
 	 * 
 	 * @param userId
+	 * @param petId
 	 * @return
 	 */
-	public int favorIncrease(int userId, int petId) {
-
-		// 暂时处理方式，随机产生一个point
+	public int getFavorPoint(int userId, int petId) {
 		int favorIncreasePoint = (int) (Math.random() * FAVOR_MAX);
-		
-		// 加入到数据库中
-		
-
 		return favorIncreasePoint;
+	}
+	
+	
+	public void addFavor(int userId, int petId, int favorIncreasePoint) {
+		
+		UserPetFavor record = new UserPetFavor();
+		record.setUserId(userId);
+		record.setPetId(petId);
+		List<UserPetFavor> dbResult = userPetFavorMapper.selectByParam(record);
+		
+		if(dbResult == null || dbResult.size() == 0){
+			record.setFavorPoint((double)favorIncreasePoint);
+			userPetFavorMapper.insertSelective(record);
+		}else{
+			UserPetFavor previousFavor =  dbResult.get(0);
+			UserPetFavor thisFavor = new UserPetFavor();
+			thisFavor.setFavorPoint(favorIncreasePoint + previousFavor.getFavorPoint());
+			userPetFavorMapper.updateByPrimaryKeySelective(thisFavor);
+		}
+		
 	}
 
 }
