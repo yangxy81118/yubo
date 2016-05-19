@@ -14,5 +14,11 @@ public class TextMsgRequest extends MsgRequest {
 
 	@XmlElement(name="Content")
 	private String content;
+
+	public String getContent() {
+		return content;
+	}
+	
+	
 	
 }

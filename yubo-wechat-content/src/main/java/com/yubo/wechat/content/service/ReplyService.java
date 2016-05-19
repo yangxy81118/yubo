@@ -14,13 +14,25 @@ import com.yubo.wechat.content.vo.ReplyInput;
 @Service
 public class ReplyService {
 
+	static String[] shortSentences = new String[]{"sorry,YUBO还听不懂，有空就来摸摸我一下吧～"};
+	
+	
 	/**
 	 * 
 	 * @param replyInput
 	 * @return
 	 */
-	public String replyText(ReplyInput replyInput) {
+	public String smartReply(ReplyInput replyInput) {
 
 		return TextContentPool.getRandomText();
+	}
+	
+	/**
+	 * 最简单的回话，一般不会用来去引发提问性的对话
+	 * @return
+	 */
+	public String shortReply(){
+		int index = (int)(Math.random()*shortSentences.length);
+		return shortSentences[index];
 	}
 }

@@ -165,7 +165,7 @@
     <if test="wechatId!=null">
     	AND wechat_id = #{wechatId,jdbcType=VARCHAR}
     </if>
-    <if test="wechatId!=null">
+    <if test="petId!=null">
     	AND pet_id = #{petId,jdbcType=VARCHAR}
     </if>
   </select>

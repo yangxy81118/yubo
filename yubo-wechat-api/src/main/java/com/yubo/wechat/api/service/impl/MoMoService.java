@@ -1,9 +1,14 @@
 package com.yubo.wechat.api.service.impl;
 
+import javax.xml.bind.JAXBException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import redis.clients.jedis.Jedis;
 
 import com.yubo.wechat.api.service.MessageHandler;
 import com.yubo.wechat.api.service.vo.MsgHandlerResult;
@@ -12,6 +17,8 @@ import com.yubo.wechat.api.xml.XMLHelper;
 import com.yubo.wechat.api.xml.request.EventMsgRequest;
 import com.yubo.wechat.api.xml.response.TextResponse;
 import com.yubo.wechat.content.service.ReplyService;
+import com.yubo.wechat.support.redis.RedisHandler;
+import com.yubo.wechat.support.redis.RedisKeyBuilder;
 import com.yubo.wechat.user.service.UserPetFavorService;
 import com.yubo.wechat.user.service.UserService;
 import com.yubo.wechat.user.vo.UserVO;
@@ -35,6 +42,12 @@ public class MoMoService implements MessageHandler {
 	@Autowired
 	UserPetFavorService userPetFavorService;
 	
+	@Autowired
+	RedisHandler redisHandler;
+	
+	@Value("${simpletalk.redis.cache.duration:900}")
+	private int simpleTalkCacheDuration;
+	
 	public MsgHandlerResult execute(MsgInputParam param) {
 
 		logger.info("摸Mo业务处理");
@@ -42,27 +55,55 @@ public class MoMoService implements MessageHandler {
 		try {
 			EventMsgRequest request = XMLHelper.parseXml(param.requestBody, EventMsgRequest.class);
 			
-			TextResponse response = new TextResponse();
-			response.setContent(buildContent(param));
-			response.setCreateTime(System.currentTimeMillis());
-			response.setFromUserName(request.getToUserName());
-			response.setToUserName(request.getFromUserName());
+			//获取回复语句
+			// 根据目前的时间段，获取一个回复
+			String replyContent = buildContent(param);
 			
-			MsgHandlerResult result = new MsgHandlerResult();
-			result.setXmlResponse(XMLHelper.buildXMLStr(response, TextResponse.class));
+			// 若回复是一个非命令回复，将回复存储到Redis中，并定时15分钟的有效时间
+			insertReplyToCache(param,replyContent);
 			
-			return result;
+			return buildResult(request,replyContent);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		// 根据目前的时间段，获取一个回复
-		// 若回复是一个非命令回复，将回复存储到Redis中，并定时15分钟的有效时间
-		// key构建规则：simpleTalk.${petId}.${userId}，value为宠物的话
 		// 若回复是一个命令回复，则将回复存储到MySQL talk_history中，永久等待用户下次回复（暂定永久）
-		
-		
 		return null;
+	}
+	
+	/**
+	 * 若回复是一个非命令回复，将回复存储到Redis中，并定时15分钟的有效时间<br/>
+	 * key构建规则：simpleTalk.${petId}.${userId}，value为宠物的话
+	 * 
+	 * @param param
+	 * @param replyContent
+	 */
+	private void insertReplyToCache(MsgInputParam param, String replyContent) {
+		Jedis redis = redisHandler.getRedisClient();
+		String key = RedisKeyBuilder.buildSimpleTalkKey(param.userId,1);
+		redis.set(key, replyContent);
+		redis.expire(key, simpleTalkCacheDuration);
+	}
+
+
+	/**
+	 * 构建结果
+	 * @param request
+	 * @param content 
+	 * @return
+	 * @throws JAXBException
+	 */
+	private MsgHandlerResult buildResult(EventMsgRequest request, String content) throws JAXBException {
+
+		TextResponse response = new TextResponse();
+		response.setContent(content);
+		response.setCreateTime(System.currentTimeMillis());
+		response.setFromUserName(request.getToUserName());
+		response.setToUserName(request.getFromUserName());
+		
+		MsgHandlerResult result = new MsgHandlerResult();
+		result.setXmlResponse(XMLHelper.buildXMLStr(response, TextResponse.class));
+		return result;
 	}
 
 	/**
@@ -75,7 +116,7 @@ public class MoMoService implements MessageHandler {
 		StringBuffer content = new StringBuffer("");
 		
 		//主要回复内容
-		String mainText = replyService.replyText(null);
+		String mainText = replyService.smartReply(null);
 		content.append(mainText);
 		
 		UserVO userVO = userService.getUserVOByUserId(param.userId);
@@ -88,5 +129,8 @@ public class MoMoService implements MessageHandler {
 		
 		return content.toString();
 	}
+	
+	
+	
 
 }

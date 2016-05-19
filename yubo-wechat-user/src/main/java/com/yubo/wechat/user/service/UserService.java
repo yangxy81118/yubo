@@ -7,8 +7,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.yubo.wechat.user.dao.TalkHistoryMapper;
 import com.yubo.wechat.user.dao.UserBaseMapper;
+import com.yubo.wechat.user.dao.pojo.TalkHistory;
 import com.yubo.wechat.user.dao.pojo.UserBase;
+import com.yubo.wechat.user.vo.SimpleTalkVO;
 import com.yubo.wechat.user.vo.UserVO;
 
 /**
@@ -25,6 +28,9 @@ public class UserService {
 
 	@Autowired
 	UserBaseMapper userBaseMapper;
+	
+	@Autowired
+	TalkHistoryMapper historyMapper;
 
 	/**
 	 * 通过微信ID获取本系统中对应用户ID<br/>
@@ -34,7 +40,6 @@ public class UserService {
 	 * @return
 	 */
 	public int getUserIdByWeChatId(String wechatID) {
-
 		Integer userId = getUserIdFromDB(wechatID);
 		return userId;
 	}
@@ -47,11 +52,28 @@ public class UserService {
 	 */
 	public UserVO getUserVOByUserId(int userId) {
 		UserBase userBase = userBaseMapper.selectByPrimaryKey(userId);
-
 		UserVO vo = new UserVO();
 		vo.setUserId(userId);
 		vo.setWechatId(userBase.getWechatId());
 		return vo;
+	}
+	
+	
+	/**
+	 * 存储一次简单对话
+	 * 
+	 * @param simpleTalkVO
+	 */
+	public void saveSimpleTalk(SimpleTalkVO simpleTalkVO){
+		
+		TalkHistory record = new TalkHistory();
+		record.setUserId(simpleTalkVO.getUserId());
+		record.setPetId(simpleTalkVO.getPetId());
+		record.setLastTalkUserSaid(simpleTalkVO.getUserSaid());
+		record.setLastTalkPetSaid(simpleTalkVO.getPetSaid());
+		record.setLastTalkFuncCode(simpleTalkVO.getTalkFuncCode());
+		historyMapper.insertSelective(record);
+		
 	}
 
 	private Integer getUserIdFromDB(String wechatID) {
