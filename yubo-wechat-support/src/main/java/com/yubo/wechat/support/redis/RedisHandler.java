@@ -2,12 +2,15 @@ package com.yubo.wechat.support.redis;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.exceptions.JedisConnectionException;
 
 /**
  * Redis 连接处理工具类
@@ -18,7 +21,8 @@ import redis.clients.jedis.JedisPoolConfig;
 @Component
 public class RedisHandler {
 
-	
+	private static final Logger logger = LoggerFactory.getLogger(RedisHandler.class);
+
 	@Value("${redis.host}")
 	private String host;
 	
@@ -49,8 +53,17 @@ public class RedisHandler {
 	}
 	
 	
-	public Jedis getRedisClient(){
-		return jedisPool.getResource();
+	public Jedis getRedisClient() throws Exception {
+		
+		try{
+			return jedisPool.getResource();
+		}catch(JedisConnectionException connException){
+			logger.error("获取Redis链接出错,{}",connException.getMessage());
+		}catch (Exception e) {
+			logger.error("获取Redis链接出错,",e);
+			throw e;
+		}
+		return null;
 	}
 	
 }

@@ -82,10 +82,15 @@ public class MoMoService implements MessageHandler {
 	 * @param replyContent
 	 */
 	private void insertReplyToCache(MsgInputParam param, String replyContent) {
-		Jedis redis = redisHandler.getRedisClient();
-		String key = RedisKeyBuilder.buildSimpleTalkKey(param.userId,1);
-		redis.set(key, replyContent);
-		redis.expire(key, simpleTalkCacheDuration);
+		Jedis redis = null;
+		try {
+			redis = redisHandler.getRedisClient();
+			String key = RedisKeyBuilder.buildSimpleTalkKey(param.userId,1);
+			redis.set(key, replyContent);
+			redis.expire(key, simpleTalkCacheDuration);
+		} catch (Exception e) {
+			return;
+		}
 	}
 
 
@@ -138,16 +143,27 @@ public class MoMoService implements MessageHandler {
 	}
 
 	private void addFavorLock(MsgInputParam param) {
-		Jedis redis= redisHandler.getRedisClient();
-		String key = RedisKeyBuilder.buildFavorLockKey(param.userId, param.petId);
-		redis.set(key, "1");
-		redis.expire(key, favorLockDuration);
+		Jedis redis = null;
+		try {
+			redis = redisHandler.getRedisClient();
+			String key = RedisKeyBuilder.buildFavorLockKey(param.userId, param.petId);
+			redis.set(key, "1");
+			redis.expire(key, favorLockDuration);
+		} catch (Exception e) {
+			logger.error("Redis操作addFavorLock失败");
+		}
 	}
 
 	private boolean favorLock(MsgInputParam param) {
-		Jedis redis= redisHandler.getRedisClient();
-		String lock = redis.get(RedisKeyBuilder.buildFavorLockKey(param.userId, param.petId));
-		return lock!=null;
+		Jedis redis = null;
+		try {
+			redis = redisHandler.getRedisClient();
+			String lock = redis.get(RedisKeyBuilder.buildFavorLockKey(param.userId, param.petId));
+			return lock!=null;
+		} catch (Exception e) {
+			logger.error("Redis操作favorLock失败，无法加亲密度");
+			return true;
+		}
 	}
 	
 	

@@ -48,7 +48,7 @@ public class TextMsgService implements MessageHandler {
 			TextMsgRequest request = XMLHelper.parseXml(param.requestBody,
 					TextMsgRequest.class);
 
-			if (!isAuthorizing()) {
+			if (!isAuthorizing(request)) {
 
 				String petLastTalk = null;
 				
@@ -91,8 +91,13 @@ public class TextMsgService implements MessageHandler {
 
 	//TODO 经常这样删除,不知是否这样合适？
 	private void removeRedisKey(int userId, int petId) {
-		Jedis redis = redisHandler.getRedisClient();
-		redis.del(RedisKeyBuilder.buildSimpleTalkKey(userId, petId));
+		Jedis redis = null;
+		try {
+			redis = redisHandler.getRedisClient();
+			redis.del(RedisKeyBuilder.buildSimpleTalkKey(userId, petId));
+		} catch (Exception e) {
+			logger.error("Redis操作removeRedisKey失败");
+		}
 	}
 
 	private void saveSimpleTalk(String petSaid, MsgInputParam param,
@@ -114,7 +119,12 @@ public class TextMsgService implements MessageHandler {
 	 * @return
 	 */
 	private String petLastTalkInCache(MsgInputParam param) {
-		Jedis redis = redisHandler.getRedisClient();
+		Jedis redis = null;
+		try {
+			redis = redisHandler.getRedisClient();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		String key = RedisKeyBuilder.buildSimpleTalkKey(param.userId, 1);
 		String content = redis.get(key);
 		return content;
@@ -145,10 +155,11 @@ public class TextMsgService implements MessageHandler {
 
 	/**
 	 * 检查是否是激活操作
+	 * @param request 
 	 * 
 	 * @return
 	 */
-	private boolean isAuthorizing() {
+	private boolean isAuthorizing(TextMsgRequest request) {
 		return false;
 	}
 
