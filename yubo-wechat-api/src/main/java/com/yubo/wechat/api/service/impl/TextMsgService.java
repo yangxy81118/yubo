@@ -55,7 +55,7 @@ public class TextMsgService implements MessageHandler {
 				String petLastTalk = null;
 				
 				// 首先判断去Redis中进行查找，key为simpleTalk.${petId}.${userId}
-				// TODO 这里有加入事物的必要性
+				// TODO 这里有加入事务的必要性
 				if ((petLastTalk = petLastTalkInCache(param)) != null) {
 					saveSimpleTalk(petLastTalk, param, request.getContent());
 					removeRedisKey(param.userId,1);
@@ -73,16 +73,23 @@ public class TextMsgService implements MessageHandler {
 
 				return buildResult(request, replyService.shortReply());
 
+			}else{
+				// 2.1 - 激活码回复
+				String authCode = request.getContent().replaceAll("#JH", "");
+				
+				// 进入激活码验证流程
+				// 验证成功，进行记录
+				// 验证失败，反馈提示
+				
+				
+				
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		// 2-文本回复
-		// 2.1 - 激活码回复
-		// 进入激活码验证流程
-		// 验证成功，进行记录
-		// 验证失败，反馈提示
+		
 
 		// 2.2 - 普通回复
 
@@ -163,7 +170,8 @@ public class TextMsgService implements MessageHandler {
 	 * @return
 	 */
 	private boolean isAuthorizing(TextMsgRequest request) {
-		return false;
+		String content = request.getContent();
+		return content.startsWith("#JH");
 	}
 
 }

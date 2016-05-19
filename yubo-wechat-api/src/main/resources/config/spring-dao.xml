@@ -48,5 +48,10 @@
 		<property name="mapperInterface" value="com.yubo.wechat.user.dao.TalkHistoryMapper" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
 	</bean>
+	
+		<bean id="userIdentificationMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.yubo.wechat.user.dao.UserIdentificationMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
 
 </beans>

@@ -39,4 +39,11 @@ public interface UserIdentificationMapper {
 	 * @mbggenerated  Tue May 17 08:27:43 PDT 2016
 	 */
 	int updateByPrimaryKey(UserIdentification record);
+	
+	/**
+	 * 
+	 * @param identiCode 激活码
+	 * @return 如果验证成功，返回数量大于0
+	 */
+	UserIdentification selectByCode(String identiCode);
 }

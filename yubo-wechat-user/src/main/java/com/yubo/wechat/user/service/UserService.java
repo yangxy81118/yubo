@@ -1,5 +1,6 @@
 package com.yubo.wechat.user.service;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,8 +12,10 @@ import org.springframework.stereotype.Service;
 
 import com.yubo.wechat.user.dao.TalkHistoryMapper;
 import com.yubo.wechat.user.dao.UserBaseMapper;
+import com.yubo.wechat.user.dao.UserIdentificationMapper;
 import com.yubo.wechat.user.dao.pojo.TalkHistory;
 import com.yubo.wechat.user.dao.pojo.UserBase;
+import com.yubo.wechat.user.dao.pojo.UserIdentification;
 import com.yubo.wechat.user.vo.SimpleTalkVO;
 import com.yubo.wechat.user.vo.UserVO;
 
@@ -24,18 +27,6 @@ import com.yubo.wechat.user.vo.UserVO;
  */
 @Service
 public class UserService {
-
-	private static final Logger logger = LoggerFactory
-			.getLogger(UserService.class);
-
-	@Autowired
-	UserBaseMapper userBaseMapper;
-
-	@Autowired
-	TalkHistoryMapper historyMapper;
-	
-	@Autowired
-	User4WechatMapping user4WechatMapping;
 
 	/**
 	 * 通过微信ID获取本系统中对应用户ID<br/>
@@ -108,4 +99,47 @@ public class UserService {
 
 	}
 
+	/**
+	 * 对用户进行认证校验
+	 * 
+	 * @param code
+	 * @return 是否成功
+	 */
+	public boolean identificate(String code,int userId){
+		
+		try{
+			UserIdentification identification = userIdentificationMapper.selectByCode(code);
+			if(identification == null){
+				logger.info("用户[{}]使用激活码[{}]不存在",userId,code);
+				return false;
+			}
+			
+			//更新到userBase
+			UserBase user = new UserBase();
+			user.setIdentificationId(identification.getIdentiId());
+			user.setUserId(userId);
+			userBaseMapper.updateByPrimaryKeySelective(user);
+			logger.info("用户[{}]使用激活码[{}]认证成功,姓名{},班级{}",userId,code,identification.getStudentName(),identification.getStudentClass());
+			return true;
+		}catch(Exception e){
+			logger.error(e.getMessage(),e);
+			return false;
+		}
+	}
+	
+
+	private static final Logger logger = LoggerFactory
+			.getLogger(UserService.class);
+
+	@Autowired
+	UserBaseMapper userBaseMapper;
+
+	@Autowired
+	TalkHistoryMapper historyMapper;
+	
+	@Autowired
+	User4WechatMapping user4WechatMapping;
+	
+	@Autowired
+	UserIdentificationMapper userIdentificationMapper;
 }

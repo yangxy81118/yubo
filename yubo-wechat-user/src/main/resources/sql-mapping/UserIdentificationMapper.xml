@@ -179,4 +179,13 @@
       last_modify = #{lastModify,jdbcType=TIMESTAMP}
     where identi_id = #{identiId,jdbcType=INTEGER}
   </update>
+  
+  <!-- 检查验证码 -->
+   <select id="selectByCode" parameterType="java.lang.String" resultType="com.yubo.wechat.user.dao.pojo.UserIdentification">
+    select
+ <include refid="Base_Column_List" />
+    from user_identification
+    where identi_code = #{identi_code,jdbcType=VARCHAR}
+  </select>
+  
 </mapper>
