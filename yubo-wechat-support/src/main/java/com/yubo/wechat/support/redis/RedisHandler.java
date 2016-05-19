@@ -40,6 +40,8 @@ public class RedisHandler {
 	
 	private JedisPool jedisPool;
 	
+	private Jedis redisClient;
+	
 	@PostConstruct
 	public void initRedisPool(){
 		
@@ -49,14 +51,17 @@ public class RedisHandler {
 		config.setMaxWait(maxWait);
 		config.setTestOnBorrow(false);
 		
-		jedisPool = new JedisPool(config, host, port);
+		
+		jedisPool = new JedisPool(config, host, port,5);
 	}
 	
 	
 	public Jedis getRedisClient() throws Exception {
-		
 		try{
-			return jedisPool.getResource();
+			if(redisClient==null){
+				redisClient =  jedisPool.getResource();
+			}
+			return redisClient;
 		}catch(JedisConnectionException connException){
 			logger.error("获取Redis链接出错,{}",connException.getMessage());
 		}catch (Exception e) {
