@@ -157,7 +157,7 @@
 
   
   
-   <select id="selectByParam" parameterType="com.yubo.wechat.user.dao.pojo.UserBase" resultMap="BaseResultMap">
+   <select id="selectByParam" parameterType="java.util.Map" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from user_base
@@ -165,6 +165,17 @@
     <if test="wechatId!=null">
     	AND wechat_id = #{wechatId,jdbcType=VARCHAR}
     </if>
+    <if test="petId!=null">
+    	AND pet_id = #{petId,jdbcType=VARCHAR}
+    </if>
+    LIMIT #{startRow},#{rowCount}
+  </select>
+  
+  
+   <select id="countByParam" parameterType="com.yubo.wechat.user.dao.pojo.UserBase" resultType="java.lang.Integer">
+    select count(*)
+    from user_base
+    where valid = 1 
     <if test="petId!=null">
     	AND pet_id = #{petId,jdbcType=VARCHAR}
     </if>

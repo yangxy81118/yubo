@@ -51,7 +51,9 @@ public class TextMsgService implements MessageHandler {
 			if (!isAuthorizing()) {
 
 				String petLastTalk = null;
+				
 				// 首先判断去Redis中进行查找，key为simpleTalk.${petId}.${userId}
+				// TODO 这里有加入事物的必要性
 				if ((petLastTalk = petLastTalkInCache(param)) != null) {
 					saveSimpleTalk(petLastTalk, param, request.getContent());
 					removeRedisKey(param.userId,1);

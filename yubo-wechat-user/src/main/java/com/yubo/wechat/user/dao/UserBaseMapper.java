@@ -1,6 +1,7 @@
 package com.yubo.wechat.user.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
@@ -50,5 +51,8 @@ public interface UserBaseMapper {
 	 * @param param
 	 * @return
 	 */
-	List<UserBase> selectByParam(UserBase param);
+	List<UserBase> selectByParam(Map<String,Object> param);
+	
+	
+	int countByParam(UserBase param);
 }

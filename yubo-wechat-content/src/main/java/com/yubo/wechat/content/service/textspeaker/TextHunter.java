@@ -13,9 +13,8 @@ import java.util.TimerTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.yubo.wechat.content.CatsAndDogs;
 import com.yubo.wechat.content.dao.MessageTextMapper;
-import com.yubo.wechat.content.dao.pojo.MessageText;
+import com.yubo.wechat.support.PageUtil;
 
 /**
  * 去Database加载自身对应的的文本内容<br/>
@@ -74,7 +73,7 @@ public class TextHunter extends TimerTask {
 	private Collection<? extends String> getListByPeriodId(int periodIdArgs) {
 
 		int totalCount = getTotalCount(periodIdArgs);
-		int pageCount = CatsAndDogs.pageCount(totalCount, DB_FETCH_ROWCOUNT);
+		int pageCount = PageUtil.pageCount(totalCount, DB_FETCH_ROWCOUNT);
 
 		List<String> thisPeriodList = new ArrayList<>();
 		for (int i = 0; i < pageCount; i++) {

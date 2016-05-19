@@ -122,7 +122,7 @@ public class MoMoService implements MessageHandler {
 		String mainText = replyService.smartReply(null);
 		content.append(mainText);
 		
-		UserVO userVO = userService.getUserVOByUserId(param.userId);
+//		UserVO userVO = userService.getUserVOByUserId(param.userId);
 		
 		//去缓存中检查，如果没有亲密度的标记了，则说明可以增加亲密度了
 		if(!favorLock(param)){
@@ -131,7 +131,7 @@ public class MoMoService implements MessageHandler {
 				//加入半个小时的锁，不允许半小时内再增加亲密度
 				addFavorLock(param);
 				userPetFavorService.addFavor(param.userId,param.petId,favorPoint);
-				content.append("【YUBO亲密度+").append(favorPoint).append("】");
+				content.append("\n【YUBO亲密度+").append(favorPoint).append("】");
 			}
 		}
 		return content.toString();

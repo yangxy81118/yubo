@@ -1,6 +1,8 @@
 package com.yubo.wechat.user.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +30,7 @@ public class UserService {
 
 	@Autowired
 	UserBaseMapper userBaseMapper;
-	
+
 	@Autowired
 	TalkHistoryMapper historyMapper;
 
@@ -57,15 +59,14 @@ public class UserService {
 		vo.setWechatId(userBase.getWechatId());
 		return vo;
 	}
-	
-	
+
 	/**
 	 * 存储一次简单对话
 	 * 
 	 * @param simpleTalkVO
 	 */
-	public void saveSimpleTalk(SimpleTalkVO simpleTalkVO){
-		
+	public void saveSimpleTalk(SimpleTalkVO simpleTalkVO) {
+
 		TalkHistory record = new TalkHistory();
 		record.setUserId(simpleTalkVO.getUserId());
 		record.setPetId(simpleTalkVO.getPetId());
@@ -73,25 +74,26 @@ public class UserService {
 		record.setLastTalkPetSaid(simpleTalkVO.getPetSaid());
 		record.setLastTalkFuncCode(simpleTalkVO.getTalkFuncCode());
 		historyMapper.insertSelective(record);
-		
+
 	}
 
-	private Integer getUserIdFromDB(String wechatID) {
+	private Integer getUserIdFromDB(String wechatId) {
 
-		Integer userId = null;
+		Map<String, Object> param = new HashMap<>();
+		param.put("wechatId", wechatId);
+		param.put("rowCount", 1);
+		param.put("startRow", 0);
 
-		UserBase param = new UserBase();
-		param.setWechatId(wechatID);
 		List<UserBase> list = userBaseMapper.selectByParam(param);
 
 		if (list.size() > 0) {
 			return list.get(0).getUserId();
 		} else {
 			UserBase record = new UserBase();
-			record.setWechatId(wechatID);
+			record.setWechatId(wechatId);
 			record.setPetId(1); // 目前宠物默认都是1
 			userBaseMapper.insertSelective(record);
-			logger.info("微信用户{}第一次访问校宠系统，分配用户ID为{}", wechatID,
+			logger.info("微信用户{}第一次访问校宠系统，分配用户ID为{}", wechatId,
 					record.getUserId());
 			return record.getUserId();
 		}
