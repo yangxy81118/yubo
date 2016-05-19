@@ -110,6 +110,7 @@ public class TextHunter extends TimerTask {
 		// 在经过backToPrevPeriodId之后，还是-1，说明在所有时间区间的最前面，直接指定workdaySchedule中第一个元素就好
 		if (periodId == -1) {
 			nextPeriodId = workdaySchedule.get(0).periodId;
+			nextEntry = workdaySchedule.get(0);
 		} else {
 			for (int i = 0; i < workdaySchedule.size(); i++) {
 
