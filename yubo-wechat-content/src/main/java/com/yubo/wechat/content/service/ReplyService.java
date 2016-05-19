@@ -14,7 +14,7 @@ import com.yubo.wechat.content.vo.ReplyInput;
 @Service
 public class ReplyService {
 
-	static String[] shortSentences = new String[]{"sorry,YUBO还听不懂，有空就来摸摸我一下吧～"};
+	static String[] shortSentences = new String[]{"sorry,YUBO还听不懂，不过我马上就会学会的～有空就摸摸我吧～"};
 	
 	
 	/**

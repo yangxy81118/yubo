@@ -1,5 +1,7 @@
 package com.yubo.wechat.api.service.impl;
 
+import java.util.Date;
+
 import javax.xml.bind.JAXBException;
 
 import org.slf4j.Logger;
@@ -108,6 +110,7 @@ public class TextMsgService implements MessageHandler {
 		simpleTalkVO.setPetSaid(petSaid);
 		simpleTalkVO.setUserSaid(userSaid);
 		simpleTalkVO.setTalkFuncCode(0);
+		simpleTalkVO.setLastTalkTime(new Date());
 		userService.saveSimpleTalk(simpleTalkVO);
 	}
 

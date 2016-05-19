@@ -33,6 +33,9 @@ public class UserService {
 
 	@Autowired
 	TalkHistoryMapper historyMapper;
+	
+	@Autowired
+	User4WechatMapping user4WechatMapping;
 
 	/**
 	 * 通过微信ID获取本系统中对应用户ID<br/>
@@ -41,9 +44,36 @@ public class UserService {
 	 * @param wechatID
 	 * @return
 	 */
-	public int getUserIdByWeChatId(String wechatID) {
-		Integer userId = getUserIdFromDB(wechatID);
-		return userId;
+	public int getUserIdByWeChatId(String wechatId) {
+		
+		Integer userId = user4WechatMapping.getUserId(wechatId);
+		if(userId!=null){
+			return userId;
+		}else{
+			
+			//如果缓存中没有，再去数据库查一次
+			Map<String, Object> param = new HashMap<>();
+			param.put("wechatId", wechatId);
+			param.put("rowCount", 1);
+			param.put("startRow", 0);
+
+			List<UserBase> list = userBaseMapper.selectByParam(param);
+
+			if (list.size() > 0) {
+				userId = list.get(0).getUserId();
+				user4WechatMapping.addNewUser(wechatId, userId);
+				return userId;
+			} else {
+				UserBase record = new UserBase();
+				record.setWechatId(wechatId);
+				record.setPetId(1); // 目前宠物默认都是1
+				userBaseMapper.insertSelective(record);
+				logger.info("微信用户{}第一次访问校宠系统，分配用户ID为{}", wechatId,
+						record.getUserId());
+				user4WechatMapping.addNewUser(wechatId, record.getUserId());
+				return record.getUserId();
+			}
+		}
 	}
 
 	/**
@@ -73,29 +103,9 @@ public class UserService {
 		record.setLastTalkUserSaid(simpleTalkVO.getUserSaid());
 		record.setLastTalkPetSaid(simpleTalkVO.getPetSaid());
 		record.setLastTalkFuncCode(simpleTalkVO.getTalkFuncCode());
+		record.setLastTalkTime(simpleTalkVO.getLastTalkTime());
 		historyMapper.insertSelective(record);
 
 	}
 
-	private Integer getUserIdFromDB(String wechatId) {
-
-		Map<String, Object> param = new HashMap<>();
-		param.put("wechatId", wechatId);
-		param.put("rowCount", 1);
-		param.put("startRow", 0);
-
-		List<UserBase> list = userBaseMapper.selectByParam(param);
-
-		if (list.size() > 0) {
-			return list.get(0).getUserId();
-		} else {
-			UserBase record = new UserBase();
-			record.setWechatId(wechatId);
-			record.setPetId(1); // 目前宠物默认都是1
-			userBaseMapper.insertSelective(record);
-			logger.info("微信用户{}第一次访问校宠系统，分配用户ID为{}", wechatId,
-					record.getUserId());
-			return record.getUserId();
-		}
-	}
 }
