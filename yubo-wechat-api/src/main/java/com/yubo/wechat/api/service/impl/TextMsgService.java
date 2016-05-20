@@ -40,6 +40,14 @@ public class TextMsgService implements MessageHandler {
 			TextMsgRequest request = XMLHelper.parseXml(param.requestBody,
 					TextMsgRequest.class);
 
+			
+			//测试用
+			MsgHandlerResult testR = null;
+			if((testR = voteHelper.testForQuestion(request))!=null){
+				return testR;
+			}
+			
+			//投票检查
 			if (voteHelper.isVoteAnswer(request.getContent())) {
 				return voteHelper.execute(param, request);
 			}

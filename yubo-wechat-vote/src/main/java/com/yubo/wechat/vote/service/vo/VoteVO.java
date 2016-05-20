@@ -1,5 +1,7 @@
 package com.yubo.wechat.vote.service.vo;
 
+import java.util.List;
+
 /**
  * 投票数据VO
  * 
@@ -7,6 +9,12 @@ package com.yubo.wechat.vote.service.vo;
  *
  */
 public class VoteVO {
+
+	private String voteTitle;
+
+	private String voteQuestion;
+
+	private List<AnswerEntry> voteAnswers;
 
 	private Integer userId;
 
@@ -95,6 +103,30 @@ public class VoteVO {
 
 	public void setFeedBackPicUrl(String feedBackPicUrl) {
 		this.feedBackPicUrl = feedBackPicUrl;
+	}
+
+	public String getVoteTitle() {
+		return voteTitle;
+	}
+
+	public void setVoteTitle(String voteTitle) {
+		this.voteTitle = voteTitle;
+	}
+
+	public String getVoteQuestion() {
+		return voteQuestion;
+	}
+
+	public void setVoteQuestion(String voteQuestion) {
+		this.voteQuestion = voteQuestion;
+	}
+
+	public List<AnswerEntry> getVoteAnswers() {
+		return voteAnswers;
+	}
+
+	public void setVoteAnswers(List<AnswerEntry> voteAnswers) {
+		this.voteAnswers = voteAnswers;
 	}
 
 }

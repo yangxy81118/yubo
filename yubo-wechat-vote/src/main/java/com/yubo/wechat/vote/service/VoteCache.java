@@ -106,4 +106,21 @@ public class VoteCache {
 	private static final Logger logger = LoggerFactory
 			.getLogger(VoteCache.class);
 
+	/**
+	 * TODO 临时采用
+	 * @return
+	 */
+	public Long getFirstId() {
+
+		Set<String> sets = answer4VoteMapping.keySet();
+		Long id = null;
+		for (String k : sets) {
+			id = answer4VoteMapping.get(k);
+			if(id!=null){
+				break;
+			}
+		}
+		return id;
+	}
+
 }

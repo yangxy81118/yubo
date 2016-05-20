@@ -1,15 +1,22 @@
 package com.yubo.wechat.vote.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.alibaba.fastjson.JSONObject;
 import com.yubo.wechat.vote.dao.UserVoteRecordMapper;
+import com.yubo.wechat.vote.dao.VoteBaseMapper;
 import com.yubo.wechat.vote.dao.pojo.UserVoteRecord;
+import com.yubo.wechat.vote.dao.pojo.VoteBase;
+import com.yubo.wechat.vote.service.vo.AnswerEntry;
 import com.yubo.wechat.vote.service.vo.VoteVO;
 
 /**
@@ -30,6 +37,41 @@ public class VoteService {
 	public Long getVoteIdByWord(String word) {
 		return voteCache.getVoteId(word);
 	}
+	
+	
+	public Long getFirstVoteId() {
+		return voteCache.getFirstId();
+	}
+	
+	/**
+	 * 获取投票信息
+	 * 
+	 * @param voteId
+	 * @return
+	 */
+	public VoteVO getVoteVOByVoteId(Long voteId){
+		VoteBase vote = voteBaseMapper.selectByPrimaryKey(voteId);
+		VoteVO vo = new VoteVO();
+		vo.setVoteQuestion(vote.getQuestion());
+		vo.setVoteAnswers(buildVoteAnswers(vote.getAnswers()));
+		return vo;
+	}
+
+	private List<AnswerEntry> buildVoteAnswers(String answerTExt) {
+
+		JSONObject json = JSONObject.parseObject(answerTExt);
+		Set<Entry<String, Object>> sets = json.entrySet();
+		List<AnswerEntry> keys = new ArrayList<>();
+
+		for (Entry<String, Object> entry : sets) {
+			AnswerEntry answer = new AnswerEntry();
+			answer.setAnswerDiscription(entry.getKey());
+			answer.setAnswerKey(entry.getValue().toString());
+			keys.add(answer);
+		}
+		
+		return keys;
+	}
 
 	/**
 	 * 本次投票操作
@@ -42,18 +84,21 @@ public class VoteService {
 		UserVoteRecord perviousRecord = getPreviousAnswerRecord(
 				answerParam.getVoteId(), answerParam.getUserId());
 
+		String previousAnswer = null;
+		
 		if (perviousRecord == null) {
 			addNewAnswer(answerParam.getVoteId(),
 					answerParam.getCurrentAnswer(), answerParam.getUserId());
 		} else {
+			previousAnswer = perviousRecord.getUserChoiceAnswer();
 			updateAnswer(perviousRecord, answerParam.getCurrentAnswer());
 		}
 
 		String feedBackText = null;
-		if (StringUtils.isEmpty(perviousRecord.getUserChoiceAnswer()) || perviousRecord.getUserChoiceAnswer().equals(answerParam.getCurrentAnswer())) {
+		if (StringUtils.isEmpty(previousAnswer) || previousAnswer.equals(answerParam.getCurrentAnswer())) {
 			feedBackText = answerParam.getCurrentAnswer() + "，嗯嗯，谢谢你的回答~";
 		} else {
-			feedBackText = "你之前的回答是[" + perviousRecord + "],现在已经改成["
+			feedBackText = "你之前的回答是[" + previousAnswer + "],现在已经改成["
 					+ answerParam.getCurrentAnswer() + "],谢谢你的回答~";
 		}
 
@@ -101,6 +146,9 @@ public class VoteService {
 
 	@Autowired
 	UserVoteRecordMapper userVoteRecordMapper;
+	
+	@Autowired
+	VoteBaseMapper voteBaseMapper;
 
 	private static final String DEFAULT_FEEDBACK_PIC_URL = "http://img.taopic.com/uploads/allimg/130611/235071-130611193G551.jpg";
 

@@ -13,8 +13,10 @@ import com.yubo.wechat.api.service.vo.MsgInputParam;
 import com.yubo.wechat.api.xml.XMLHelper;
 import com.yubo.wechat.api.xml.request.TextMsgRequest;
 import com.yubo.wechat.api.xml.response.ArticleItem;
+import com.yubo.wechat.api.xml.response.TextResponse;
 import com.yubo.wechat.api.xml.response.ViewResponse;
 import com.yubo.wechat.vote.service.VoteService;
+import com.yubo.wechat.vote.service.vo.AnswerEntry;
 import com.yubo.wechat.vote.service.vo.VoteVO;
 
 /**
@@ -34,6 +36,43 @@ public class VoteHelper {
 	 */
 	public boolean isVoteAnswer(String content) {
 		return voteService.getVoteIdByWord(content) != null;
+	}
+	
+	
+	/**
+	 * TODO 只是用来测试
+	 * 
+	 * @param request
+	 * @return
+	 * @throws JAXBException 
+	 */
+	public MsgHandlerResult testForQuestion(TextMsgRequest request) throws JAXBException {
+
+		String word = request.getContent().trim();
+		if(!word.equals("今天的问题")){
+			return null;
+		}
+		
+		Long voteId = voteService.getFirstVoteId();
+		VoteVO vo = voteService.getVoteVOByVoteId(voteId);
+		
+		TextResponse response = new TextResponse();
+		String content = "YUBO今天的问题，希望听听你的想法~\n(请回复括号中的关键字)\n"+vo.getVoteQuestion()+"\n";
+		
+		List<AnswerEntry> as =  vo.getVoteAnswers();
+		for (AnswerEntry answerEntry : as) {
+			content += answerEntry.getAnswerDiscription() + "【"+answerEntry.getAnswerKey()+"】\n";
+		}
+		
+		response.setContent(content);
+		response.setCreateTime(System.currentTimeMillis());
+		response.setFromUserName(request.getToUserName());
+		response.setToUserName(request.getFromUserName());
+
+		MsgHandlerResult result = new MsgHandlerResult();
+		result.setXmlResponse(XMLHelper.buildXMLStr(response,
+				TextResponse.class));
+		return result;
 	}
 
 	/**
