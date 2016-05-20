@@ -37,20 +37,33 @@
 			value="com.yubo.wechat.content.dao.MessageTextMapper" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
 	</bean>
-	
+
 	<bean id="userPetFavorMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="mapperInterface" value="com.yubo.wechat.user.dao.UserPetFavorMapper" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
 	</bean>
-	
-	
+
+
 	<bean id="talkHistoryMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="mapperInterface" value="com.yubo.wechat.user.dao.TalkHistoryMapper" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
 	</bean>
-	
-		<bean id="userIdentificationMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
-		<property name="mapperInterface" value="com.yubo.wechat.user.dao.UserIdentificationMapper" />
+
+	<bean id="userIdentificationMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"
+			value="com.yubo.wechat.user.dao.UserIdentificationMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+
+
+	<bean id="voteBaseMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.yubo.wechat.vote.dao.VoteBaseMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+
+	<bean id="userVoteRecordMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"
+			value="com.yubo.wechat.vote.dao.UserVoteRecordMapper" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
 	</bean>
 

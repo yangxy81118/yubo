@@ -19,5 +19,7 @@
 		<mapper resource="sql-mapping/UserPetFavorMapper.xml" />
 		<mapper resource="sql-mapping/PetBaseMapper.xml" />
 		<mapper resource="sql-mapping/MessageTextMapper.xml" />
+		<mapper resource="sql-mapping/VoteBaseMapper.xml" />
+		<mapper resource="sql-mapping/UserVoteRecordMapper.xml" />
 	</mappers>
 </configuration>
