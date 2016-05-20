@@ -21,6 +21,7 @@
 		</javaClientGenerator>
 		<table tableName="user_base" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false">
 		</table>
+		<!-- 
 		<table tableName="user_identification" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false">
 		</table>
 		<table tableName="user_pet_favor" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false">
@@ -29,5 +30,6 @@
 		</table>
 		<table tableName="school_base" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false">
 		</table>
+		 -->
 	</context>
 </generatorConfiguration>
