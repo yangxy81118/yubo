@@ -96,10 +96,10 @@ public class VoteService {
 
 		String feedBackText = null;
 		if (StringUtils.isEmpty(previousAnswer) || previousAnswer.equals(answerParam.getCurrentAnswer())) {
-			feedBackText = answerParam.getCurrentAnswer() + "，嗯嗯，谢谢你的回答~";
+			feedBackText = answerParam.getCurrentAnswer() + "，谢谢你的回答~\n可以点这里看看目前的投票情况哦～";
 		} else {
-			feedBackText = "你之前的回答是[" + previousAnswer + "],现在已经改成["
-					+ answerParam.getCurrentAnswer() + "],谢谢你的回答~";
+			feedBackText = "你之前的回答是【" + previousAnswer + "】,现在已经改成【"
+					+ answerParam.getCurrentAnswer() + "】,谢谢你的回答~\n可以点这里看看目前的投票情况哦～";
 		}
 
 		VoteVO voteResult = new VoteVO();
