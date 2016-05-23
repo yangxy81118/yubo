@@ -150,7 +150,7 @@ public class MoMoService implements MessageHandler {
 			redis.set(key, "1");
 			redis.expire(key, favorLockDuration);
 		} catch (Exception e) {
-			logger.error("Redis操作addFavorLock失败");
+			logger.error("Redis操作addFavorLock失败",e);
 		}
 	}
 
@@ -161,7 +161,7 @@ public class MoMoService implements MessageHandler {
 			String lock = redis.get(RedisKeyBuilder.buildFavorLockKey(param.userId, param.petId));
 			return lock!=null;
 		} catch (Exception e) {
-			logger.error("Redis操作favorLock失败，无法加亲密度");
+			logger.error("Redis操作favorLock失败，无法加亲密度",e);
 			return true;
 		}
 	}
