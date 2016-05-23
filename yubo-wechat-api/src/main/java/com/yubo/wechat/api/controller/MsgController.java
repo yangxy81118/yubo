@@ -38,6 +38,7 @@ import com.yubo.wechat.user.service.UserService;
 @RequestMapping("/msg")
 public class MsgController {
 
+	
 	private static final Logger logger = LoggerFactory
 			.getLogger(MsgController.class);
 

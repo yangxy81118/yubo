@@ -12,9 +12,21 @@
 	http://www.springframework.org/schema/context/spring-context-3.2.xsd
 	">
 
-	<context:property-placeholder location="classpath*:app*.properties" />
+	<!--<context:property-placeholder location="classpath*:app*.properties" 
+		/> -->
+
 	<context:annotation-config />
 	<context:component-scan base-package="com.yubo.wechat.**" />
+
+	<context:property-placeholder location="classpath*:*.properties"
+		ignore-resource-not-found="false" ignore-unresolvable="false"
+		file-encoding="UTF-8" />
+
+	<!-- <bean id="propertyPlaceholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"> 
+		<property name="locations"> <list> <value>app-core.properties</value> <value>app-db.properties</value> 
+		<value>app-schedule.properties</value> </list> </property> </bean> -->
+
+
 
 	<import resource="spring-dao.xml" />
 	<import resource="spring-task.xml" />

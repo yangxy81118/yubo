@@ -67,4 +67,10 @@
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
 	</bean>
 
+	<bean id="petBaseMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"
+			value="com.yubo.wechat.pet.dao.PetBaseMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
 </beans>

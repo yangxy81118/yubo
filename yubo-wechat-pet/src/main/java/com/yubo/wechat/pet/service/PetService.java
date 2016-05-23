@@ -1,6 +1,10 @@
 package com.yubo.wechat.pet.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.yubo.wechat.pet.dao.PetBaseMapper;
+import com.yubo.wechat.pet.dao.pojo.PetBase;
 
 /**
  * 宠物相关服务
@@ -16,7 +20,10 @@ public class PetService {
 	 * @param growUpPoint
 	 */
 	public void growUp(int petId,double growUpPoint){
-		
+		PetBase pet = new PetBase();
+		pet.setPetId(petId);
+		pet.setPetLevel(growUpPoint + pet.getPetLevel());
+		petBaseMapper.updateByPrimaryKeySelective(pet);
 	}
 
 	/**
@@ -25,7 +32,13 @@ public class PetService {
 	 * @return
 	 */
 	public boolean stillInEgg(int petId) {
-		return true;
+		
+		PetBase pet = petBaseMapper.selectByPrimaryKey(1);
+		return pet.getPetLevel() < 1;
 	}
+	
+	
+	@Autowired
+	PetBaseMapper petBaseMapper;
 
 }

@@ -3,6 +3,8 @@ package com.yubo.wechat.api.service.helper;
 import javax.xml.bind.JAXBException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import com.yubo.wechat.api.service.vo.MsgHandlerResult;
@@ -21,8 +23,13 @@ import com.yubo.wechat.user.vo.AuthorizeVO;
  *
  */
 @Component
+@PropertySource("classpath:app-core.properties")
 public class AuthorizeHelper {
 
+	@Value("${pet.born.step.point:0.01}")
+	private double bornPoint;
+	
+	
 	/**
 	 * 核心处理过程
 	 * @param param
@@ -31,7 +38,6 @@ public class AuthorizeHelper {
 	 * @throws JAXBException 
 	 */
 	public MsgHandlerResult execute(MsgInputParam param, TextMsgRequest request) throws JAXBException{
-		
 		
 		if(userAuthorizeService.userIsAuthorized(param.userId)){
 			return buildResult(request,"你已经激活过了，不需要再进行激活了~");
@@ -47,8 +53,9 @@ public class AuthorizeHelper {
 			return buildResult(request,"对不起您的验证码好像不正确，请再仔细核对一下验证码哦");
 		}
 		
-		//如果正确，对宠物的成长进行加入特定指数（预留）
-		petService.growUp(1,1.0);
+		//如果正确，对宠物的成长进行加入成长指数
+		//TODO 这个需要进行配置
+		petService.growUp(1,bornPoint);
 		
 		//给出相关的信息
 		String sayHello = buildHello(vo);
