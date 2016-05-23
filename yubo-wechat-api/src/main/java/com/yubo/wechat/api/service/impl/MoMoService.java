@@ -17,6 +17,7 @@ import com.yubo.wechat.api.xml.XMLHelper;
 import com.yubo.wechat.api.xml.request.EventMsgRequest;
 import com.yubo.wechat.api.xml.response.TextResponse;
 import com.yubo.wechat.content.service.ReplyService;
+import com.yubo.wechat.pet.service.PetService;
 import com.yubo.wechat.support.redis.RedisHandler;
 import com.yubo.wechat.support.redis.RedisKeyBuilder;
 import com.yubo.wechat.user.service.UserPetFavorService;
@@ -30,26 +31,6 @@ import com.yubo.wechat.user.vo.UserVO;
  */
 @Service
 public class MoMoService implements MessageHandler {
-
-	private static final Logger logger = LoggerFactory.getLogger(MoMoService.class);
-	
-	@Autowired
-	ReplyService replyService;
-	
-	@Autowired
-	UserService userService;
-	
-	@Autowired
-	UserPetFavorService userPetFavorService;
-	
-	@Autowired
-	RedisHandler redisHandler;
-	
-	@Value("${simpletalk.redis.cache.duration:900}")
-	private int simpleTalkCacheDuration;
-	
-	@Value("${favor.lock.duration:1800}")
-	private int favorLockDuration;
 	
 	public MsgHandlerResult execute(MsgInputParam param) {
 
@@ -57,6 +38,11 @@ public class MoMoService implements MessageHandler {
 		
 		try {
 			EventMsgRequest request = XMLHelper.parseXml(param.requestBody, EventMsgRequest.class);
+			
+			//如果是宠物还未出生的阶段，则直接回复
+			if(petService.stillInEgg(1)){
+				return buildResult(request,"神秘旁白:\n小宠物还在孵化之中，还需要更多同学来激活，完成小宠物的孵化。\n快去告诉身边的同学吧~");
+			}
 			
 			//获取回复语句
 			// 根据目前的时间段，获取一个回复
@@ -166,7 +152,29 @@ public class MoMoService implements MessageHandler {
 		}
 	}
 	
+
+	private static final Logger logger = LoggerFactory.getLogger(MoMoService.class);
 	
+	@Autowired
+	ReplyService replyService;
+	
+	@Autowired
+	UserService userService;
+	
+	@Autowired
+	UserPetFavorService userPetFavorService;
+	
+	@Autowired
+	RedisHandler redisHandler;
+	
+	@Value("${simpletalk.redis.cache.duration:900}")
+	private int simpleTalkCacheDuration;
+	
+	@Value("${favor.lock.duration:1800}")
+	private int favorLockDuration;
+	
+	@Autowired
+	PetService petService;
 	
 
 }

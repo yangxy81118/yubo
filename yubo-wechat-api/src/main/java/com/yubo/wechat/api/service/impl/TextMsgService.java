@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 
 import com.yubo.wechat.api.service.MessageHandler;
+import com.yubo.wechat.api.service.helper.AuthorizeHelper;
 import com.yubo.wechat.api.service.helper.VoteHelper;
 import com.yubo.wechat.api.service.vo.MsgHandlerResult;
 import com.yubo.wechat.api.service.vo.MsgInputParam;
@@ -19,6 +20,7 @@ import com.yubo.wechat.api.xml.XMLHelper;
 import com.yubo.wechat.api.xml.request.TextMsgRequest;
 import com.yubo.wechat.api.xml.response.TextResponse;
 import com.yubo.wechat.content.service.ReplyService;
+import com.yubo.wechat.pet.service.PetService;
 import com.yubo.wechat.support.redis.RedisHandler;
 import com.yubo.wechat.support.redis.RedisKeyBuilder;
 import com.yubo.wechat.user.service.UserService;
@@ -40,42 +42,47 @@ public class TextMsgService implements MessageHandler {
 			TextMsgRequest request = XMLHelper.parseXml(param.requestBody,
 					TextMsgRequest.class);
 
-			
-			//测试用
-			MsgHandlerResult testR = null;
-			if((testR = voteHelper.testForQuestion(request))!=null){
-				return testR;
+			// 激活验证流程第一
+			if (isAuthorizing(request)) {
+				return authorizeHelper.execute(param, request);
 			}
 			
-			//投票检查
+			// 如果是宠物还未出生的阶段，则直接回复
+			if (petService.stillInEgg(1)) {
+				return buildResult(request,
+						"神秘旁白:\n小宠物还在孵化之中，还需要更多同学来激活，完成小宠物的孵化。\n快去告诉身边的同学吧~");
+			}
+			
+			// 临时测试用
+			MsgHandlerResult testR = null;
+			if ((testR = voteHelper.testForQuestion(request)) != null) {
+				return testR;
+			}
+
+			// 投票检查
 			if (voteHelper.isVoteAnswer(request.getContent())) {
 				return voteHelper.execute(param, request);
 			}
+			
+			//进入最常规流程
+			
+			String petLastTalk = null;
 
-			if (!isAuthorizing(request)) {
-
-				String petLastTalk = null;
-
-				// 首先判断去Redis中进行查找，key为simpleTalk.${petId}.${userId}
-				// TODO 这里有加入事务的必要性
-				if ((petLastTalk = petLastTalkInCache(param)) != null) {
-					saveSimpleTalk(petLastTalk, param, request.getContent());
-					removeRedisKey(param.userId, 1);
-					logger.info("成功存储用户[{}]的回复[{}]", param.userId,
-							request.getContent());
-					return buildResult(request, replyService.shortReply());
-				}
-
-				// 如果不存在，则检查是否是命令回复，去检查数据库talk_history表
-				// 若在talk_history中找到了，则说明是命令回复，将本次回复进行记录，进行对应的业务处理（学笑话，学外语等等）
-
+			// 首先判断去Redis中进行查找，key为simpleTalk.${petId}.${userId}
+			// TODO 这里有加入事务的必要性
+			if ((petLastTalk = petLastTalkInCache(param)) != null) {
+				saveSimpleTalk(petLastTalk, param, request.getContent());
+				removeRedisKey(param.userId, 1);
+				logger.info("成功存储用户[{}]的回复[{}]", param.userId,
+						request.getContent());
 				return buildResult(request, replyService.shortReply());
-
-			} else {
-				// 2.1 - 激活码回复
-				String authCode = request.getContent().replaceAll("#JH", "");
-
 			}
+
+			// 如果不存在，则检查是否是命令回复，去检查数据库talk_history表
+			// 若在talk_history中找到了，则说明是命令回复，将本次回复进行记录，进行对应的业务处理（学笑话，学外语等等）
+
+			return buildResult(request, replyService.shortReply());
+
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
@@ -177,4 +184,10 @@ public class TextMsgService implements MessageHandler {
 
 	@Autowired
 	VoteHelper voteHelper;
+
+	@Autowired
+	AuthorizeHelper authorizeHelper;
+
+	@Autowired
+	PetService petService;
 }

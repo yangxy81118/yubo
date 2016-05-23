@@ -181,7 +181,7 @@
   </update>
   
   <!-- 检查验证码 -->
-   <select id="selectByCode" parameterType="java.lang.String" resultType="com.yubo.wechat.user.dao.pojo.UserIdentification">
+   <select id="selectByCode" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
  <include refid="Base_Column_List" />
     from user_identification
