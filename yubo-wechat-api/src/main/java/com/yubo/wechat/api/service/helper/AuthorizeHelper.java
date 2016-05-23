@@ -37,7 +37,7 @@ public class AuthorizeHelper {
 			return buildResult(request,"你已经激活过了，不需要再进行激活了~");
 		}
 		
-		String code = request.getContent().replace("#JH", "");
+		String code = request.getContent().replace("#JH", "").trim();
 		
 		//对验证码进行检查
 		AuthorizeVO vo = userAuthorizeService.authorizeInfoByCode(code,param.userId);
