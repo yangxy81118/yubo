@@ -14,6 +14,7 @@ import com.yubo.wechat.vote.service.VoteRealTimeHandler;
 
 /**
  * 用户个人信息相关请求入口
+ * 
  * @author young.jason
  *
  */
@@ -24,14 +25,14 @@ public class PetController {
 	@Autowired
 	VoteRealTimeHandler handler;
 
-
 	@RequestMapping("/level")
 	public ModelAndView shopIndex(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
+		response.setContentType("text/html;charset=UTF-8");
 		response.setCharacterEncoding("UTF-8");
-		PrintWriter writer =response.getWriter();
-		writer.write("Hello,小宠物等级:1<br/>");
-		writer.write("当前投票结果：");
+		PrintWriter writer = response.getWriter();
+		writer.write("Hello,小宠物等级:1\n");
+		writer.write("当前投票结果：\n");
 		writer.write(handler.getVoteResult().toString());
 		return null;
 	}

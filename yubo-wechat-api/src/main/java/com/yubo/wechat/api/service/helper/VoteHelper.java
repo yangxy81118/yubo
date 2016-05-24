@@ -115,7 +115,7 @@ public class VoteHelper {
 		ArticleItem item = new ArticleItem();
 		item.setDescription(answerResult.getFeedBackText());
 		item.setTitle("谢谢回答");
-		item.setUrl("http://m.yunhou.com");
+		item.setUrl("http://www.yubo.space/pet/level");
 		item.setPicUrl(answerResult.getFeedBackPicUrl());
 		articles.add(item);
 		response.setItems(articles);
