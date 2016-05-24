@@ -63,7 +63,7 @@ public class RedisHandler {
 			}
 			return redisClient;
 		}catch(JedisConnectionException connException){
-			logger.error("获取Redis链接出错,{}",connException.getMessage());
+			logger.error("获取Redis链接出错,{}",connException.getMessage(),connException);
 		}catch (Exception e) {
 			logger.error("获取Redis链接出错,",e);
 			throw e;
