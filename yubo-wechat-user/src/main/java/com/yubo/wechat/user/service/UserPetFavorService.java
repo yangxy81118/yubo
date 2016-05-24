@@ -49,6 +49,7 @@ public class UserPetFavorService {
 			UserPetFavor previousFavor =  dbResult.get(0);
 			UserPetFavor thisFavor = new UserPetFavor();
 			thisFavor.setFavorPoint(favorIncreasePoint + previousFavor.getFavorPoint());
+			thisFavor.setFavorId(previousFavor.getFavorId());
 			userPetFavorMapper.updateByPrimaryKeySelective(thisFavor);
 		}
 		

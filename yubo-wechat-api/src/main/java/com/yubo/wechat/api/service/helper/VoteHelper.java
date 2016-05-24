@@ -57,7 +57,7 @@ public class VoteHelper {
 		VoteVO vo = voteService.getVoteVOByVoteId(voteId);
 		
 		TextResponse response = new TextResponse();
-		String content = "YUBO今天的问题，希望听听你的想法~\n(请回复括号中的关键字)\n"+vo.getVoteQuestion()+"\n";
+		String content = "YUBO今天的问题，希望听听你的想法~\n(请回复括号中的关键字)\n\n"+vo.getVoteQuestion()+"\n";
 		
 		List<AnswerEntry> as =  vo.getVoteAnswers();
 		for (AnswerEntry answerEntry : as) {
