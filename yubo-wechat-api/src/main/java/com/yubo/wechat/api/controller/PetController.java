@@ -36,4 +36,13 @@ public class PetController {
 		writer.write(handler.getVoteResult().toString());
 		return null;
 	}
+	
+	
+	@RequestMapping("/test")
+	public ModelAndView test(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		ModelAndView view = new ModelAndView();
+		view.setViewName("test.shtml");
+		return view;
+	}
 }

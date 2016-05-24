@@ -136,6 +136,8 @@ public class VoteRealTimeHandler {
 		record.setVoteId(todayVoteId);
 		record.setSummary(sumJSON.toJSONString());
 		voteBaseMapper.updateByPrimaryKeySelective(record);
+		
+		logger.info("投票{}统计写入到数据库",todayVoteId);
 	}
 
 	@Autowired
