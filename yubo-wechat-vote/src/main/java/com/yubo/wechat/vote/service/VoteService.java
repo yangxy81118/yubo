@@ -40,7 +40,7 @@ public class VoteService {
 	
 	
 	public Long getFirstVoteId() {
-		return voteCache.getFirstId();
+		return voteCache.getTotayVoteId();
 	}
 	
 	/**
@@ -75,35 +75,47 @@ public class VoteService {
 
 	/**
 	 * 本次投票操作
+	 * TODO 这里也是一大堆的事务
 	 * 
 	 * @param answerParam
 	 * @return
 	 */
 	public VoteVO vote(VoteVO answerParam) {
 
+		//之前是否已经投票过?
 		UserVoteRecord perviousRecord = getPreviousAnswerRecord(
 				answerParam.getVoteId(), answerParam.getUserId());
 
 		String previousAnswer = null;
+		String newAnswer = answerParam.getCurrentAnswer();
 		
+		//查询新投票记录或者更新投票选项
 		if (perviousRecord == null) {
 			addNewAnswer(answerParam.getVoteId(),
-					answerParam.getCurrentAnswer(), answerParam.getUserId());
+					newAnswer, answerParam.getUserId());
+			//增加到缓存
+			voteRealTimeHandler.addVote(newAnswer);
 		} else {
 			previousAnswer = perviousRecord.getUserChoiceAnswer();
-			updateAnswer(perviousRecord, answerParam.getCurrentAnswer());
+			if(!previousAnswer.equals(newAnswer)){
+				updateAnswer(perviousRecord, newAnswer);
+				//修改缓存
+				voteRealTimeHandler.updateVote(previousAnswer,newAnswer);
+			}
 		}
+		
 
-		String feedBackText = null;
-		if (StringUtils.isEmpty(previousAnswer) || previousAnswer.equals(answerParam.getCurrentAnswer())) {
-			feedBackText = answerParam.getCurrentAnswer() + "，谢谢你的回答~\n可以点这里看看目前的投票情况哦～";
+		//构建返回信息
+		StringBuffer feedBackText = new StringBuffer();
+		if (StringUtils.isEmpty(previousAnswer) || previousAnswer.equals(newAnswer)) {
+			feedBackText.append("你选择【").append(newAnswer).append("】，谢谢~\n可以点这里看看目前的投票情况哦～");
 		} else {
-			feedBackText = "你之前的回答是【" + previousAnswer + "】,现在已经改成【"
-					+ answerParam.getCurrentAnswer() + "】,谢谢你的回答~\n可以点这里看看目前的投票情况哦～";
+			feedBackText.append("你之前的回答是【").append(previousAnswer);
+			feedBackText.append("】,现在已经改成【").append(newAnswer).append("】,谢谢~\n可以点这里看看目前的投票情况哦~");
 		}
 
 		VoteVO voteResult = new VoteVO();
-		voteResult.setFeedBackText(feedBackText);
+		voteResult.setFeedBackText(feedBackText.toString());
 		voteResult.setFeedBackPicUrl(DEFAULT_FEEDBACK_PIC_URL);
 		return voteResult;
 	}
@@ -142,13 +154,16 @@ public class VoteService {
 	}
 
 	@Autowired
-	VoteCache voteCache;
+	VoteAnswerCache voteCache;
 
 	@Autowired
 	UserVoteRecordMapper userVoteRecordMapper;
 	
 	@Autowired
 	VoteBaseMapper voteBaseMapper;
+	
+	@Autowired
+	VoteRealTimeHandler voteRealTimeHandler;
 
 	private static final String DEFAULT_FEEDBACK_PIC_URL = "http://img.taopic.com/uploads/allimg/130611/235071-130611193G551.jpg";
 

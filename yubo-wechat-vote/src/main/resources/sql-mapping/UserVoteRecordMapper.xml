@@ -195,4 +195,14 @@
 	    	AND vote_id = #{voteId,jdbcType=INTEGER}
 	    </if> 
   </select>
+  
+  <!-- 投票结果统计 -->
+   <select id="countVoteResult" parameterType="java.lang.Long" resultType="java.util.Map">
+  	    select 
+	   		user_choice_answer as answer , count(*) as count
+	    from user_vote_record
+	    where vote_id = #{voteId,jdbcType=INTEGER}
+	    group by user_choice_answer
+   </select>
+	      
 </mapper>

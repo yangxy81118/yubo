@@ -58,4 +58,11 @@ public interface UserVoteRecordMapper {
 	int countByParam(UserVoteRecord record);
 	
 	List<UserVoteRecord> selectByParam(Map<String,Object> param);
+	
+	/**
+	 * 投票统计
+	 * @param voteId 需要统计的投票ID
+	 * @return
+	 */
+	List<Map<String,Object>> countVoteResult(long voteId);
 }

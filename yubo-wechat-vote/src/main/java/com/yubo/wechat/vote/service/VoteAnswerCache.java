@@ -22,7 +22,7 @@ import com.yubo.wechat.vote.dao.VoteBaseMapper;
 import com.yubo.wechat.vote.dao.pojo.VoteBase;
 
 /**
- * 用户ID与微信OpenID的映射<br/>
+ * 投票内容的映射<br/>
  * 每天6点准时启动，读取今天<br/>
  * TODO 或许这里还需要考虑如果当天做修改
  * 
@@ -30,9 +30,11 @@ import com.yubo.wechat.vote.dao.pojo.VoteBase;
  *
  */
 @Component
-public class VoteCache {
+public class VoteAnswerCache {
 
 	private Map<String, Long> answer4VoteMapping = new HashMap<>();
+
+	private Long totayVoteId = null;
 
 	@PostConstruct
 	public void loadMapping() {
@@ -48,7 +50,7 @@ public class VoteCache {
 			param.put("rowCount", PAGE_SIZE);
 			param.put("timeFrom", getVoteTime(6));
 			param.put("timeEnd", getVoteTime(30));
- 			List<VoteBase> list = voteBaseMapper.selectByParam(param);
+			List<VoteBase> list = voteBaseMapper.selectByParam(param);
 			for (VoteBase voteBase : list) {
 				String[] keys = parseKeys(voteBase.getAnswers());
 				for (int j = 0; j < keys.length; j++) {
@@ -56,8 +58,15 @@ public class VoteCache {
 				}
 			}
 		}
+
+		totayVoteId = getFirstId();
+
 		logger.info("今日的投票ID与答案关键字的映射加载完毕，一共{}条数据", answer4VoteMapping.size());
 
+	}
+
+	public Long getTotayVoteId() {
+		return totayVoteId;
 	}
 
 	private Date getVoteTime(int offsetHours) {
@@ -104,19 +113,15 @@ public class VoteCache {
 	VoteBaseMapper voteBaseMapper;
 
 	private static final Logger logger = LoggerFactory
-			.getLogger(VoteCache.class);
+			.getLogger(VoteAnswerCache.class);
 
-	/**
-	 * TODO 临时采用
-	 * @return
-	 */
-	public Long getFirstId() {
+	private Long getFirstId() {
 
 		Set<String> sets = answer4VoteMapping.keySet();
 		Long id = null;
 		for (String k : sets) {
 			id = answer4VoteMapping.get(k);
-			if(id!=null){
+			if (id != null) {
 				break;
 			}
 		}
