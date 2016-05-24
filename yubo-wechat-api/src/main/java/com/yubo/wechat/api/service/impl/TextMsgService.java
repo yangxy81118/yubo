@@ -40,6 +40,8 @@ public class TextMsgService implements MessageHandler {
 
 		logger.info("TextMsg业务处理");
 		
+		param.petId = 1;
+		
 		try {
 			TextMsgRequest request = XMLHelper.parseXml(param.requestBody,
 					TextMsgRequest.class);

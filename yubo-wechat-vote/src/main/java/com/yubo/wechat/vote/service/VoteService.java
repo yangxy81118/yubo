@@ -95,6 +95,7 @@ public class VoteService {
 					newAnswer, answerParam.getUserId());
 			//增加到缓存
 			voteRealTimeHandler.addVote(newAnswer);
+			
 		} else {
 			previousAnswer = perviousRecord.getUserChoiceAnswer();
 			if(!previousAnswer.equals(newAnswer)){
@@ -111,7 +112,7 @@ public class VoteService {
 			feedBackText.append("你选择【").append(newAnswer).append("】，谢谢~\n可以点这里看看目前的投票情况哦～");
 		} else {
 			feedBackText.append("你之前的回答是【").append(previousAnswer);
-			feedBackText.append("】,现在已经改成【").append(newAnswer).append("】,谢谢~\n可以点这里看看目前的投票情况哦~");
+			feedBackText.append("】\n现在已经改成【").append(newAnswer).append("】,谢谢~\n可以点这里看看目前的投票情况哦~");
 		}
 
 		VoteVO voteResult = new VoteVO();
@@ -164,7 +165,7 @@ public class VoteService {
 	
 	@Autowired
 	VoteRealTimeHandler voteRealTimeHandler;
-
+	
 	private static final String DEFAULT_FEEDBACK_PIC_URL = "http://img.taopic.com/uploads/allimg/130611/235071-130611193G551.jpg";
 
 }

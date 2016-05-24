@@ -15,6 +15,8 @@ import com.yubo.wechat.api.xml.request.TextMsgRequest;
 import com.yubo.wechat.api.xml.response.ArticleItem;
 import com.yubo.wechat.api.xml.response.TextResponse;
 import com.yubo.wechat.api.xml.response.ViewResponse;
+import com.yubo.wechat.user.service.UserPetFavorService;
+import com.yubo.wechat.user.service.UserService;
 import com.yubo.wechat.vote.service.VoteService;
 import com.yubo.wechat.vote.service.vo.AnswerEntry;
 import com.yubo.wechat.vote.service.vo.VoteVO;
@@ -88,6 +90,7 @@ public class VoteHelper {
 		String currentAnswer = request.getContent().trim();
 		Long voteId = voteService.getVoteIdByWord(currentAnswer);
 		VoteVO answerResult  = answer(voteId, param.userId, currentAnswer);
+		petFavorService.addFavor(param.userId, param.petId, 1);
 		return buildResult(request,answerResult);
 	}
 	
@@ -134,5 +137,8 @@ public class VoteHelper {
 
 	@Autowired
 	VoteService voteService;
+	
+	@Autowired
+	UserPetFavorService petFavorService;
 
 }
