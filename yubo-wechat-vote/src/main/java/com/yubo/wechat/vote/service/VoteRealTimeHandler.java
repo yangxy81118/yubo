@@ -1,10 +1,9 @@
 package com.yubo.wechat.vote.service;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.PostConstruct;
@@ -36,6 +35,7 @@ public class VoteRealTimeHandler {
 		Long todayId = voteAnswerCache.getTotayVoteId();
 		if (todayId == null) {
 			logger.info("今日无投票，无需加载投票数据");
+			return;
 		}
 
 		// 去数据库中通过groupby拿到最新的统计结果，同步过来
