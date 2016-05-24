@@ -9,6 +9,14 @@
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 </head>
-<body>Hello!
+<body>
+投票问题:${info.voteVO.voteQuestion}<br/>
+投票答案:<br/>
+<#list info.voteVO.voteResult as answer>
+  ${answer.key}:${answer.count}<br/>
+</#list>
+<br/>
+<br/>
+
 </body>
 </html>

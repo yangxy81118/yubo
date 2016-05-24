@@ -39,7 +39,7 @@ public class XMLHelper {
 
 		// TODO 这个有性能隐患，之后要想办法解决
 		String xmlResult = writer.toString().replace("&lt;", "<")
-				.replace("&gt;", ">");
+				.replace("&gt;", ">").replace("&amp;", "&");
 		return xmlResult;
 	}
 

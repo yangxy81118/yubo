@@ -19,6 +19,7 @@ import com.yubo.wechat.user.service.UserPetFavorService;
 import com.yubo.wechat.user.service.UserService;
 import com.yubo.wechat.vote.service.VoteService;
 import com.yubo.wechat.vote.service.vo.AnswerEntry;
+import com.yubo.wechat.vote.service.vo.UserVoteVO;
 import com.yubo.wechat.vote.service.vo.VoteVO;
 
 /**
@@ -56,7 +57,7 @@ public class VoteHelper {
 		}
 		
 		Long voteId = voteService.getFirstVoteId();
-		VoteVO vo = voteService.getVoteVOByVoteId(voteId);
+		VoteVO vo = voteService.getVoteInfoByVoteId(voteId);
 		
 		TextResponse response = new TextResponse();
 		String content = "YUBO今天的问题，希望听听你的想法~\n(请回复括号中的关键字)\n\n"+vo.getVoteQuestion()+"\n";
@@ -89,20 +90,20 @@ public class VoteHelper {
 
 		String currentAnswer = request.getContent().trim();
 		Long voteId = voteService.getVoteIdByWord(currentAnswer);
-		VoteVO answerResult  = answer(voteId, param.userId, currentAnswer);
+		UserVoteVO answerResult  = answer(voteId, param.userId, currentAnswer);
 		petFavorService.addFavor(param.userId, param.petId, 1);
 		return buildResult(request,answerResult);
 	}
 	
 	/**
 	 * 构建结果
-	 * 
+	 * TODO URL等常量配置化
 	 * @param request
 	 * @param feedbackText
 	 * @return
 	 * @throws JAXBException
 	 */
-	private MsgHandlerResult buildResult(TextMsgRequest request,VoteVO answerResult)
+	private MsgHandlerResult buildResult(TextMsgRequest request,UserVoteVO answerResult)
 			throws JAXBException {
 
 		ViewResponse response = new ViewResponse();
@@ -115,7 +116,7 @@ public class VoteHelper {
 		ArticleItem item = new ArticleItem();
 		item.setDescription(answerResult.getFeedBackText());
 		item.setTitle("谢谢回答");
-		item.setUrl("http://www.yubo.space/pet/level");
+		item.setUrl("http://www.yubo.space/vote/detail?userId="+answerResult.getUserId()+"&voteId="+answerResult.getVoteVO().getVoteId());
 		item.setPicUrl(answerResult.getFeedBackPicUrl());
 		articles.add(item);
 		response.setItems(articles);
@@ -126,12 +127,14 @@ public class VoteHelper {
 		return result;
 	}
 
-	private VoteVO answer(Long voteId, int userId, String currentAnswer) {
-		VoteVO answerParam = new VoteVO();
-		answerParam.setVoteId(voteId);
+	private UserVoteVO answer(Long voteId, int userId, String currentAnswer) {
+		UserVoteVO answerParam = new UserVoteVO();
+		VoteVO vote = new VoteVO();
+		vote.setVoteId(voteId);
+		answerParam.setVoteVO(vote);
 		answerParam.setUserId(userId);
 		answerParam.setCurrentAnswer(currentAnswer);
-		VoteVO answerResult = voteService.vote(answerParam);
+		UserVoteVO answerResult = voteService.vote(answerParam);
 		return answerResult;
 	}
 

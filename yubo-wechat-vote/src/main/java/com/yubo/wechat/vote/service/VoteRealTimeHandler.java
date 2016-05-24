@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONObject;
+import com.yubo.wechat.support.EmptyChecker;
 import com.yubo.wechat.vote.dao.UserVoteRecordMapper;
 import com.yubo.wechat.vote.dao.VoteBaseMapper;
 import com.yubo.wechat.vote.dao.pojo.VoteBase;
@@ -31,6 +32,17 @@ public class VoteRealTimeHandler {
 
 	@PostConstruct
 	public void init() {
+		
+		//首先确保所有的答案关键字都出现在Map中
+		Set<String> words = voteAnswerCache.getVoteAnswerWords();
+		if(EmptyChecker.isEmpty(words)){
+			logger.info("今日无投票，无需加载投票数据");
+			return;
+		}
+		for (String word : words) {
+			voteResult.put(word, 0);
+		}
+		
 		// 从VoteAnswerCache中获取今天的投票ID
 		Long todayId = voteAnswerCache.getTotayVoteId();
 		if (todayId == null) {

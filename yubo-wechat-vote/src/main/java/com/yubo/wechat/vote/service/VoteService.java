@@ -12,11 +12,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.yubo.wechat.support.EmptyChecker;
 import com.yubo.wechat.vote.dao.UserVoteRecordMapper;
 import com.yubo.wechat.vote.dao.VoteBaseMapper;
 import com.yubo.wechat.vote.dao.pojo.UserVoteRecord;
 import com.yubo.wechat.vote.dao.pojo.VoteBase;
 import com.yubo.wechat.vote.service.vo.AnswerEntry;
+import com.yubo.wechat.vote.service.vo.AnswerResultEntry;
+import com.yubo.wechat.vote.service.vo.UserVoteVO;
 import com.yubo.wechat.vote.service.vo.VoteVO;
 
 /**
@@ -37,19 +40,108 @@ public class VoteService {
 	public Long getVoteIdByWord(String word) {
 		return voteCache.getVoteId(word);
 	}
-	
-	
+
 	public Long getFirstVoteId() {
 		return voteCache.getTotayVoteId();
 	}
-	
+
+	/**
+	 * 根据用户ID与参与的投票ID获取用户当次投票信息
+	 * 
+	 * @param userId
+	 * @param voteId
+	 * @return
+	 */
+	public UserVoteVO getVoteAnswerForUser(int userId, long voteId) {
+
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("userId", userId);
+		param.put("voteId", voteId);
+		param.put("startRow", 0);
+		param.put("rowCount", 1);
+
+		List<UserVoteRecord> result = userVoteRecordMapper.selectByParam(param);
+		if (EmptyChecker.isEmpty(result)) {
+			return null;
+		}
+
+		// 用户投票内容
+		UserVoteRecord record = result.get(0);
+		UserVoteVO userVoteVO = new UserVoteVO();
+		userVoteVO.setCurrentAnswer(record.getUserChoiceAnswer());
+		userVoteVO.setUserId(userId);
+
+		// 再查找投票内容信息
+		VoteBase voteBase = voteBaseMapper.selectByPrimaryKey(voteId);
+		VoteVO voteVO = new VoteVO();
+		voteVO.setVoteId(voteId);
+		voteVO.setVoteQuestion(voteBase.getQuestion());
+		voteVO.setVoteTitle(voteBase.getTitle());
+		voteVO.setVoteAnswers(buildAnswer(voteBase));
+		voteVO.setEndTime(voteBase.getEndTime());
+		voteVO.setStartTime(voteBase.getStartTime());
+
+		// 如果是当日进行中的投票，则直接从缓存中拿取
+		if (voteAnswerCache.getTotayVoteId().equals(voteId)) {
+			voteVO.setVoteResult(buildAnswerResult(voteRealTimeHandler
+					.getVoteResult()));
+		} else {
+			voteVO.setVoteResult(buildAnswerResult(voteBase.getSummary()));
+		}
+
+		userVoteVO.setVoteVO(voteVO);
+		return userVoteVO;
+	}
+
+	private List<AnswerResultEntry> buildAnswerResult(
+			Map<String, Integer> voteResult) {
+		List<AnswerResultEntry> list = new ArrayList<>();
+		Set<Entry<String, Integer>> answers = voteResult.entrySet();
+		for (Entry<String, Integer> entry : answers) {
+			AnswerResultEntry a = new AnswerResultEntry();
+			a.setCount(Integer.parseInt(entry.getValue().toString()));
+			a.setKey(entry.getKey());
+			list.add(a);
+		}
+		return list;
+	}
+
+	private List<AnswerResultEntry> buildAnswerResult(String summary) {
+
+		List<AnswerResultEntry> list = new ArrayList<>();
+		JSONObject json = JSONObject.parseObject(summary);
+		Set<Entry<String, Object>> answers = json.entrySet();
+		for (Entry<String, Object> entry : answers) {
+			AnswerResultEntry a = new AnswerResultEntry();
+			a.setCount(Integer.parseInt(entry.getValue().toString()));
+			a.setKey(entry.getKey());
+			list.add(a);
+		}
+		return list;
+
+	}
+
+	private List<AnswerEntry> buildAnswer(VoteBase voteBase) {
+
+		List<AnswerEntry> list = new ArrayList<>();
+		JSONObject json = JSONObject.parseObject(voteBase.getAnswers());
+		Set<Entry<String, Object>> answers = json.entrySet();
+		for (Entry<String, Object> entry : answers) {
+			AnswerEntry a = new AnswerEntry();
+			a.setAnswerDiscription(entry.getKey());
+			a.setAnswerKey(entry.getValue().toString());
+			list.add(a);
+		}
+		return list;
+	}
+
 	/**
 	 * 获取投票信息
 	 * 
 	 * @param voteId
 	 * @return
 	 */
-	public VoteVO getVoteVOByVoteId(Long voteId){
+	public VoteVO getVoteInfoByVoteId(Long voteId) {
 		VoteBase vote = voteBaseMapper.selectByPrimaryKey(voteId);
 		VoteVO vo = new VoteVO();
 		vo.setVoteQuestion(vote.getQuestion());
@@ -69,55 +161,61 @@ public class VoteService {
 			answer.setAnswerKey(entry.getValue().toString());
 			keys.add(answer);
 		}
-		
+
 		return keys;
 	}
 
 	/**
-	 * 本次投票操作
-	 * TODO 这里也是一大堆的事务
+	 * 本次投票操作 TODO 这里也是一大堆的事务
 	 * 
 	 * @param answerParam
 	 * @return
 	 */
-	public VoteVO vote(VoteVO answerParam) {
+	public UserVoteVO vote(UserVoteVO answerParam) {
 
-		//之前是否已经投票过?
-		UserVoteRecord perviousRecord = getPreviousAnswerRecord(
-				answerParam.getVoteId(), answerParam.getUserId());
+		// 之前是否已经投票过?
+		UserVoteRecord perviousRecord = getPreviousAnswerRecord(answerParam
+				.getVoteVO().getVoteId(), answerParam.getUserId());
 
 		String previousAnswer = null;
 		String newAnswer = answerParam.getCurrentAnswer();
-		
-		//查询新投票记录或者更新投票选项
+
+		// 查询新投票记录或者更新投票选项
 		if (perviousRecord == null) {
-			addNewAnswer(answerParam.getVoteId(),
-					newAnswer, answerParam.getUserId());
-			//增加到缓存
+			addNewAnswer(answerParam.getVoteVO().getVoteId(), newAnswer,
+					answerParam.getUserId());
+			// 增加到缓存
 			voteRealTimeHandler.addVote(newAnswer);
-			
+
 		} else {
 			previousAnswer = perviousRecord.getUserChoiceAnswer();
-			if(!previousAnswer.equals(newAnswer)){
+			if (!previousAnswer.equals(newAnswer)) {
 				updateAnswer(perviousRecord, newAnswer);
-				//修改缓存
-				voteRealTimeHandler.updateVote(previousAnswer,newAnswer);
+				// 修改缓存
+				voteRealTimeHandler.updateVote(previousAnswer, newAnswer);
 			}
 		}
-		
 
-		//构建返回信息
+		// 构建返回信息
 		StringBuffer feedBackText = new StringBuffer();
-		if (StringUtils.isEmpty(previousAnswer) || previousAnswer.equals(newAnswer)) {
-			feedBackText.append("你选择【").append(newAnswer).append("】，谢谢~\n可以点这里看看目前的投票情况哦～");
+		if (StringUtils.isEmpty(previousAnswer)
+				|| previousAnswer.equals(newAnswer)) {
+			feedBackText.append("你选择【").append(newAnswer)
+					.append("】，谢谢~\n可以点这里看看目前的投票情况哦～");
 		} else {
 			feedBackText.append("你之前的回答是【").append(previousAnswer);
-			feedBackText.append("】\n现在已经改成【").append(newAnswer).append("】,谢谢~\n可以点这里看看目前的投票情况哦~");
+			feedBackText.append("】\n现在已经改成【").append(newAnswer)
+					.append("】,谢谢~\n可以点这里看看目前的投票情况哦~");
 		}
 
-		VoteVO voteResult = new VoteVO();
+		UserVoteVO voteResult = new UserVoteVO();
 		voteResult.setFeedBackText(feedBackText.toString());
 		voteResult.setFeedBackPicUrl(DEFAULT_FEEDBACK_PIC_URL);
+		voteResult.setUserId(answerParam.getUserId());
+		VoteVO voteVO = new VoteVO();
+		voteVO.setVoteId(answerParam.getVoteVO().getVoteId());
+		voteResult.setVoteVO(voteVO);
+		
 		return voteResult;
 	}
 
@@ -145,7 +243,7 @@ public class VoteService {
 		param.put("userId", userId);
 		param.put("startRow", 0);
 		param.put("rowCount", 1);
-		
+
 		List<UserVoteRecord> result = userVoteRecordMapper.selectByParam(param);
 		if (result == null || result.size() <= 0) {
 			return null;
@@ -159,13 +257,16 @@ public class VoteService {
 
 	@Autowired
 	UserVoteRecordMapper userVoteRecordMapper;
-	
+
 	@Autowired
 	VoteBaseMapper voteBaseMapper;
-	
+
 	@Autowired
 	VoteRealTimeHandler voteRealTimeHandler;
-	
+
+	@Autowired
+	VoteAnswerCache voteAnswerCache;
+
 	private static final String DEFAULT_FEEDBACK_PIC_URL = "http://img.taopic.com/uploads/allimg/130611/235071-130611193G551.jpg";
 
 }

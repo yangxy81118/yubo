@@ -1,5 +1,6 @@
 package com.yubo.wechat.vote.service.vo;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -16,45 +17,28 @@ public class VoteVO {
 
 	private List<AnswerEntry> voteAnswers;
 
-	private Integer userId;
-
 	private Long voteId;
 
-	private String currentAnswer;
+	private List<AnswerResultEntry> voteResult;
 
-	private String previousAnswer;
+	private Date startTime;
 
-	private String openAnswer;
+	private Date endTime;
 
-	/**
-	 * 反馈谢谢的文字
-	 */
-	private String feedBackText;
-
-	/**
-	 * 反馈谢谢的图片url
-	 */
-	private String feedBackPicUrl;
-
-	/**
-	 * 投票反馈结果H5页面地址
-	 */
-	private String feedBackViewUrl;
-
-	public String getFeedBackViewUrl() {
-		return feedBackViewUrl;
+	public Date getStartTime() {
+		return startTime;
 	}
 
-	public void setFeedBackViewUrl(String feedBackViewUrl) {
-		this.feedBackViewUrl = feedBackViewUrl;
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
 	}
 
-	public Integer getUserId() {
-		return userId;
+	public Date getEndTime() {
+		return endTime;
 	}
 
-	public void setUserId(Integer userId) {
-		this.userId = userId;
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
 	}
 
 	public Long getVoteId() {
@@ -63,46 +47,6 @@ public class VoteVO {
 
 	public void setVoteId(Long voteId) {
 		this.voteId = voteId;
-	}
-
-	public String getCurrentAnswer() {
-		return currentAnswer;
-	}
-
-	public void setCurrentAnswer(String currentAnswer) {
-		this.currentAnswer = currentAnswer;
-	}
-
-	public String getPreviousAnswer() {
-		return previousAnswer;
-	}
-
-	public void setPreviousAnswer(String previousAnswer) {
-		this.previousAnswer = previousAnswer;
-	}
-
-	public String getOpenAnswer() {
-		return openAnswer;
-	}
-
-	public void setOpenAnswer(String openAnswer) {
-		this.openAnswer = openAnswer;
-	}
-
-	public String getFeedBackText() {
-		return feedBackText;
-	}
-
-	public void setFeedBackText(String feedBackText) {
-		this.feedBackText = feedBackText;
-	}
-
-	public String getFeedBackPicUrl() {
-		return feedBackPicUrl;
-	}
-
-	public void setFeedBackPicUrl(String feedBackPicUrl) {
-		this.feedBackPicUrl = feedBackPicUrl;
 	}
 
 	public String getVoteTitle() {
@@ -127,6 +71,14 @@ public class VoteVO {
 
 	public void setVoteAnswers(List<AnswerEntry> voteAnswers) {
 		this.voteAnswers = voteAnswers;
+	}
+
+	public List<AnswerResultEntry> getVoteResult() {
+		return voteResult;
+	}
+
+	public void setVoteResult(List<AnswerResultEntry> voteResult) {
+		this.voteResult = voteResult;
 	}
 
 }

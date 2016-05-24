@@ -65,6 +65,13 @@ public class VoteAnswerCache {
 
 	}
 
+	public Set<String> getVoteAnswerWords(){
+		if(answer4VoteMapping!=null){
+			return answer4VoteMapping.keySet();
+		}
+		return null;
+	}
+	
 	public Long getTotayVoteId() {
 		return totayVoteId;
 	}
