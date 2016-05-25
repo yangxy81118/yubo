@@ -179,7 +179,7 @@
 	     <if test="voteId!=null">
 	    	AND vote_id = #{voteId,jdbcType=INTEGER}
 	    </if> 
-	    LIMIT #{startRow},#{rowCount}
+	    LIMIT ${startRow},${rowCount}
   </select>
   
   

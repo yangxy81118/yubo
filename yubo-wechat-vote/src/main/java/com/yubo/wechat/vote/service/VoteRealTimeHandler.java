@@ -76,7 +76,7 @@ public class VoteRealTimeHandler {
 	public void addVote(String voteWord) {
 		Integer value = voteResult.get(voteWord);
 		value = value == null ? 0 : value;
-		voteResult.put(voteWord, value++);
+		voteResult.put(voteWord, ++value);
 	}
 
 	/**

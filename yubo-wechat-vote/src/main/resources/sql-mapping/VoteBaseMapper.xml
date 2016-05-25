@@ -215,9 +215,9 @@
 	    	<![CDATA[ AND start_time < #{timeEnd,jdbcType=TIMESTAMP} ]]>
 	    </if> 
 	    <if test="orderField!=null">
-	    	ORDER BY #{orderField} #{orderType}
+	    	ORDER BY ${orderField} ${orderType}
 	    </if>
-	    LIMIT #{startRow},#{rowCount}
+	    LIMIT ${startRow},${rowCount}
   </select>
   
   
