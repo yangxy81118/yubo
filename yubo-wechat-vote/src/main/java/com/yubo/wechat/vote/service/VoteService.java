@@ -80,6 +80,7 @@ public class VoteService {
 		voteVO.setVoteAnswers(buildAnswer(voteBase));
 		voteVO.setEndTime(voteBase.getEndTime());
 		voteVO.setStartTime(voteBase.getStartTime());
+		voteVO.setLookConfig(voteBase.getLookConfig());
 
 		// 如果是当日进行中的投票，则直接从缓存中拿取
 		if (voteAnswerCache.getTotayVoteId().equals(voteId)) {
@@ -217,6 +218,35 @@ public class VoteService {
 		voteResult.setVoteVO(voteVO);
 		
 		return voteResult;
+	}
+	
+	
+	/**
+	 * 最近投票列表
+	 * 
+	 * @param rowCount
+	 * @return
+	 */
+	public List<VoteVO> recentList(int rowCount){
+		
+		Map<String, Object> param = new HashMap<>();
+		param.put("startRow", 0);
+		param.put("rowCount",rowCount);
+		param.put("orderField", "vote_id");
+		param.put("orderType", "DESC");
+		List<VoteBase> vbList = voteBaseMapper.selectByParam(param);
+		List<VoteVO> voteList = new ArrayList<>();
+		
+		for (VoteBase voteBase : vbList) {
+			VoteVO vo = new VoteVO();
+			vo.setVoteQuestion(voteBase.getQuestion());
+			vo.setVoteId(voteBase.getVoteId());
+			vo.setVoteAnswers(buildAnswer(voteBase));
+			vo.setStartTime(voteBase.getStartTime());
+			voteList.add(vo);
+		}
+		
+		return voteList;
 	}
 
 	private void updateAnswer(UserVoteRecord perviousRecord,

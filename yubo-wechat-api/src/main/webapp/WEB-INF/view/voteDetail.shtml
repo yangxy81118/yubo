@@ -12,10 +12,23 @@
 <body>
 投票问题:${info.voteVO.voteQuestion}<br/>
 投票答案:<br/>
-<#list info.voteVO.voteResult as answer>
-  ${answer.key}:${answer.count}<br/>
+<#list choiceList as choiceItem>
+<p style="color:${choiceItem.bgColor}"><b>
+  ${choiceItem.choiceAnswer}:${choiceItem.voteCount} , ${choiceItem.rateOfAll}% , 
+	<#if choiceItem.userAnswer>
+		这是我的选择
+	</#if>
+  </b></p>
 </#list>
 <br/>
+<p>离投票结束还有约
+<#if leftHour??>
+${leftHour}个小时
+</#if>
+<#if leftMinute??>
+${leftMinute}分钟
+</#if>
+</p>
 <br/>
 
 </body>

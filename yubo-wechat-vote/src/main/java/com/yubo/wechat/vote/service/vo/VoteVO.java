@@ -25,6 +25,16 @@ public class VoteVO {
 
 	private Date endTime;
 
+	private String lookConfig;
+
+	public String getLookConfig() {
+		return lookConfig;
+	}
+
+	public void setLookConfig(String lookConfig) {
+		this.lookConfig = lookConfig;
+	}
+
 	public Date getStartTime() {
 		return startTime;
 	}

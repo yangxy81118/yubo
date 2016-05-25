@@ -57,6 +57,10 @@ public class VoteHelper {
 		}
 		
 		Long voteId = voteService.getFirstVoteId();
+		if(voteId==null){
+			return null;
+		}
+		
 		VoteVO vo = voteService.getVoteInfoByVoteId(voteId);
 		
 		TextResponse response = new TextResponse();

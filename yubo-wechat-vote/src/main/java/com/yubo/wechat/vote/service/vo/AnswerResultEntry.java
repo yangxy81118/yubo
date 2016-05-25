@@ -1,6 +1,7 @@
 package com.yubo.wechat.vote.service.vo;
 
 public class AnswerResultEntry {
+	private String discription;
 	private String key;
 	private Integer count;
 
@@ -18,6 +19,14 @@ public class AnswerResultEntry {
 
 	public void setCount(Integer count) {
 		this.count = count;
+	}
+
+	public String getDiscription() {
+		return discription;
+	}
+
+	public void setDiscription(String discription) {
+		this.discription = discription;
 	}
 
 }
