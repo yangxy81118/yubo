@@ -66,14 +66,14 @@ public class VoteViewController {
 		//这里要考虑对选项进行协同处理:
 		//每个选项要包括：
 		//选项描述，选项关键字，选项投票数，选项百分比，选项背景颜色，选项图标，是否被用户选中
-		List<VoteChoiceItem> choiceList = buildChoiceItemList(userAnswerVO);
-		modelMap.put("choiceList", choiceList);
+		buildChoiceItemList(userAnswerVO,modelMap);
 		
-		mv.setViewName("voteDetail.shtml");
+		
+		mv.setViewName("voteDetail.html");
 		return mv;
 	}
 
-	private List<VoteChoiceItem> buildChoiceItemList(UserVoteVO userAnswerVO) {
+	private void buildChoiceItemList(UserVoteVO userAnswerVO, ModelMap modelMap) {
 
 		//首先准备好look方面的参数
 		String lookConfig = userAnswerVO.getVoteVO().getLookConfig();
@@ -85,10 +85,10 @@ public class VoteViewController {
 		JSONObject answerIconJSON = lookJSON.getJSONObject("answer-icon");
 		
 		//对ChoiceItem进行参数准备
-		List<VoteChoiceItem> itemList =  new ArrayList<>();
+		List<VoteChoiceItem> choiceItemList =  new ArrayList<>();
 		double totalVoteCount = 0;
-		List<AnswerResultEntry> choiceList = userAnswerVO.getVoteVO().getVoteResult();
-		for (AnswerResultEntry answerEntry : choiceList) {
+		List<AnswerResultEntry> answerList = userAnswerVO.getVoteVO().getVoteResult();
+		for (AnswerResultEntry answerEntry : answerList) {
 			VoteChoiceItem choiceItem = new VoteChoiceItem();
 			choiceItem.setChoiceAnswer(answerEntry.getKey());
 			choiceItem.setChoiceDiscription(answerEntry.getDiscription());
@@ -96,29 +96,31 @@ public class VoteViewController {
 			choiceItem.setVoteCount(answerEntry.getCount());
 			choiceItem.setIconUrl(PIC_CDN_URL+answerIconJSON.getString(answerEntry.getKey()));
 			choiceItem.setUserAnswer(choiceItem.getChoiceAnswer().equals(userAnswerVO.getCurrentAnswer()));
-			itemList.add(choiceItem);
+			choiceItemList.add(choiceItem);
 		}
 		
 		//构建百分比
-		if(itemList.size() == 2){
-			VoteChoiceItem firstItem = itemList.get(0);
+		if(choiceItemList.size() == 2){
+			VoteChoiceItem firstItem = choiceItemList.get(0);
 			firstItem.setRateOfAll((int)(Math.rint((firstItem.getVoteCount() / totalVoteCount)*100)));
-			VoteChoiceItem secondItem = itemList.get(1);
+			VoteChoiceItem secondItem = choiceItemList.get(1);
 			secondItem.setRateOfAll(100-firstItem.getRateOfAll());
 			firstItem.setBgColor(tintColor);
 			secondItem.setBgColor(tintColor);
 			if(firstItem.getRateOfAll() > secondItem.getRateOfAll()){
 				firstItem.setBgColor(darkColor);
+				firstItem.setRateHighest(true);
 			}else{
 				secondItem.setBgColor(darkColor);
+				secondItem.setRateHighest(true);
 			}
 		}else{
-			for (VoteChoiceItem voteChoiceItem : itemList) {
+			for (VoteChoiceItem voteChoiceItem : choiceItemList) {
 				voteChoiceItem.setRateOfAll((int)(Math.rint((voteChoiceItem.getVoteCount() / totalVoteCount)*100)));
 			}
 		}
 		
-		return itemList;
+		modelMap.put("choiceList", choiceItemList);
 	}
 	
 	private void buildLeftTime(VoteVO voteVO, ModelMap modelMap) {

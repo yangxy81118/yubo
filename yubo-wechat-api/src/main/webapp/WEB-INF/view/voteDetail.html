@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:svg="http://www.w3.org/2000/svg">
+<head>
+<title>投票结果</title>
+<meta charset="utf-8">
+<meta name="apple-touch-fullscreen" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no,email=no,address=no">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="../css/reset.css">
+<link rel="stylesheet" href="../css/vote_detail_base.css">
+<link rel="stylesheet" href="../css/vote_detail_c1.css">
+</head>
+<body>
+	<header>
+		<p class="date d-color">5.23&nbsp;&nbsp;#Q${info.voteVO.voteId}</p>
+		<h1 class="h1-color">${info.voteVO.voteQuestion}</h1>
+		<p class="leftTime lt-color">
+		剩余约
+		<#if leftHour??>
+		${leftHour}个小时
+		</#if>
+		<#if leftMinute??>
+		${leftMinute}分钟
+		</#if>
+		</p>
+	</header>
+	<article>
+		<#list choiceList as choiceItem>
+			<#if choiceItem_index==0>
+				<div class="answer-wrap w-left">
+			<#else>
+				<div class="answer-wrap w-right">
+			</#if>
+				<#if choiceItem.rateHighest>
+				<ul class="higher">
+				<#else>
+				<ul>
+				</#if>
+				
+					<li class="icon">
+							<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 500 500" width="55" height="55">
+						<path fill="#FFF" d="M395.508 312.5v-41.992h-41.016v41.992h41.016zM395.508 395.508v-41.016h-41.016v41.016h41.016zM270.508 145.508v-41.016h-41.016v41.016h41.016zM270.508 229.492v-41.992h-41.016v41.992h41.016zM270.508 312.5v-41.992h-41.016v41.992h41.016zM270.508 395.508v-41.016h-41.016v41.016h41.016zM145.508 229.492v-41.992h-41.016v41.992h41.016zM145.508 312.5v-41.992h-41.016v41.992h41.016zM145.508 395.508v-41.016h-41.016v41.016h41.016zM312.5 229.492h125v208.008h-375v-291.992h125v-41.016l62.5-62.5 62.5 62.5v125z" style=""></path>
+						</svg>
+					</li>
+					<li class="answer an-color">${choiceItem.choiceAnswer}</li>
+					<li class="vote-count vc-color">${choiceItem.voteCount} Votes</li>
+					<li class="vote-rate vr-color">${choiceItem.rateOfAll}%</li>
+					<#if choiceItem.userAnswer>
+						<li class="my-choice"><i></i><b></b><span>已选~</span></li>
+					</#if>
+				</ul>
+			</div>
+		</#list>
+		<p class="or">OR</p>
+	</article>
+	<footer> </footer>
+
+</body>
+</html>

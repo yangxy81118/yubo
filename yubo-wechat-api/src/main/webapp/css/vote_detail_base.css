@@ -1,0 +1,140 @@
+@CHARSET "UTF-8";
+
+body {
+	background: #f6f6f6;
+}
+
+header {
+	padding: 3em 3.2em;
+}
+
+header p {
+	font-size: 1.2em;
+	color: #AAA;
+	font-weight:700;
+}
+
+header p.date {
+	
+}
+
+header h1 {
+	padding: .5em 0;
+	font-size: 2em;
+}
+
+header p.leftTime {
+	
+}
+
+article {
+	position: relative;
+}
+
+article div.answer-wrap {
+	float: left;
+	width: 49%;
+}
+
+article div.w-left {
+	padding:0 1% 0 0;
+}
+
+article div.w-right {
+	padding:0 0 0 1%;
+}
+
+article ul {
+	background: #376956;
+	padding: 1em 0 6.5em;
+	position: relative;
+	height: 220px;
+}
+
+article ul.higher {
+	
+}
+
+article p.or {
+	position: absolute;
+	display: block;
+	background: #f6f6f6;
+	text-align: center;
+	font-size: 1.2em;
+	font-weight:bold;
+	line-height: 1.24em;
+	padding: .9em;
+	color: #999;
+	left: 43%;
+	top: 6em;
+	-moz-border-radius: 50px;
+	-webkit-border-radius: 50px;
+	border-radius: 50%;
+}
+
+article ul li {
+	text-align: center;
+}
+
+article ul li.icon {
+	padding: 23% 0 1% 0;
+}
+
+article ul li svg {
+	
+}
+
+article ul li svg.svg-color {
+	
+}
+
+article ul li.answer {
+	font-size: 2.4em;
+	padding: 0 0 30% 0;
+	color: #FFF;
+	font-weight: 700;
+}
+
+article ul li.vote-count {
+	color: #FFF;
+	font-size: 1.2em;
+}
+
+article ul li.vote-rate {
+	color: #FFF;
+	font-size: 2.5em;
+	padding: 3% 0;
+	font-weight: 700;
+}
+
+article ul li.my-choice {
+	display: block;
+	position: absolute;
+	height: 2em;
+	background: #dbdbdb;
+	color: #666;
+	font-size: 1.2em;
+	width: 5em;
+	left: 28%;
+	bottom: 13%;
+	line-height: 1.8em;
+	border-radius: .5em;
+}
+
+li.my-choice i {
+	
+}
+
+li.my-choice b {
+	
+}
+
+li.my-choice span {
+	position:relative;
+	top:0.1em;
+	font-weight: 700;
+}
+
+footer {
+	
+}

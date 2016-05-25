@@ -1,0 +1,49 @@
+@CHARSET "UTF-8";
+header h1.h1-color{
+	
+}
+
+header p.d-color{
+	
+}
+
+header p.lt-color{
+	color: #888;
+}
+
+article ul {
+	background: #376956;
+}
+
+article ul.higher{
+	background: #79d2b1;
+}
+
+
+article ul li.icon {
+	
+}
+
+article ul li svg {
+	color: #FFF;
+}
+
+article ul li svg.svg-color {
+	
+}
+
+article ul li.an-color {
+	
+}
+
+article ul li.vc-color {
+	color: #FFF;
+}
+
+article ul li.vr-color {
+	color: #FFF;
+}
+
+article ul li.my-choice {
+	
+}

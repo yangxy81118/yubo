@@ -24,6 +24,16 @@ public class VoteChoiceItem {
 
 	private boolean userAnswer;
 
+	private boolean rateHighest;
+
+	public boolean isRateHighest() {
+		return rateHighest;
+	}
+
+	public void setRateHighest(boolean rateHighest) {
+		this.rateHighest = rateHighest;
+	}
+
 	public String getChoiceDiscription() {
 		return choiceDiscription;
 	}
