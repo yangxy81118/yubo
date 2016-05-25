@@ -76,7 +76,10 @@ public class VoteRealTimeHandler {
 	public void addVote(String voteWord) {
 		Integer value = voteResult.get(voteWord);
 		value = value == null ? 0 : value;
-		voteResult.put(voteWord, ++value);
+		logger.info("之前{}的票数{}",voteWord,value);
+		value++;
+		voteResult.put(voteWord, value);
+		logger.info("投票后的情况{}",voteResult);
 	}
 
 	/**
@@ -93,6 +96,7 @@ public class VoteRealTimeHandler {
 			newAnswerCount = 0;
 		}
 		voteResult.put(newAnswer, ++newAnswerCount);
+		logger.info("投票后的情况{}",voteResult);
 	}
 
 	/**
