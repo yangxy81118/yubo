@@ -4,6 +4,15 @@ public class AnswerResultEntry {
 	private String discription;
 	private String key;
 	private Integer count;
+	private Integer rate;
+
+	public Integer getRate() {
+		return rate;
+	}
+
+	public void setRate(Integer rate) {
+		this.rate = rate;
+	}
 
 	public String getKey() {
 		return key;

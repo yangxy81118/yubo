@@ -36,12 +36,9 @@ import com.yubo.wechat.user.service.UserService;
  */
 @Controller
 @RequestMapping("/msg")
-public class MsgController {
+public class MsgController extends BaseController {
 
 	
-	private static final Logger logger = LoggerFactory
-			.getLogger(MsgController.class);
-
 	@RequestMapping("")
 	public ModelAndView msgAction(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
@@ -110,31 +107,6 @@ public class MsgController {
 
 	}
 
-	private String getWeChatID(String requestBody) throws JAXBException {
-		UserWeChatIdHelper helper = XMLHelper.parseXml(requestBody,
-				UserWeChatIdHelper.class);
-		return helper.getFromUserName();
-	}
-
-	private String buildRequestBody(HttpServletRequest request)
-			throws IOException {
-
-		String requestBody = "";
-		request.setCharacterEncoding("UTF-8");
-		BufferedReader br = request.getReader();
-		String inputLine;
-		try {
-			while ((inputLine = br.readLine()) != null) {
-				requestBody += inputLine;
-			}
-			br.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return requestBody;
-	}
-
 	private void writeResponse(HttpServletResponse response,
 			String xmlResponseStr) throws IOException {
 		response.setCharacterEncoding("UTF-8");
@@ -178,5 +150,8 @@ public class MsgController {
 
 	@Autowired
 	UserService userService;
+	
+	private static final Logger logger = LoggerFactory
+			.getLogger(MsgController.class);
 
 }

@@ -13,8 +13,9 @@
 	">
 
 	<task:scheduled-tasks>
-		<task:scheduled ref="voteAnswerCache" method="loadMapping" cron="${reload.vote.cron}" />
+		<task:scheduled ref="voteRealTimeHandler" method="loadMapping" cron="${vote.reload.cron}" />
 		<task:scheduled ref="voteRealTimeHandler" method="scheduledSummary" cron="${vote.realtime.write.db}" />
+		<task:scheduled ref="voteHistoryCache" method="loadHistory" cron="${vote.history.reload.cron}" />
 	</task:scheduled-tasks>
 
 </beans>

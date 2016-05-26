@@ -20,7 +20,9 @@ import com.yubo.wechat.vote.dao.pojo.VoteBase;
 import com.yubo.wechat.vote.service.vo.AnswerEntry;
 import com.yubo.wechat.vote.service.vo.AnswerResultEntry;
 import com.yubo.wechat.vote.service.vo.UserVoteVO;
+import com.yubo.wechat.vote.service.vo.VoteHistoryVO;
 import com.yubo.wechat.vote.service.vo.VoteVO;
+import com.yubo.wechat.vote.util.VoteUtil;
 
 /**
  * 投票服务
@@ -38,11 +40,11 @@ public class VoteService {
 	 * @return 如果是今日投票答案关键字，则返回今日的投票ID，否则为null
 	 */
 	public Long getVoteIdByWord(String word) {
-		return voteCache.getVoteId(word);
+		return voteRealTimeHandler.getVoteId(word);
 	}
 
 	public Long getFirstVoteId() {
-		return voteCache.getTotayVoteId();
+		return voteRealTimeHandler.getActiveVoteId();
 	}
 
 	/**
@@ -83,7 +85,7 @@ public class VoteService {
 		voteVO.setLookConfig(voteBase.getLookConfig());
 
 		// 如果是当日进行中的投票，则直接从缓存中拿取
-		if (voteAnswerCache.getTotayVoteId().equals(voteId)) {
+		if (voteRealTimeHandler.getActiveVoteId().equals(voteId)) {
 			voteVO.setVoteResult(buildAnswerResult(voteRealTimeHandler
 					.getVoteResult()));
 		} else {
@@ -92,6 +94,25 @@ public class VoteService {
 
 		userVoteVO.setVoteVO(voteVO);
 		return userVoteVO;
+	}
+	
+	/**
+	 * 返回最近N次用户的投票记录
+	 * 
+	 * @param recentRows
+	 * @return Key-投票ID，Value-用户投票记录
+	 */
+	public Map<Long, UserVoteVO> getUserVoteList(int recentRows,int userId) {
+
+		List<UserVoteRecord> list = getPreviousAnswerRecord(null, userId, 0, recentRows);
+		Map<Long, UserVoteVO> map = new HashMap<>();
+		for (UserVoteRecord userVoteRecord : list) {
+			UserVoteVO vote = new UserVoteVO();
+			vote.setCurrentAnswer(userVoteRecord.getUserChoiceAnswer());
+			map.put(userVoteRecord.getVoteId(), vote);
+		}
+		
+		return map;
 	}
 
 	private List<AnswerResultEntry> buildAnswerResult(
@@ -175,9 +196,13 @@ public class VoteService {
 	public UserVoteVO vote(UserVoteVO answerParam) {
 
 		// 之前是否已经投票过?
-		UserVoteRecord perviousRecord = getPreviousAnswerRecord(answerParam
-				.getVoteVO().getVoteId(), answerParam.getUserId());
-
+		List<UserVoteRecord> voteHistory = getPreviousAnswerRecord(answerParam
+				.getVoteVO().getVoteId(), answerParam.getUserId(),0,1);
+		UserVoteRecord perviousRecord = null;
+		if(voteHistory!=null && voteHistory.size() > 0){
+			perviousRecord = voteHistory.get(0);
+		}
+		
 		String previousAnswer = null;
 		String newAnswer = answerParam.getCurrentAnswer();
 
@@ -227,26 +252,24 @@ public class VoteService {
 	 * @param rowCount
 	 * @return
 	 */
-	public List<VoteVO> recentList(int rowCount){
+	public List<VoteHistoryVO> recentList(int rowCount){
 		
-		Map<String, Object> param = new HashMap<>();
-		param.put("startRow", 0);
-		param.put("rowCount",rowCount);
-		param.put("orderField", "vote_id");
-		param.put("orderType", "DESC");
-		List<VoteBase> vbList = voteBaseMapper.selectByParam(param);
-		List<VoteVO> voteList = new ArrayList<>();
+		//首先从缓存里获取历史数据
+		List<VoteHistoryVO> history = voteHistoryCache.getHistoryList();
 		
-		for (VoteBase voteBase : vbList) {
-			VoteVO vo = new VoteVO();
-			vo.setVoteQuestion(voteBase.getQuestion());
-			vo.setVoteId(voteBase.getVoteId());
-			vo.setVoteAnswers(buildAnswer(voteBase));
-			vo.setStartTime(voteBase.getStartTime());
-			voteList.add(vo);
+		//再从当前的投票记录中获取
+		if(voteRealTimeHandler.getActiveVoteId()!=null){
+			VoteHistoryVO activeVoteVO = new VoteHistoryVO();
+			VoteVO activeVO = getVoteInfoByVoteId(voteRealTimeHandler.getActiveVoteId());
+			activeVoteVO.setVoteId(voteRealTimeHandler.getActiveVoteId());
+			activeVoteVO.setStartTime(voteRealTimeHandler.getActiveVoteDate());			
+			activeVoteVO.setVoteQuestion(activeVO.getVoteQuestion());
+			AnswerResultEntry entry = VoteUtil.getWinner(voteRealTimeHandler.getVoteResult());
+			activeVoteVO.setWinnerAnswer(entry.getKey());
+			activeVoteVO.setWinnerRate(entry.getRate());
 		}
 		
-		return voteList;
+		return history;
 	}
 
 	private void updateAnswer(UserVoteRecord perviousRecord,
@@ -266,24 +289,20 @@ public class VoteService {
 
 	}
 
-	private UserVoteRecord getPreviousAnswerRecord(Long voteId, int userId) {
+	private List<UserVoteRecord> getPreviousAnswerRecord(Long voteId, int userId, int startRow, int rowCount) {
 
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("voteId", voteId);
 		param.put("userId", userId);
-		param.put("startRow", 0);
-		param.put("rowCount", 1);
+		param.put("startRow", startRow);
+		param.put("rowCount", rowCount);
 
 		List<UserVoteRecord> result = userVoteRecordMapper.selectByParam(param);
 		if (result == null || result.size() <= 0) {
 			return null;
 		}
-		UserVoteRecord resultVO = result.get(0);
-		return resultVO;
+		return result;
 	}
-
-	@Autowired
-	VoteAnswerCache voteCache;
 
 	@Autowired
 	UserVoteRecordMapper userVoteRecordMapper;
@@ -295,8 +314,10 @@ public class VoteService {
 	VoteRealTimeHandler voteRealTimeHandler;
 
 	@Autowired
-	VoteAnswerCache voteAnswerCache;
+	VoteHistoryCache voteHistoryCache;
 
 	private static final String DEFAULT_FEEDBACK_PIC_URL = "http://img.taopic.com/uploads/allimg/130611/235071-130611193G551.jpg";
+
+
 
 }

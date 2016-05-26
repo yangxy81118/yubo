@@ -1,9 +1,13 @@
 package com.yubo.wechat.vote.service;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.PostConstruct;
@@ -15,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONObject;
 import com.yubo.wechat.support.EmptyChecker;
+import com.yubo.wechat.support.PageUtil;
 import com.yubo.wechat.vote.dao.UserVoteRecordMapper;
 import com.yubo.wechat.vote.dao.VoteBaseMapper;
 import com.yubo.wechat.vote.dao.pojo.VoteBase;
@@ -29,12 +34,22 @@ import com.yubo.wechat.vote.dao.pojo.VoteBase;
 public class VoteRealTimeHandler {
 
 	private Map<String, Integer> voteResult = new ConcurrentHashMap<>();
+	
+	private Map<String, Long> answer4VoteMapping = new HashMap<>();
+
+	private Long activeVoteId = null;
+	
+	private Date activeVoteDate = null;
 
 	@PostConstruct
 	public void init() {
 		
+		loadMapping();
+		
+		//---------------TODO 需要对这段代码进行结构优化-----------------------------------------------------------
+		
 		//首先确保所有的答案关键字都出现在Map中
-		Set<String> words = voteAnswerCache.getVoteAnswerWords();
+		Set<String> words = getVoteAnswerWords();
 		if(EmptyChecker.isEmpty(words)){
 			logger.info("今日无投票，无需加载投票数据");
 			return;
@@ -44,7 +59,7 @@ public class VoteRealTimeHandler {
 		}
 		
 		// 从VoteAnswerCache中获取今天的投票ID
-		Long todayId = voteAnswerCache.getTotayVoteId();
+		Long todayId = getActiveVoteId();
 		if (todayId == null) {
 			logger.info("今日无投票，无需加载投票数据");
 			return;
@@ -55,6 +70,59 @@ public class VoteRealTimeHandler {
 				.countVoteResult(todayId);
 		formatResult(result);
 		logger.info("加载今日投票统计完毕");
+		
+	}
+	
+	public void loadMapping(){
+		
+		logger.info("开始加载今日的投票ID与答案关键字的映射");
+		answer4VoteMapping.clear();
+
+		int totalCount = getCount();
+		int pageCount = PageUtil.pageCount(totalCount, PAGE_SIZE);
+		for (int i = 0; i < pageCount; i++) {
+			Map<String, Object> param = new HashMap<>();
+			param.put("startRow", i * PAGE_SIZE);
+			param.put("rowCount", PAGE_SIZE);
+			param.put("timeFrom", getVoteTime(6));
+			param.put("timeEnd", getVoteTime(30));
+			List<VoteBase> list = voteBaseMapper.selectByParam(param);
+			for (VoteBase voteBase : list) {
+				String[] keys = parseKeys(voteBase.getAnswers());
+				for (int j = 0; j < keys.length; j++) {
+					answer4VoteMapping.put(keys[j], voteBase.getVoteId());
+				}
+				break;
+			}
+		}
+		activeVoteId = getFirstId();
+		activeVoteDate = getVoteDate();
+		logger.info("今日的投票ID与答案关键字的映射加载完毕，一共{}条数据", answer4VoteMapping.size());
+	}
+
+	/**
+	 * 获取当前正在进行中的投票的日期<br/>
+	 * 注意，请只使用年月日，十分秒不准确
+	 * @return
+	 */
+	public Date getActiveVoteDate() {
+		return activeVoteDate;
+	}
+
+	private Date getVoteDate() {
+		if(activeVoteId==null){
+			return null;
+		}
+		
+		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
+		
+		//如果是凌晨0-6点之间，则需要日期往回走一天
+		int hour = cal.get(Calendar.HOUR_OF_DAY);
+		if(hour < 6 && hour >= 0){
+			cal.add(Calendar.DATE, -1);
+		}
+		
+		return cal.getTime();
 	}
 
 	private void formatResult(List<Map<String, Object>> result) {
@@ -125,8 +193,8 @@ public class VoteRealTimeHandler {
 	 */
 	public void scheduledSummary() {
 
-		// 获取todayVoteId
-		Long todayVoteId = voteAnswerCache.getTotayVoteId();
+		// 获取正在进行中的投票ID
+		Long todayVoteId = getActiveVoteId();
 
 		// 如果今日没有投票，直接退出
 		if (todayVoteId == null) {
@@ -156,8 +224,76 @@ public class VoteRealTimeHandler {
 		logger.info("投票{}统计写入到数据库",todayVoteId);
 	}
 
-	@Autowired
-	VoteAnswerCache voteAnswerCache;
+	public Set<String> getVoteAnswerWords(){
+		if(answer4VoteMapping!=null){
+			return answer4VoteMapping.keySet();
+		}
+		return null;
+	}
+	
+	public Long getActiveVoteId() {
+		return activeVoteId;
+	}
+
+	private Date getVoteTime(int offsetHours) {
+		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
+		
+		//如果是凌晨0-6点之间，则需要日期往回走一天
+		int hour = cal.get(Calendar.HOUR_OF_DAY);
+		if(hour < 6 && hour >= 0){
+			cal.add(Calendar.DATE, -1);
+		}
+		
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		cal.add(Calendar.HOUR, offsetHours);
+		return cal.getTime();
+	}
+
+	private String[] parseKeys(String answers) {
+
+		JSONObject json = JSONObject.parseObject(answers);
+		Set<Entry<String, Object>> sets = json.entrySet();
+		String[] keys = new String[sets.size()];
+
+		int idx = 0;
+		for (Entry<String, Object> entry : sets) {
+			keys[idx++] = entry.getValue().toString();
+		}
+
+		return keys;
+	}
+
+	private int getCount() {
+		return voteBaseMapper.countByParam(new VoteBase());
+	}
+
+	/**
+	 * 根据投票关键字获取对应的投票ID
+	 * 
+	 * @param word
+	 * @return
+	 */
+	public synchronized Long getVoteId(String word) {
+		return answer4VoteMapping.get(word);
+	}
+
+	private static final int PAGE_SIZE = 30;
+
+	private Long getFirstId() {
+
+		Set<String> sets = answer4VoteMapping.keySet();
+		Long id = null;
+		for (String k : sets) {
+			id = answer4VoteMapping.get(k);
+			if (id != null) {
+				break;
+			}
+		}
+		return id;
+	}
 
 	@Autowired
 	VoteBaseMapper voteBaseMapper;

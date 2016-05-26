@@ -20,10 +20,12 @@
 		剩余约
 		<#if leftHour??>
 		${leftHour}个小时
-		</#if>
-		<#if leftMinute??>
+		<#elseif leftMinute??>
 		${leftMinute}分钟
+		<#else>
+		已截止
 		</#if>
+
 		</p>
 	</header>
 	<article>

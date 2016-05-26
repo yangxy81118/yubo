@@ -3,6 +3,7 @@ package com.yubo.wechat.api.controller;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,10 +18,17 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.yubo.wechat.api.controller.model.VoteChoiceItem;
-import com.yubo.wechat.vote.service.VoteAnswerCache;
+import com.yubo.wechat.api.service.MessageHandler;
+import com.yubo.wechat.api.service.impl.DefaultService;
+import com.yubo.wechat.api.service.vo.MsgInputParam;
+import com.yubo.wechat.api.xml.XMLHelper;
+import com.yubo.wechat.api.xml.request.EventMsgRequest;
+import com.yubo.wechat.user.service.UserService;
+import com.yubo.wechat.vote.service.VoteRealTimeHandler;
 import com.yubo.wechat.vote.service.VoteService;
 import com.yubo.wechat.vote.service.vo.AnswerResultEntry;
 import com.yubo.wechat.vote.service.vo.UserVoteVO;
+import com.yubo.wechat.vote.service.vo.VoteHistoryVO;
 import com.yubo.wechat.vote.service.vo.VoteVO;
 
 /**
@@ -31,7 +39,7 @@ import com.yubo.wechat.vote.service.vo.VoteVO;
  */
 @Controller
 @RequestMapping("/vote")
-public class VoteViewController {
+public class VoteViewController extends BaseController{
 
 	private static final String DEFAULT_LOOK = null;
 
@@ -126,7 +134,7 @@ public class VoteViewController {
 	private void buildLeftTime(VoteVO voteVO, ModelMap modelMap) {
 		
 		//首先确定是否是当下正在进行的投票
-		if(voteVO.getVoteId().equals(voteAnswerCache.getTotayVoteId())){
+		if(voteVO.getVoteId().equals(realTimeHandler.getActiveVoteId())){
 			//直接判断明天6点为结束时间
 			//TODO 这种默认方式，还是需要优化，统一管理
 			Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
@@ -151,27 +159,45 @@ public class VoteViewController {
 	}
 
 	/**
-	 * 获取最近一定次数的投票信息列表
+	 * 获取最近一定次数的投票信息列表<br/>
+	 * 只支持微信点击事件为入口
 	 * 
-	 * @param request
+	 * @param req
 	 * @param response
 	 * @param voteId
 	 *            要查询的投票ID
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/list")
-	public ModelAndView voteList(HttpServletRequest request,
+	@RequestMapping("/list/wechatClick")
+	public ModelAndView voteList(HttpServletRequest req,
 			HttpServletResponse response, @RequestParam int recentRows)
 			throws Exception {
-
-		voteService.recentList(recentRows);
-
+		
+		//TODO 这一坨SHI一样的东西最好优化
+		String requestBody = buildRequestBody(req);
+		String weChatId = getWeChatID(requestBody);
+		
+		int userId = userService.getUserIdByWeChatId(weChatId);
+//		EventMsgRequest evtRequest = XMLHelper.parseXml(requestBody, EventMsgRequest.class);
+//		MsgInputParam inputParam = new MsgInputParam();
+//		inputParam.userId = userId;
+//		inputParam.wechatId = weChatId;
+//		inputParam.requestBody = requestBody;
+		
 		// 直接去获取最近recentRows条投票记录信息
-		/*
-		 * 投票ID，问题，日期
-		 */
+		List<VoteHistoryVO> voteStaticList = voteService.recentList(recentRows);
 
+		// 再去获取用户自己最近的投票记录
+		Map<Long,UserVoteVO> userMap = voteService.getUserVoteList(recentRows,userId);
+
+		for (VoteHistoryVO voteHistoryVO : voteStaticList) {
+			UserVoteVO userVote = userMap.get(voteHistoryVO.getVoteId());
+			if(userVote!=null && userVote.getCurrentAnswer()!=null){
+				voteHistoryVO.setUserChoice(userVote.getCurrentAnswer());
+			}
+		}
+		
 		return new ModelAndView("tt.html");
 	}
 
@@ -179,7 +205,10 @@ public class VoteViewController {
 	VoteService voteService;
 	
 	@Autowired
-	VoteAnswerCache voteAnswerCache;
+	VoteRealTimeHandler realTimeHandler;
+	
+	@Autowired
+	UserService userService;
 	
 	private static final String PIC_CDN_URL = "http://o7pmdbbe0.bkt.clouddn.com/vote/icon/";
 	
