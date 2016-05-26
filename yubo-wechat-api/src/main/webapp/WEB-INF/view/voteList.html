@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:svg="http://www.w3.org/2000/svg">
+<head>
+<title>投票结果</title>
+<meta charset="utf-8">
+<meta name="apple-touch-fullscreen" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no,email=no,address=no">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="/yubo-wechat-api/css/reset.css">
+<link rel="stylesheet" href="/yubo-wechat-api/css/vote_list_base2.css">
+</head>
+<body>
+
+<#list voteList as voteItem>
+	<#if voteItem_index == 0>
+	<div class="vote-box active">
+	<#else>
+	<div class="vote-box">
+	</#if>
+		<div class="time-box">
+			<p class="date">5.23</p>
+			<p class="icon">?</p>
+			<div class="line"></div>
+		</div>
+		<div class="info-box">
+			<div class="main">
+				<h2>${voteItem.voteQuestion}</h2>
+				<p class="winner">${voteItem.winnerRate}%选择了“${voteItem.winnerAnswer}”</p>
+			</div>
+			<#if voteItem.userChoice??>
+			<p class="my-choice">我选择了“${voteItem.userChoice}”</p>
+			</#if>
+		</div>
+	</div>
+</#list>
+<!-- 
+	<div class="vote-box active">
+		<div class="time-box">
+			<p class="date">5.23</p>
+			<p class="icon">?</p>
+			<div class="line"></div>
+		</div>
+		<div class="info-box">
+			<div class="main">
+				<h2>今天给YUBO买点什么东西好呢？</h2>
+				<p class="winner">8%选择了“蔬菜”</p>
+			</div>
+			<p class="my-choice">我选择了“烤肉”</p>
+		</div>
+	</div>
+
+	<div class="vote-box">
+		<div class="time-box">
+			<p class="date">5.23</p>
+			<p class="icon">?</p>
+			<div class="line"></div>
+		</div>
+		<div class="info-box">
+			<div class="main">
+				<h2>今天西好呢？</h2>
+				<p class="winner">82%选择了“蔬菜”</p>
+			</div>
+			<p class="my-choice">我选择了“烤肉”</p>
+		</div>
+	</div>
+
+	<div class="vote-box">
+		<div class="time-box">
+			<p class="date">5.1</p>
+			<p class="icon">?</p>
+			<div class="line"></div>
+		</div>
+		<div class="info-box">
+			<div class="main">
+				<h2>今天给YUBO买点什么东西好呢？</h2>
+				<p class="winner">100%选择了“蔬菜”</p>
+			</div>
+			<p class="my-choice">我选择了“烤肉”</p>
+		</div>
+	</div>
+	 -->
+</body>
+</html>

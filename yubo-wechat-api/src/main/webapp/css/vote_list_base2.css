@@ -1,0 +1,96 @@
+body {
+	
+}
+
+div.vote-box {
+	padding: 3% 0 3% 3%;
+	overflow: hidden;
+	position: relative;
+}
+
+div.vote-box div.time-box {
+	float: left;
+	width: 20%;
+}
+
+div.time-box p {
+	text-align: center;
+}
+
+div.time-box p.date {font-size: 1.2em;color: #999;line-height: 1.4em;z-index: 1;}
+
+div.time-box p.icon {
+	display: block;
+	background: #8E8E8E;
+	border-radius: 50%;
+	height: 2.4em;
+	width: 2.4em;
+	position: absolute;
+	top: 3em;
+	left: 2em;
+	color: #FFF;
+	line-height: 2.4em;
+	z-index: 2;
+}
+
+div.active div.time-box p.icon {
+	background: #FF6E05;
+	color: #FFF;
+}
+
+div.time-box div.line {
+	position: absolute;
+	left: 3.2em;
+	width: 10%;
+	height: 21em;
+	border-left: 1px solid #DDD;
+}
+
+div.main {
+	background: #AAA;
+	color: #FFF;
+	padding: 1em 1.2em;
+	border-radius: .4em 0 0 .4em;
+	margin: 0 0 1em 0;
+	min-height: 5em;
+}
+
+div.active div.main {
+	background: #FF6E05;
+}
+
+div.main h2 {
+	font-size: 1.5em;
+	line-height: 1.3em;
+	font-weight: 700;
+	margin: 0 0 .4em;
+}
+
+div.active div.main h2{
+	
+}
+
+div.main p.winner {
+	
+}
+
+div.active div.main p.winner{
+	
+}
+
+div.info-box{
+	float: left;
+	width: 80%;
+	padding: 7% 0 4% 0;
+}
+
+
+div.info-box p.my-choice {
+	background: #AAA;
+	color: #EBEBEB;
+	font-size: 1.2em;
+	line-height: 2em;
+	padding: 0 0 0 1em;
+	width: 46%;
+	border-radius: .3em;
+}

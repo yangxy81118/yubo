@@ -175,15 +175,10 @@ public class VoteViewController extends BaseController{
 			throws Exception {
 		
 		//TODO 这一坨SHI一样的东西最好优化
-		String requestBody = buildRequestBody(req);
-		String weChatId = getWeChatID(requestBody);
-		
-		int userId = userService.getUserIdByWeChatId(weChatId);
-//		EventMsgRequest evtRequest = XMLHelper.parseXml(requestBody, EventMsgRequest.class);
-//		MsgInputParam inputParam = new MsgInputParam();
-//		inputParam.userId = userId;
-//		inputParam.wechatId = weChatId;
-//		inputParam.requestBody = requestBody;
+//		String requestBody = buildRequestBody(req);
+//		String weChatId = getWeChatID(requestBody);
+//		int userId = userService.getUserIdByWeChatId(weChatId);
+		int userId = 1;
 		
 		// 直接去获取最近recentRows条投票记录信息
 		List<VoteHistoryVO> voteStaticList = voteService.recentList(recentRows);
@@ -198,7 +193,11 @@ public class VoteViewController extends BaseController{
 			}
 		}
 		
-		return new ModelAndView("tt.html");
+		ModelAndView mv = new ModelAndView("voteList.html");
+		ModelMap modelMap = mv.getModelMap();
+		modelMap.put("voteList", voteStaticList);
+		
+		return mv;
 	}
 
 	@Autowired
