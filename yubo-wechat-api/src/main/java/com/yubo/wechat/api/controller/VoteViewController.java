@@ -175,10 +175,9 @@ public class VoteViewController extends BaseController{
 			throws Exception {
 		
 		//TODO 这一坨SHI一样的东西最好优化
-//		String requestBody = buildRequestBody(req);
-//		String weChatId = getWeChatID(requestBody);
-//		int userId = userService.getUserIdByWeChatId(weChatId);
-		int userId = 1;
+		String requestBody = buildRequestBody(req);
+		String weChatId = getWeChatID(requestBody);
+		int userId = userService.getUserIdByWeChatId(weChatId);
 		
 		// 直接去获取最近recentRows条投票记录信息
 		List<VoteHistoryVO> voteStaticList = voteService.recentList(recentRows);
