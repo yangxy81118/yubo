@@ -20,7 +20,7 @@ import com.yubo.wechat.api.WeChatEventType;
 import com.yubo.wechat.api.service.MessageHandler;
 import com.yubo.wechat.api.service.impl.DefaultService;
 import com.yubo.wechat.api.service.impl.MoMoService;
-import com.yubo.wechat.api.service.impl.MyFavorService;
+import com.yubo.wechat.api.service.impl.MyVoteService;
 import com.yubo.wechat.api.service.impl.TextMsgService;
 import com.yubo.wechat.api.service.vo.MsgHandlerResult;
 import com.yubo.wechat.api.service.vo.MsgInputParam;
@@ -29,7 +29,8 @@ import com.yubo.wechat.api.xml.request.UserWeChatIdHelper;
 import com.yubo.wechat.user.service.UserService;
 
 /**
- * 微信信息派发接口
+ * 微信信息派发接口<br/>
+ * 在公众号上，所有用户的交互（输入文字，点击按钮，语音等等），均会从此入口经过，至于跳转其他H5页面，与此为异步关系
  * 
  * @author young.jason
  *
@@ -65,7 +66,7 @@ public class MsgController extends BaseController {
 		case TEXT:
 			messageHandler = textMsgService;
 			break;
-		case CLICK_MY_FAVOR:
+		case CLICK_MY_VOTE:
 			messageHandler = myFavorService;
 			break;
 		default:
@@ -131,8 +132,8 @@ public class MsgController extends BaseController {
 			return WeChatEventType.TEXT;
 		} else if (requestBody.indexOf("CLICK_MOMO") > 0) {
 			return WeChatEventType.CLICK_MOMO;
-		} else if (requestBody.indexOf("VIEW") > 0) {
-			return WeChatEventType.CLICK_MY_FAVOR;
+		} else if (requestBody.indexOf("CLICK_MY_VOTE") > 0) {
+			return WeChatEventType.CLICK_MY_VOTE;
 		}
 
 		// 其余均认为未知
@@ -146,7 +147,7 @@ public class MsgController extends BaseController {
 	TextMsgService textMsgService;
 
 	@Autowired
-	MyFavorService myFavorService;
+	MyVoteService myFavorService;
 
 	@Autowired
 	UserService userService;

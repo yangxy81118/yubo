@@ -157,10 +157,48 @@ public class VoteViewController extends BaseController{
 		}
 
 	}
+	
+	
+//	
+//	/**
+//	 * 捕捉
+//	 * 
+//	 * @param req
+//	 * @param response
+//	 * @param voteId
+//	 *            要查询的投票ID
+//	 * @return
+//	 * @throws Exception
+//	 */
+//	@RequestMapping("/list")
+//	public ModelAndView getUserVoteListMsg(HttpServletRequest req,
+//			HttpServletResponse response, @RequestParam Integer recentRows,@RequestParam Integer userId)
+//			throws Exception {
+//		
+//		// 直接去获取最近recentRows条投票记录信息
+//		List<VoteHistoryVO> voteStaticList = voteService.recentList(recentRows);
+//
+//		// 再去获取用户自己最近的投票记录
+//		if(userId!=null){
+//			Map<Long,UserVoteVO> userMap = voteService.getUserVoteList(recentRows,userId);
+//			for (VoteHistoryVO voteHistoryVO : voteStaticList) {
+//				UserVoteVO userVote = userMap.get(voteHistoryVO.getVoteId());
+//				if(userVote!=null && userVote.getCurrentAnswer()!=null){
+//					voteHistoryVO.setUserChoice(userVote.getCurrentAnswer());
+//				}
+//			}
+//		}
+//		
+//		ModelAndView mv = new ModelAndView("voteList.html");
+//		ModelMap modelMap = mv.getModelMap();
+//		modelMap.put("voteList", voteStaticList);
+//		
+//		return mv;
+//	}
+	
 
 	/**
-	 * 获取最近一定次数的投票信息列表<br/>
-	 * 只支持微信点击事件为入口
+	 * 获取最近一定次数的投票信息列表
 	 * 
 	 * @param req
 	 * @param response
@@ -169,26 +207,22 @@ public class VoteViewController extends BaseController{
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/list/wechatClick")
+	@RequestMapping("/list")
 	public ModelAndView voteList(HttpServletRequest req,
-			HttpServletResponse response, @RequestParam int recentRows)
+			HttpServletResponse response, @RequestParam Integer recentRows,@RequestParam Integer userId)
 			throws Exception {
-		
-		//TODO 这一坨SHI一样的东西最好优化
-		String requestBody = buildRequestBody(req);
-		String weChatId = getWeChatID(requestBody);
-		int userId = userService.getUserIdByWeChatId(weChatId);
 		
 		// 直接去获取最近recentRows条投票记录信息
 		List<VoteHistoryVO> voteStaticList = voteService.recentList(recentRows);
 
 		// 再去获取用户自己最近的投票记录
-		Map<Long,UserVoteVO> userMap = voteService.getUserVoteList(recentRows,userId);
-
-		for (VoteHistoryVO voteHistoryVO : voteStaticList) {
-			UserVoteVO userVote = userMap.get(voteHistoryVO.getVoteId());
-			if(userVote!=null && userVote.getCurrentAnswer()!=null){
-				voteHistoryVO.setUserChoice(userVote.getCurrentAnswer());
+		if(userId!=null){
+			Map<Long,UserVoteVO> userMap = voteService.getUserVoteList(recentRows,userId);
+			for (VoteHistoryVO voteHistoryVO : voteStaticList) {
+				UserVoteVO userVote = userMap.get(voteHistoryVO.getVoteId());
+				if(userVote!=null && userVote.getCurrentAnswer()!=null){
+					voteHistoryVO.setUserChoice(userVote.getCurrentAnswer());
+				}
 			}
 		}
 		

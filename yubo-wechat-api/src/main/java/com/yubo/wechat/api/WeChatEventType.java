@@ -16,9 +16,9 @@ public enum WeChatEventType {
 	 */
 	CLICK_MOMO,
 	/**
-	 * 我的亲密度按钮
+	 * 我的投票
 	 */
-	CLICK_MY_FAVOR,
+	CLICK_MY_VOTE,
 	
 	/**
 	 * 多媒体事件按钮

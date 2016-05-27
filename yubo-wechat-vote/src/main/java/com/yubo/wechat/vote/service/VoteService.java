@@ -316,6 +316,7 @@ public class VoteService {
 	@Autowired
 	VoteHistoryCache voteHistoryCache;
 
+	//TODO 需要配置
 	private static final String DEFAULT_FEEDBACK_PIC_URL = "http://img.taopic.com/uploads/allimg/130611/235071-130611193G551.jpg";
 
 
