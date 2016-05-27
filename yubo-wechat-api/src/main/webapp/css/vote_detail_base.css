@@ -2,10 +2,12 @@
 
 body {
 	background: #f6f6f6;
+	overflow: hidden;
 }
 
 header {
-	padding: 3em 3.2em;
+	padding: 10% 12%;
+	height: 15%;
 }
 
 header p {
@@ -19,7 +21,7 @@ header p.date {
 }
 
 header h1 {
-	padding: .5em 0;
+	padding: 4% 0;
 	font-size: 2em;
 }
 
@@ -29,11 +31,14 @@ header p.leftTime {
 
 article {
 	position: relative;
+	overflow: hidden;
+	height: 60%;
 }
 
 article div.answer-wrap {
 	float: left;
 	width: 49%;
+	height: 100%;
 }
 
 article div.w-left {
@@ -46,9 +51,8 @@ article div.w-right {
 
 article ul {
 	background: #376956;
-	padding: 1em 0 6.5em;
 	position: relative;
-	height: 220px;
+	height: 100%;
 }
 
 article ul.higher {
@@ -77,7 +81,7 @@ article ul li {
 }
 
 article ul li.icon {
-	padding: 23% 0 1% 0;
+	padding: 43% 0 1% 0;
 }
 
 article ul li svg {
@@ -90,7 +94,7 @@ article ul li svg.svg-color {
 
 article ul li.answer {
 	font-size: 2.4em;
-	padding: 0 0 30% 0;
+	padding: 0 0 40% 0;
 	color: #FFF;
 	font-weight: 700;
 }
@@ -111,12 +115,12 @@ article ul li.my-choice {
 	display: block;
 	position: absolute;
 	height: 2em;
-	background: #dbdbdb;
+	background: #FFFFFF;
 	color: #666;
 	font-size: 1.2em;
 	width: 5em;
 	left: 28%;
-	bottom: 13%;
+	bottom: 10%;
 	line-height: 1.8em;
 	border-radius: .5em;
 }
