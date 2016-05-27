@@ -10,9 +10,16 @@
 	content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 <link rel="stylesheet" href="/css/reset.css">
 <link rel="stylesheet" href="/css/vote_list_base2.css">
+<script src="http://o7pmdbbe0.bkt.clouddn.com/js/framework/jquery-2.2.4.min.js"></script>
+<script type="text/javascript">
+$(function(){
+	var $wh = $(window).height();
+	$("div.line").css("height",$wh+"px");
+});
+</script>
 </head>
 <body>
-
+<div class="line"></div>
 <#list voteList as voteItem>
 	<#if voteItem_index == 0>
 	<div class="vote-box active">
@@ -20,9 +27,12 @@
 	<div class="vote-box">
 	</#if>
 		<div class="time-box">
-			<p class="date">5.23</p>
-			<p class="icon">?</p>
-			<div class="line"></div>
+			<p class="date">${voteItem.startDateForView}</p>
+			<p class="icon">
+			<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 500 500" width="38" height="38">
+						<path fill="#FFF" d="M395.508 312.5v-41.992h-41.016v41.992h41.016zM395.508 395.508v-41.016h-41.016v41.016h41.016zM270.508 145.508v-41.016h-41.016v41.016h41.016zM270.508 229.492v-41.992h-41.016v41.992h41.016zM270.508 312.5v-41.992h-41.016v41.992h41.016zM270.508 395.508v-41.016h-41.016v41.016h41.016zM145.508 229.492v-41.992h-41.016v41.992h41.016zM145.508 312.5v-41.992h-41.016v41.992h41.016zM145.508 395.508v-41.016h-41.016v41.016h41.016zM312.5 229.492h125v208.008h-375v-291.992h125v-41.016l62.5-62.5 62.5 62.5v125z" style=""></path>
+						</svg>
+			</p>
 		</div>
 		<div class="info-box">
 			<a class="main" href="/vote/detail?voteId=${voteItem.voteId}&userId=${userId}">
@@ -35,51 +45,5 @@
 		</div>
 	</div>
 </#list>
-<!-- 
-	<div class="vote-box active">
-		<div class="time-box">
-			<p class="date">5.23</p>
-			<p class="icon">?</p>
-			<div class="line"></div>
-		</div>
-		<div class="info-box">
-			<div class="main">
-				<h2>今天给YUBO买点什么东西好呢？</h2>
-				<p class="winner">8%选择了“蔬菜”</p>
-			</div>
-			<p class="my-choice">我选择了“烤肉”</p>
-		</div>
-	</div>
-
-	<div class="vote-box">
-		<div class="time-box">
-			<p class="date">5.23</p>
-			<p class="icon">?</p>
-			<div class="line"></div>
-		</div>
-		<div class="info-box">
-			<div class="main">
-				<h2>今天西好呢？</h2>
-				<p class="winner">82%选择了“蔬菜”</p>
-			</div>
-			<p class="my-choice">我选择了“烤肉”</p>
-		</div>
-	</div>
-
-	<div class="vote-box">
-		<div class="time-box">
-			<p class="date">5.1</p>
-			<p class="icon">?</p>
-			<div class="line"></div>
-		</div>
-		<div class="info-box">
-			<div class="main">
-				<h2>今天给YUBO买点什么东西好呢？</h2>
-				<p class="winner">100%选择了“蔬菜”</p>
-			</div>
-			<p class="my-choice">我选择了“烤肉”</p>
-		</div>
-	</div>
-	 -->
 </body>
 </html>

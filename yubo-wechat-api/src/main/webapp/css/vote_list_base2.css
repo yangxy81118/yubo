@@ -1,9 +1,9 @@
 body {
-	
+	background: #f6f6f6;
 }
 
 div.vote-box {
-	padding: 3% 0 3% 3%;
+	padding: 3% 0 0% 0;
 	overflow: hidden;
 	position: relative;
 }
@@ -17,81 +17,89 @@ div.time-box p {
 	text-align: center;
 }
 
-div.time-box p.date {font-size: 1.2em;color: #999;line-height: 1.4em;z-index: 1;}
+div.time-box p.date {
+	font-size: 1.2em;
+	color: #dbdbdb;
+	line-height: 1.8em;
+	z-index: 1;
+	font-weight: 700;
+	background: #F6F6F6;
+}
 
 div.time-box p.icon {
 	display: block;
-	background: #8E8E8E;
+	background: #AAAAAA;
 	border-radius: 50%;
-	height: 2.4em;
-	width: 2.4em;
-	position: absolute;
-	top: 3em;
-	left: 2em;
-	color: #FFF;
-	line-height: 2.4em;
+	height: 3.8em;
+	width: 3.8em;
 	z-index: 2;
+	margin: 1em auto 0;
 }
 
-div.active div.time-box p.icon {
-	background: #FF6E05;
-	color: #FFF;
-}
-
-div.time-box div.line {
-	position: absolute;
-	left: 3.2em;
-	width: 10%;
-	height: 21em;
-	border-left: 1px solid #DDD;
+div.line-wrap div.line {
+	border: 1px solid #DDD;
+	width: 0;
+	height: 100%;
+	margin: 0 auto;
 }
 
 a.main {
-	display:block;
+	display: block;
 	background: #AAA;
 	color: #FFF;
-	padding: 1em 1.2em;
-	border-radius: .4em 0 0 .4em;
+	padding: 1.4em 1.8em 1.2em 1.2em;
+	border-radius: .8em 0 0 .8em;
 	margin: 0 0 1em 0;
-	min-height: 5em;
+	min-height: 4em;
+	box-shadow: 2px 1px 2px #585858;
 }
 
-div.active a.main  {
-	background: #FF6E05;
+div.active a.main {
+	background: #e38055;
 }
 
 a.main  h2 {
 	font-size: 1.5em;
-	line-height: 1.3em;
+	line-height: 1.4em;
 	font-weight: 700;
 	margin: 0 0 .4em;
 }
 
-div.active a.main  h2{
+div.active a.main  h2 {
 	
 }
 
 a.main  p.winner {
-	
+	line-height: 1.4em;
+	font-weight: 700;
+	font-size: 1.2em;
+	color: #dbdbdb;
 }
 
-div.active a.main  p.winner{
-	
+div.active a.main  p.winner {
+	color: #FFF;
 }
 
-div.info-box{
+div.info-box {
 	float: left;
 	width: 80%;
-	padding: 7% 0 4% 0;
+	padding: 7% 0 2% 0;
 }
-
 
 div.info-box p.my-choice {
 	background: #AAA;
 	color: #EBEBEB;
-	font-size: 1.2em;
+	font-size: 1em;
 	line-height: 2em;
-	padding: 0 0 0 1em;
-	width: 46%;
+	padding: 0 5%;
 	border-radius: .3em;
+	box-shadow: 1px 1px 1px #585858;
+	display: inline-block;
+}
+
+div.line {
+	position: fixed;
+	z-index: 0;
+	width: 10%;
+	border-right: 1px solid #DDD;
 }

@@ -2,6 +2,7 @@ package com.yubo.wechat.api.controller;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
@@ -75,10 +76,17 @@ public class VoteViewController extends BaseController{
 		//每个选项要包括：
 		//选项描述，选项关键字，选项投票数，选项百分比，选项背景颜色，选项图标，是否被用户选中
 		buildChoiceItemList(userAnswerVO,modelMap);
-		
+		modelMap.put("startDate", buildStartDate(userAnswerVO.getVoteVO().getStartTime()));
 		
 		mv.setViewName("voteDetail.html");
 		return mv;
+	}
+
+	private String buildStartDate(Date startTime) {
+		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
+		cal.setTime(startTime);
+		String date = ""+(cal.get(Calendar.MONTH)+1)+"."+cal.get(Calendar.DATE);
+		return date;
 	}
 
 	private void buildChoiceItemList(UserVoteVO userAnswerVO, ModelMap modelMap) {
@@ -187,6 +195,8 @@ public class VoteViewController extends BaseController{
 				if(userVote!=null && userVote.getCurrentAnswer()!=null){
 					voteHistoryVO.setUserChoice(userVote.getCurrentAnswer());
 				}
+				//顺便处理日期格式
+				voteHistoryVO.setStartDateForView(buildStartDate(voteHistoryVO.getStartTime()));
 			}
 		}
 		
