@@ -25,10 +25,10 @@
 			<div class="line"></div>
 		</div>
 		<div class="info-box">
-			<div class="main">
+			<a class="main" href="/vote/detail?voteId=${voteItem.voteId}&userId=${userId}">
 				<h2>${voteItem.voteQuestion}</h2>
 				<p class="winner">${voteItem.winnerRate}%选择了“${voteItem.winnerAnswer}”</p>
-			</div>
+			</a>
 			<#if voteItem.userChoice??>
 			<p class="my-choice">我选择了“${voteItem.userChoice}”</p>
 			</#if>

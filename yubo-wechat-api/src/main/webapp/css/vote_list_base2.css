@@ -46,7 +46,8 @@ div.time-box div.line {
 	border-left: 1px solid #DDD;
 }
 
-div.main {
+a.main {
+	display:block;
 	background: #AAA;
 	color: #FFF;
 	padding: 1em 1.2em;
@@ -55,26 +56,26 @@ div.main {
 	min-height: 5em;
 }
 
-div.active div.main {
+div.active a.main  {
 	background: #FF6E05;
 }
 
-div.main h2 {
+a.main  h2 {
 	font-size: 1.5em;
 	line-height: 1.3em;
 	font-weight: 700;
 	margin: 0 0 .4em;
 }
 
-div.active div.main h2{
+div.active a.main  h2{
 	
 }
 
-div.main p.winner {
+a.main  p.winner {
 	
 }
 
-div.active div.main p.winner{
+div.active a.main  p.winner{
 	
 }
 

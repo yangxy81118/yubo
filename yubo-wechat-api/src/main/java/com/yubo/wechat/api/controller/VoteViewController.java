@@ -55,8 +55,8 @@ public class VoteViewController extends BaseController{
 	 */
 	@RequestMapping("/detail")
 	public ModelAndView voteDetail(HttpServletRequest request,
-			HttpServletResponse response, @RequestParam long voteId,
-			@RequestParam int userId) throws Exception {
+			HttpServletResponse response, @RequestParam Long voteId,
+			@RequestParam Integer userId) throws Exception {
 
 		// 通过voteId与userId获取用户的投票情况
 		UserVoteVO userAnswerVO = voteService.getVoteAnswerForUser(userId,
@@ -193,6 +193,7 @@ public class VoteViewController extends BaseController{
 		ModelAndView mv = new ModelAndView("voteList.html");
 		ModelMap modelMap = mv.getModelMap();
 		modelMap.put("voteList", voteStaticList);
+		modelMap.put("userId", userId);
 		
 		return mv;
 	}

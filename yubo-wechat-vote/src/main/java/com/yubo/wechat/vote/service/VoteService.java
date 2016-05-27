@@ -54,7 +54,7 @@ public class VoteService {
 	 * @param voteId
 	 * @return
 	 */
-	public UserVoteVO getVoteAnswerForUser(int userId, long voteId) {
+	public UserVoteVO getVoteAnswerForUser(Integer userId, Long voteId) {
 
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("userId", userId);
@@ -85,7 +85,7 @@ public class VoteService {
 		voteVO.setLookConfig(voteBase.getLookConfig());
 
 		// 如果是当日进行中的投票，则直接从缓存中拿取
-		if (voteRealTimeHandler.getActiveVoteId().equals(voteId)) {
+		if (voteId.equals(voteRealTimeHandler.getActiveVoteId())) {
 			voteVO.setVoteResult(buildAnswerResult(voteRealTimeHandler
 					.getVoteResult()));
 		} else {
