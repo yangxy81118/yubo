@@ -6,8 +6,8 @@ body {
 }
 
 header {
-	padding: 10% 12%;
-	height: 15%;
+	padding: 10% 8% 8%;
+	min-height: 15%;
 }
 
 header p {
@@ -50,13 +50,13 @@ article div.w-right {
 }
 
 article ul {
-	background: #376956;
+	background: #9E751C;
 	position: relative;
 	height: 100%;
 }
 
 article ul.higher {
-	
+	background: #F3C156;
 }
 
 article p.or {
@@ -88,7 +88,7 @@ article ul li {
 }
 
 article ul li.icon {
-	padding: 43% 0 1% 0;
+	padding: 32% 0 1% 0;
 }
 
 article ul li svg {
@@ -101,7 +101,7 @@ article ul li svg.svg-color {
 
 article ul li.answer {
 	font-size: 2.4em;
-	padding: 0 0 40% 0;
+	padding: 0 0 30% 0;
 	color: #FFF;
 	font-weight: 700;
 }
