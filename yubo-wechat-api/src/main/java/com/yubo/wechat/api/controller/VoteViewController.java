@@ -159,42 +159,6 @@ public class VoteViewController extends BaseController{
 	}
 	
 	
-//	
-//	/**
-//	 * 捕捉
-//	 * 
-//	 * @param req
-//	 * @param response
-//	 * @param voteId
-//	 *            要查询的投票ID
-//	 * @return
-//	 * @throws Exception
-//	 */
-//	@RequestMapping("/list")
-//	public ModelAndView getUserVoteListMsg(HttpServletRequest req,
-//			HttpServletResponse response, @RequestParam Integer recentRows,@RequestParam Integer userId)
-//			throws Exception {
-//		
-//		// 直接去获取最近recentRows条投票记录信息
-//		List<VoteHistoryVO> voteStaticList = voteService.recentList(recentRows);
-//
-//		// 再去获取用户自己最近的投票记录
-//		if(userId!=null){
-//			Map<Long,UserVoteVO> userMap = voteService.getUserVoteList(recentRows,userId);
-//			for (VoteHistoryVO voteHistoryVO : voteStaticList) {
-//				UserVoteVO userVote = userMap.get(voteHistoryVO.getVoteId());
-//				if(userVote!=null && userVote.getCurrentAnswer()!=null){
-//					voteHistoryVO.setUserChoice(userVote.getCurrentAnswer());
-//				}
-//			}
-//		}
-//		
-//		ModelAndView mv = new ModelAndView("voteList.html");
-//		ModelMap modelMap = mv.getModelMap();
-//		modelMap.put("voteList", voteStaticList);
-//		
-//		return mv;
-//	}
 	
 
 	/**
@@ -209,15 +173,15 @@ public class VoteViewController extends BaseController{
 	 */
 	@RequestMapping("/list")
 	public ModelAndView voteList(HttpServletRequest req,
-			HttpServletResponse response, @RequestParam Integer recentRows,@RequestParam Integer userId)
+			HttpServletResponse response,@RequestParam Integer userId)
 			throws Exception {
 		
 		// 直接去获取最近recentRows条投票记录信息
-		List<VoteHistoryVO> voteStaticList = voteService.recentList(recentRows);
+		List<VoteHistoryVO> voteStaticList = voteService.recentList(20);
 
 		// 再去获取用户自己最近的投票记录
 		if(userId!=null){
-			Map<Long,UserVoteVO> userMap = voteService.getUserVoteList(recentRows,userId);
+			Map<Long,UserVoteVO> userMap = voteService.getUserVoteList(20,userId);
 			for (VoteHistoryVO voteHistoryVO : voteStaticList) {
 				UserVoteVO userVote = userMap.get(voteHistoryVO.getVoteId());
 				if(userVote!=null && userVote.getCurrentAnswer()!=null){
