@@ -17,11 +17,10 @@
 		<p class="date d-color">5.23&nbsp;&nbsp;#Q${info.voteVO.voteId}</p>
 		<h1 class="h1-color">${info.voteVO.voteQuestion}</h1>
 		<p class="leftTime lt-color">
-		剩余约
 		<#if leftHour??>
-		${leftHour}个小时
+		剩余约${leftHour}个小时
 		<#elseif leftMinute??>
-		${leftMinute}分钟
+		剩余约${leftMinute}分钟
 		<#else>
 		已截止
 		</#if>
