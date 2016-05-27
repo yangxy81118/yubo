@@ -36,7 +36,7 @@ public class VoteUtil {
 			}
 		}
 
-		winner.setRate((int) (Math.rint(winner.getCount() / totalCount)));
+		winner.setRate((int) (Math.rint((winner.getCount() / totalCount)*100)));
 
 		return winner;
 	}
