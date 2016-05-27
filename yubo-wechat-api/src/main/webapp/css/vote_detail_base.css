@@ -13,7 +13,7 @@ header {
 header p {
 	font-size: 1.2em;
 	color: #AAA;
-	font-weight:700;
+	font-weight: 700;
 }
 
 header p.date {
@@ -42,11 +42,11 @@ article div.answer-wrap {
 }
 
 article div.w-left {
-	padding:0 1% 0 0;
+	padding: 0 1% 0 0;
 }
 
 article div.w-right {
-	padding:0 0 0 1%;
+	padding: 0 0 0 1%;
 }
 
 article ul {
@@ -62,18 +62,25 @@ article ul.higher {
 article p.or {
 	position: absolute;
 	display: block;
-	background: #f6f6f6;
+	width: 100%;
+	top: 6em;
+	left: 0;
+}
+
+article p.or span {
+	display: block;
+	margin: 0 auto;
 	text-align: center;
 	font-size: 1.2em;
-	font-weight:bold;
-	line-height: 1.24em;
-	padding: .9em;
+	font-weight: bold;
+	line-height: 3em;
 	color: #999;
-	left: 43%;
-	top: 6em;
 	-moz-border-radius: 50px;
 	-webkit-border-radius: 50px;
 	border-radius: 50%;
+	background: #f6f6f6;
+	width: 3em;
+	height: 3em;
 }
 
 article ul li {
@@ -113,16 +120,14 @@ article ul li.vote-rate {
 
 article ul li.my-choice {
 	display: block;
-	position: absolute;
 	height: 2em;
 	background: #FFFFFF;
 	color: #666;
-	font-size: 1.2em;
+	font-size: 1em;
 	width: 5em;
-	left: 28%;
-	bottom: 10%;
 	line-height: 1.8em;
 	border-radius: .5em;
+	margin: 5% auto 0;
 }
 
 li.my-choice i {
@@ -134,8 +139,8 @@ li.my-choice b {
 }
 
 li.my-choice span {
-	position:relative;
-	top:0.1em;
+	position: relative;
+	top: 0.1em;
 	font-weight: 700;
 }
 
