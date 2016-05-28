@@ -31,6 +31,7 @@ import com.yubo.wechat.vote.service.vo.AnswerResultEntry;
 import com.yubo.wechat.vote.service.vo.UserVoteVO;
 import com.yubo.wechat.vote.service.vo.VoteHistoryVO;
 import com.yubo.wechat.vote.service.vo.VoteVO;
+import com.yubo.wechat.vote.util.VoteUtil;
 
 /**
  * 投票展示信息入口
@@ -145,12 +146,7 @@ public class VoteViewController extends BaseController{
 		if(voteVO.getVoteId().equals(realTimeHandler.getActiveVoteId())){
 			//直接判断明天6点为结束时间
 			//TODO 这种默认方式，还是需要优化，统一管理
-			Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
-			cal.setTime(voteVO.getStartTime());
-			cal.set(Calendar.HOUR_OF_DAY, 0);
-			cal.set(Calendar.MINUTE, 0);
-			cal.set(Calendar.SECOND, 0);
-			cal.add(Calendar.HOUR, 30);
+			Calendar cal = VoteUtil.getVoteEndTime(voteVO.getStartTime());
 			
 			long leftMillis = cal.getTimeInMillis() - System.currentTimeMillis();
 			

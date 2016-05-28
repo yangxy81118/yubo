@@ -265,18 +265,14 @@ public class VoteService {
 		List<VoteHistoryVO> history = voteHistoryCache.getHistoryList();
 
 		// 再从当前的投票记录中获取
+		VoteHistoryVO activeVoteVO = new VoteHistoryVO();
 		if (voteRealTimeHandler.getActiveVoteId() != null) {
-			VoteHistoryVO activeVoteVO = new VoteHistoryVO();
-			VoteVO activeVO = getVoteInfoByVoteId(voteRealTimeHandler
-					.getActiveVoteId());
-			activeVoteVO.setVoteId(voteRealTimeHandler.getActiveVoteId());
 			activeVoteVO.setStartTime(voteRealTimeHandler.getActiveVoteDate());
-			activeVoteVO.setVoteQuestion(activeVO.getVoteQuestion());
-			AnswerResultEntry entry = VoteUtil.getWinner(voteRealTimeHandler
-					.getVoteResult());
-			activeVoteVO.setWinnerAnswer(entry.getKey());
-			activeVoteVO.setWinnerRate(entry.getRate());
+			activeVoteVO.setVoteQuestion("想知道今天的问题吗~?快去大屏幕看看YUBO吧~");
+		}else{
+			activeVoteVO.setVoteQuestion("今天YUBO很懒，没有什么问题~zZZ...");
 		}
+		history.set(0, activeVoteVO);
 
 		return history;
 	}

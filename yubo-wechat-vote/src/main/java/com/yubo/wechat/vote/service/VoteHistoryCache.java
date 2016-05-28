@@ -1,9 +1,12 @@
 package com.yubo.wechat.vote.service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -49,6 +52,7 @@ public class VoteHistoryCache {
 		Map<String, Object> param = new HashMap<>();
 		param.put("startRow", 0);
 		param.put("rowCount", recentRows);
+		param.put("timeEnd", getTimeEnd());
 		param.put("orderField", "vote_id");
 		param.put("orderType", "DESC");
 		List<VoteBase> vbList = voteBaseMapper.selectByParam(param);
@@ -62,6 +66,20 @@ public class VoteHistoryCache {
 			historyList.add(vo);
 		}
 		logger.info("加载投票历史结果数据完毕，共加载{}条", historyList.size());
+	}
+
+	private Date getTimeEnd() {
+		
+		//如果当下没有正在进行的投票，则表示所有的投票都是历史，无需此参数
+		if(voteRealTimeHandler.getActiveVoteId()==null){
+			return null;
+		}
+		else{
+			//如果当下有正在进行的投票，则要获取当下投票的开始日期，倒退一天，并在此日期基础加30小时
+			Calendar cal = VoteUtil.getVoteEndTime(voteRealTimeHandler.getActiveVoteDate());
+			cal.add(Calendar.DATE, -1);
+			return cal.getTime();
+		}
 	}
 
 	/**
@@ -90,6 +108,9 @@ public class VoteHistoryCache {
 
 	@Autowired
 	VoteBaseMapper voteBaseMapper;
+	
+	@Autowired
+	VoteRealTimeHandler voteRealTimeHandler;
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(VoteHistoryCache.class);

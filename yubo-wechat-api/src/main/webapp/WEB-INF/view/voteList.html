@@ -28,16 +28,24 @@ $(function(){
 	</#if>
 		<div class="time-box">
 			<p class="date">${voteItem.startDateForView}</p>
-			<p class="icon">
-			<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 500 500" width="38" height="38">
+			<p class="icon-wrap">
+				<span>
+					<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 500 500" width="33" height="33">
 						<path fill="#FFF" d="M395.508 312.5v-41.992h-41.016v41.992h41.016zM395.508 395.508v-41.016h-41.016v41.016h41.016zM270.508 145.508v-41.016h-41.016v41.016h41.016zM270.508 229.492v-41.992h-41.016v41.992h41.016zM270.508 312.5v-41.992h-41.016v41.992h41.016zM270.508 395.508v-41.016h-41.016v41.016h41.016zM145.508 229.492v-41.992h-41.016v41.992h41.016zM145.508 312.5v-41.992h-41.016v41.992h41.016zM145.508 395.508v-41.016h-41.016v41.016h41.016zM312.5 229.492h125v208.008h-375v-291.992h125v-41.016l62.5-62.5 62.5 62.5v125z" style=""></path>
-						</svg>
+					</svg>
+				</span>
 			</p>
 		</div>
 		<div class="info-box">
+			<#if voteItem.voteId??>
 			<a class="main" href="/vote/detail?voteId=${voteItem.voteId}&userId=${userId}">
+			<#else>
+			<a class="main" href="javascript:void(0);">
+			</#if>
 				<h2>${voteItem.voteQuestion}</h2>
-				<p class="winner">${voteItem.winnerRate}%选择了“${voteItem.winnerAnswer}”</p>
+				<#if voteItem.winnerAnswer??>
+					<p class="winner">${voteItem.winnerRate}%选择了“${voteItem.winnerAnswer}”</p>
+				</#if>
 			</a>
 			<#if voteItem.userChoice??>
 			<p class="my-choice">我选择了“${voteItem.userChoice}”</p>

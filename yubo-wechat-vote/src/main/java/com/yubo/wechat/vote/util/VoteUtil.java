@@ -1,8 +1,11 @@
 package com.yubo.wechat.vote.util;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TimeZone;
 
 import com.alibaba.fastjson.JSONObject;
 import com.yubo.wechat.vote.service.vo.AnswerResultEntry;
@@ -66,5 +69,24 @@ public class VoteUtil {
 
 		return winner;
 
+	}
+	
+	/**
+	 * 根据一个投票的开始时间，计算出其结束的时间
+	 * 
+	 * @param voteStartTime
+	 * @return
+	 */
+	public static Calendar getVoteEndTime(Date voteStartTime){
+		
+		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
+		cal.setTime(voteStartTime);
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.add(Calendar.HOUR, 30);
+		
+		return cal;
+		
 	}
 }
