@@ -115,6 +115,10 @@ public class VoteService {
 		List<UserVoteRecord> list = getPreviousAnswerRecord(null, userId, 0,
 				recentRows);
 		Map<Long, UserVoteVO> map = new HashMap<>();
+		if(list==null){
+			return map;
+		}
+		
 		for (UserVoteRecord userVoteRecord : list) {
 			UserVoteVO vote = new UserVoteVO();
 			vote.setCurrentAnswer(userVoteRecord.getUserChoiceAnswer());
@@ -266,7 +270,6 @@ public class VoteService {
 		List<VoteHistoryVO> recentList = new LinkedList<>();
 		recentList.addAll(voteHistoryCache.getHistoryList());
 		
-
 		// 再从当前的投票记录中获取
 		VoteHistoryVO activeVoteVO = new VoteHistoryVO();
 		if (voteRealTimeHandler.getActiveVoteId() != null) {
