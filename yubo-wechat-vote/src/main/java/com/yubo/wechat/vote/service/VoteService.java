@@ -1,6 +1,7 @@
 package com.yubo.wechat.vote.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,7 +24,6 @@ import com.yubo.wechat.vote.service.vo.AnswerResultEntry;
 import com.yubo.wechat.vote.service.vo.UserVoteVO;
 import com.yubo.wechat.vote.service.vo.VoteHistoryVO;
 import com.yubo.wechat.vote.service.vo.VoteVO;
-import com.yubo.wechat.vote.util.VoteUtil;
 
 /**
  * 投票服务
@@ -276,6 +276,7 @@ public class VoteService {
 			activeVoteVO.setStartTime(voteRealTimeHandler.getActiveVoteDate());
 			activeVoteVO.setVoteQuestion("想知道今天的问题吗~?快去大屏幕看看YUBO吧~");
 		}else{
+			activeVoteVO.setStartTime(new Date());
 			activeVoteVO.setVoteQuestion("今天YUBO很懒，没有什么问题~zZZ...");
 		}
 		recentList.add(0, activeVoteVO);
