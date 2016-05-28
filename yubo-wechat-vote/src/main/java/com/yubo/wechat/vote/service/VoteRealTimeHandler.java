@@ -91,10 +91,12 @@ public class VoteRealTimeHandler {
 				String[] keys = parseKeys(voteBase.getAnswers());
 				for (int j = 0; j < keys.length; j++) {
 					answer4VoteMapping.put(keys[j], voteBase.getVoteId());
+					voteResult.put(keys[j], 0);
 				}
 				break;
 			}
 		}
+		
 		activeVoteId = getFirstId();
 		activeVoteDate = getVoteDate();
 		logger.info("今日的投票ID与答案关键字的映射加载完毕，一共{}条数据", answer4VoteMapping.size());
