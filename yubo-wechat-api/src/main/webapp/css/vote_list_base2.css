@@ -33,9 +33,13 @@ div.time-box p.icon-wrap {
 	z-index: 1;
 }
 
+div.active p.icon-wrap span {
+	background: #e38055;
+}
+
 p.icon-wrap span {
 	display: block;
-	background: #AAAAAA;
+	background: #959595;
 	border-radius: 50%;
 	height: 35px;
 	width: 35px;
@@ -43,13 +47,6 @@ p.icon-wrap span {
 	margin: 0 auto;
 	box-shadow: 0 2px 1px #7E7E7E;
 	padding: 0.4em;
-}
-
-div.line-wrap div.line {
-	border: 1px solid #DDD;
-	width: 0;
-	height: 100%;
-	margin: 0 auto;
 }
 
 a.main {
@@ -110,5 +107,5 @@ div.line {
 	position: fixed;
 	z-index: 0;
 	width: 10%;
-	border-right: 1px solid #DDD;
+	border-right: 2px solid #DDD;
 }

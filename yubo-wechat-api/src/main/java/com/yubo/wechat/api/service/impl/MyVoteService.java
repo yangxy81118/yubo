@@ -63,7 +63,7 @@ public class MyVoteService implements MessageHandler {
 		List<ArticleItem> articles = new ArrayList<>();
 		ArticleItem item = new ArticleItem();
 		item.setDescription("YUBO每天都有各种各样的问题，多谢大家帮忙解答~");
-		item.setTitle("我的回答");
+		item.setTitle("问答记录");
 		item.setUrl("http://www.yubo.space/vote/list?userId="+userId);
 		item.setPicUrl(DEFAULT_FEEDBACK_PIC_URL);
 		articles.add(item);

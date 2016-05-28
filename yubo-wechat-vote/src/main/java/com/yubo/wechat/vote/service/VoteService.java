@@ -2,6 +2,7 @@ package com.yubo.wechat.vote.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -262,7 +263,9 @@ public class VoteService {
 	public List<VoteHistoryVO> recentList(int rowCount) {
 
 		// 首先从缓存里获取历史数据
-		List<VoteHistoryVO> history = voteHistoryCache.getHistoryList();
+		List<VoteHistoryVO> recentList = new LinkedList<>();
+		recentList.addAll(voteHistoryCache.getHistoryList());
+		
 
 		// 再从当前的投票记录中获取
 		VoteHistoryVO activeVoteVO = new VoteHistoryVO();
@@ -272,9 +275,9 @@ public class VoteService {
 		}else{
 			activeVoteVO.setVoteQuestion("今天YUBO很懒，没有什么问题~zZZ...");
 		}
-		history.set(0, activeVoteVO);
+		recentList.add(0, activeVoteVO);
 
-		return history;
+		return recentList;
 	}
 
 	private void updateAnswer(UserVoteRecord perviousRecord,
