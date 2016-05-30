@@ -58,28 +58,18 @@ public class VoteHelper {
 		
 		Long voteId = voteService.getFirstVoteId();
 		if(voteId==null){
-			return null;
+			return XMLHelper.buildTextResponse("YUBO今天很懒，没什么问题，zzZZ...",request);
 		}
 		
 		VoteVO vo = voteService.getVoteInfoByVoteId(voteId);
 		
-		TextResponse response = new TextResponse();
 		String content = "YUBO今天的问题，希望听听你的想法~\n(请回复括号中的关键字)\n\n"+vo.getVoteQuestion()+"\n";
-		
 		List<AnswerEntry> as =  vo.getVoteAnswers();
 		for (AnswerEntry answerEntry : as) {
 			content += answerEntry.getAnswerDiscription() + "【"+answerEntry.getAnswerKey()+"】\n";
 		}
 		
-		response.setContent(content);
-		response.setCreateTime(System.currentTimeMillis());
-		response.setFromUserName(request.getToUserName());
-		response.setToUserName(request.getFromUserName());
-
-		MsgHandlerResult result = new MsgHandlerResult();
-		result.setXmlResponse(XMLHelper.buildXMLStr(response,
-				TextResponse.class));
-		return result;
+		return XMLHelper.buildTextResponse(content,request);
 	}
 
 	/**

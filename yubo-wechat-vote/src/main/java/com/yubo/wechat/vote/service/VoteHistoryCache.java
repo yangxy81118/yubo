@@ -48,6 +48,8 @@ public class VoteHistoryCache {
 	@PostConstruct
 	public synchronized void loadHistory() {
 
+		List<VoteHistoryVO> tmpList = new ArrayList<>();
+		
 		logger.info("开始加载投票历史结果数据");
 		Map<String, Object> param = new HashMap<>();
 		param.put("startRow", 0);
@@ -63,8 +65,12 @@ public class VoteHistoryCache {
 			vo.setVoteId(voteBase.getVoteId());
 			buildWinner(vo, voteBase.getSummary());
 			vo.setStartTime(voteBase.getStartTime());
-			historyList.add(vo);
+			tmpList.add(vo);
 		}
+		
+		historyList = null;
+		historyList = tmpList;
+		
 		logger.info("加载投票历史结果数据完毕，共加载{}条", historyList.size());
 	}
 
