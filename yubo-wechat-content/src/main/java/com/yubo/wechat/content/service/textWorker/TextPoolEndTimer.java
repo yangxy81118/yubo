@@ -1,11 +1,16 @@
 package com.yubo.wechat.content.service.textWorker;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.yubo.wechat.content.dao.MessageTextMapper;
+import com.yubo.wechat.support.MathUtil;
 import com.yubo.wechat.support.TimeUtil;
 
 /**
@@ -44,13 +49,21 @@ public class TextPoolEndTimer extends TimerTask {
 		cal.add(Calendar.DATE, 1);
 
 		Timer startTimer = new Timer();
-		startTimer.schedule(new TextPoolStartTimer(textPool, textGuide,
-				textGuide.getMessageTextMapper()), cal.getTime());
+		Date startDate = cal.getTime();
+		startTimer.schedule(new TextPoolStartTimer(textPool, textGuide),
+				startDate);
+		logger.info("TextPool[{}]在{}分钟后执行下一次Start任务", textPool.getPeriodId(),
+				TimeUtil.formatTime(startDate));
 
 		cal.set(Calendar.HOUR_OF_DAY, textPool.getEndHour());
 		Timer endTimer = new Timer();
-		endTimer.schedule(new TextPoolEndTimer(textPool, textGuide),
-				cal.getTime());
+		Date endDate = cal.getTime();
+		endTimer.schedule(new TextPoolEndTimer(textPool, textGuide), endDate);
+		logger.info("TextPool[{}]在{}执行下一次End任务", textPool.getPeriodId(),
+				TimeUtil.formatTime(endDate));
 	}
+
+	private static final Logger logger = LoggerFactory
+			.getLogger(TextPoolEndTimer.class);
 
 }

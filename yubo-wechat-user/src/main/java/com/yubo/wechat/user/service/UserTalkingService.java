@@ -22,11 +22,11 @@ import com.yubo.wechat.user.vo.UserTalkVO;
 public class UserTalkingService {
 
 	/**
-	 * 存储一次简单对话
+	 * 存储一次对话
 	 * 
 	 * @param userTalkVO
 	 */
-	public void saveTalk(UserTalkVO userTalkVO) {
+	public void saveSimpleTalk(UserTalkVO userTalkVO) {
 
 		TalkHistory record = new TalkHistory();
 		record.setUserId(userTalkVO.getUserId());
@@ -34,28 +34,42 @@ public class UserTalkingService {
 		record.setLastTalkUserSaid(userTalkVO.getUserSaid());
 		record.setLastTalkPetSaid(userTalkVO.getPetSaid());
 		record.setLastTalkFuncCode(userTalkVO.getTalkFuncCode());
-		record.setLastTalkTime(userTalkVO.getLastTalkTime());
-		
-		//功能性聊天，加入一个状态位
-		if(userTalkVO.getTalkFuncCode()!=0){
+
+		// 功能性聊天，加入一个状态位
+		if (userTalkVO.getTalkFuncCode() != 0) {
 			record.setLastTalkState(1);
 		}
 		historyMapper.insertSelective(record);
 	}
-	
+
 	/**
 	 * 将用户的功能性输入存储
 	 * 
 	 * @param userTalkVO
 	 */
-	public void updateTalk(UserTalkVO userTalkVO) {
+	public void addUserTalk(UserTalkVO userTalkVO) {
 		TalkHistory record = new TalkHistory();
 		record.setTalkId(userTalkVO.getTalkId());
 		record.setLastTalkUserSaid(userTalkVO.getUserSaid());
 		record.setLastTalkState(2);
+		record.setLastTalkFuncCode(userTalkVO.getTalkFuncCode());
+		record.setUserId(userTalkVO.getUserId());
+		record.setPetId(userTalkVO.getPetId());
+		historyMapper.insertSelective(record);
+	}
+
+	/**
+	 * 本次功能性输入用户无内容回复，关闭
+	 * 
+	 * @param userTalkVO
+	 */
+	public void closeTalk(UserTalkVO userTalkVO) {
+		TalkHistory record = new TalkHistory();
+		record.setTalkId(userTalkVO.getTalkId());
+		record.setLastTalkState(0);
 		historyMapper.updateByPrimaryKeySelective(record);
 	}
-	
+
 	/**
 	 * 获取用户的功能性对话
 	 * 
@@ -70,7 +84,7 @@ public class UserTalkingService {
 		param.setUserId(userId);
 		param.setLastTalkState(1);
 		List<TalkHistory> history = historyMapper.selectBySelective(param);
-		if(!EmptyChecker.isEmpty(history)){
+		if (!EmptyChecker.isEmpty(history)) {
 			TalkHistory historyItem = history.get(0);
 			UserTalkVO vo = new UserTalkVO();
 			vo.setUserId(userId);
@@ -80,15 +94,31 @@ public class UserTalkingService {
 			vo.setTalkId(historyItem.getTalkId());
 			return vo;
 		}
-		
+
 		return null;
 	}
-	
+
+	/**
+	 * 用户拒绝回答本次功能性问题
+	 * 
+	 * @param content
+	 * @return
+	 */
+	public boolean userRejection(String content) {
+		content = content.trim();
+		for (int i = 0; i < rejectionWords.length; i++) {
+			return content.equals(rejectionWords[i]);
+		}
+		return false;
+	}
+
 	@Autowired
 	TalkHistoryMapper historyMapper;
-	
+
 	private static final Logger logger = LoggerFactory
 			.getLogger(UserTalkingService.class);
 
+	private static final String[] rejectionWords = { "没有", "算了", "下次", "下次吧",
+			"不知", "不知道", "不了解", "没", "NO", "no", "不感兴趣" };
 
 }

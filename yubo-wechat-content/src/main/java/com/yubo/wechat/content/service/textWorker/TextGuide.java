@@ -28,6 +28,7 @@ import com.yubo.wechat.content.dao.MessageTextMapper;
 import com.yubo.wechat.content.dao.pojo.MessageText;
 import com.yubo.wechat.content.vo.MessageVO;
 import com.yubo.wechat.support.EmptyChecker;
+import com.yubo.wechat.support.MathUtil;
 import com.yubo.wechat.support.PageUtil;
 import com.yubo.wechat.support.TimeUtil;
 import com.yubo.wechat.support.thread.ThreadPool;
@@ -121,6 +122,8 @@ public class TextGuide {
 			textPool.setAccessRdmEnd(rate + lastEnd);
 			lastEnd = rate + lastEnd;
 		}
+		
+		logger.info("加载YUBO语言内容完毕，共{}条数据",(int)totalMsgCount);
 	}
 
 	/**
@@ -180,6 +183,7 @@ public class TextGuide {
 		Calendar cal = TimeUtil.getChinaCalendar(1, 0, 0, 0);
 		Timer timer = new Timer();
 		timer.schedule(new AllTimePoolTimer(allTimePool, this), cal.getTime());
+		logger.info("TextPool[0]在明天0点执行更新任务");
 
 	}
 

@@ -2,16 +2,21 @@ package com.yubo.wechat.content.service.textWorker;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.concurrent.Callable;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.yubo.wechat.content.dao.MessageTextMapper;
 import com.yubo.wechat.content.dao.pojo.MessageText;
 import com.yubo.wechat.content.vo.MessageVO;
 import com.yubo.wechat.support.EmptyChecker;
+import com.yubo.wechat.support.MathUtil;
 import com.yubo.wechat.support.PageUtil;
 import com.yubo.wechat.support.TimeUtil;
 
@@ -111,13 +116,18 @@ public class TextPoolLoadRunner implements Callable<Integer> {
 		cal.set(Calendar.SECOND, 0);
 
 		Timer startTimer = new Timer();
-		startTimer.schedule(new TextPoolStartTimer(textPool, textGuide,
-				messageTextMapper), cal.getTime());
+		Date startDate = cal.getTime();
+		startTimer.schedule(new TextPoolStartTimer(textPool, textGuide),
+				startDate);
+		logger.info("TextPool[{}]在{}分钟后执行下一次Start任务", textPool.getPeriodId(),
+				TimeUtil.formatTime(startDate));
 
 		cal.set(Calendar.HOUR_OF_DAY, textPool.getEndHour());
 		Timer endTimer = new Timer();
-		endTimer.schedule(new TextPoolEndTimer(textPool, textGuide),
-				cal.getTime());
+		Date endDate = cal.getTime();
+		endTimer.schedule(new TextPoolEndTimer(textPool, textGuide), endDate);
+		logger.info("TextPool[{}]在{}执行下一次End任务", textPool.getPeriodId(),
+				TimeUtil.formatTime(endDate));
 	}
 
 	private void prepareTimerForB(Calendar cal) {
@@ -126,11 +136,13 @@ public class TextPoolLoadRunner implements Callable<Integer> {
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
 		Timer endTimer = new Timer();
-		endTimer.schedule(new TextPoolEndTimer(textPool, textGuide),
-				cal.getTime());
-		
-		//如果是24，会导致Date数据往后延一天
-		if(textPool.getEndHour().equals(24)){
+		Date endDate = cal.getTime();
+		endTimer.schedule(new TextPoolEndTimer(textPool, textGuide), endDate);
+		logger.info("TextPool[{}]在{}执行下一次End任务", textPool.getPeriodId(),
+				TimeUtil.formatTime(endDate));
+
+		// 如果是24，会导致Date数据往后延一天
+		if (textPool.getEndHour().equals(24)) {
 			cal.add(Calendar.DATE, -1);
 		}
 
@@ -138,8 +150,11 @@ public class TextPoolLoadRunner implements Callable<Integer> {
 		cal.set(Calendar.HOUR_OF_DAY, textPool.getStartHour());
 		cal.add(Calendar.DATE, 1);
 		Timer startTimer = new Timer();
-		startTimer.schedule(new TextPoolStartTimer(textPool, textGuide,
-				messageTextMapper), cal.getTime());
+		Date startDate = cal.getTime();
+		startTimer.schedule(new TextPoolStartTimer(textPool, textGuide),
+				startDate);
+		logger.info("TextPool[{}]在{}分钟后执行下一次Start任务", textPool.getPeriodId(),
+				TimeUtil.formatTime(startDate));
 
 		textGuide.addActivePool(textPool);
 	}
@@ -151,16 +166,24 @@ public class TextPoolLoadRunner implements Callable<Integer> {
 		cal.add(Calendar.DATE, 1);
 
 		Timer startTimer = new Timer();
-		startTimer.schedule(new TextPoolStartTimer(textPool, textGuide,
-				messageTextMapper), cal.getTime());
+		Date startDate = cal.getTime();
+		startTimer.schedule(new TextPoolStartTimer(textPool, textGuide),
+				startDate);
+		logger.info("TextPool[{}]在{}分钟后执行下一次Start任务", textPool.getPeriodId(),
+				TimeUtil.formatTime(startDate));
 
 		cal.set(Calendar.HOUR_OF_DAY, textPool.getEndHour());
 		Timer endTimer = new Timer();
-		endTimer.schedule(new TextPoolEndTimer(textPool, textGuide),
-				cal.getTime());
+		Date endDate = cal.getTime();
+		endTimer.schedule(new TextPoolEndTimer(textPool, textGuide), endDate);
+		logger.info("TextPool[{}]在{}执行下一次End任务", textPool.getPeriodId(),
+				TimeUtil.formatTime(endDate));
 
 	}
 
 	private static final int PAGE_ROWS = 30;
+
+	private static final Logger logger = LoggerFactory
+			.getLogger(TextPoolLoadRunner.class);
 
 }

@@ -41,9 +41,9 @@ public class TextMsgService implements MessageHandler {
 	public MsgHandlerResult execute(MsgInputParam param) {
 
 		logger.info("TextMsg业务处理");
-		
+
 		param.petId = 1;
-		
+
 		try {
 			TextMsgRequest request = XMLHelper.parseXml(param.requestBody,
 					TextMsgRequest.class);
@@ -52,13 +52,13 @@ public class TextMsgService implements MessageHandler {
 			if (isAuthorizing(request)) {
 				return authorizeHelper.execute(param, request);
 			}
-			
+
 			// 如果是宠物还未出生的阶段，则直接回复
 			if (petService.stillInEgg(1)) {
 				return buildResult(request,
 						"神秘旁白:\n小宠物还在孵化之中，还需要更多同学来激活，完成小宠物的孵化。\n快去告诉身边的同学吧~");
 			}
-			
+
 			// 临时测试用
 			MsgHandlerResult testR = null;
 			if ((testR = voteHelper.testForQuestion(request)) != null) {
@@ -69,31 +69,44 @@ public class TextMsgService implements MessageHandler {
 			if (voteHelper.isVoteAnswer(request.getContent())) {
 				return voteHelper.execute(param, request);
 			}
-			
-			//进入最常规流程
-			
+
+			// 进入最常规流程
+
 			String petLastTalk = null;
 
-			// 首先判断去Redis中进行查找，key为simpleTalk.${petId}.${userId}
+			// 首先若在talk_history中找到了，则说明是命令回复，将本次回复进行记录，进行对应的业务处理（学笑话，学外语等等）
+			Jedis redisClient = redisHandler.getRedisClient();
+			String funcCodeStr = redisClient.get(RedisKeyBuilder
+					.buildFunctionCode(param.userId, param.petId));
+			if (funcCodeStr != null) {
+				if (userTalkingService.userRejection(request.getContent())) {
+					return buildResult(request, "好的，想到记得下次告诉我哦～");
+				} else {
+					UserTalkVO functionTalkVO = new UserTalkVO();
+					functionTalkVO.setTalkFuncCode(Integer
+							.parseInt(funcCodeStr));
+					functionTalkVO.setUserSaid(request.getContent());
+					functionTalkVO.setUserId(param.userId);
+					functionTalkVO.setPetId(param.petId);
+					userTalkingService.addUserTalk(functionTalkVO);
+					redisClient.del(RedisKeyBuilder.buildFunctionCode(param.userId, param.petId));
+					
+					// TODO 这里该如何回复?暂时固定
+					return buildResult(request, "嗯嗯，谢谢你的分享~");
+				}
+			}
+
+			// 判断去Redis中进行查找，key为simpleTalk.${petId}.${userId}.0，查找简单
 			// TODO 这里有加入事务的必要性
 			if ((petLastTalk = petLastTalkInCache(param)) != null) {
 				saveSimpleTalk(petLastTalk, param, request.getContent());
-				removeRedisKey(param.userId, 1);
+				removeRedisKey(param.userId, 1, 0);
 				logger.info("成功存储用户[{}]的回复[{}]", param.userId,
 						request.getContent());
 				return buildResult(request, replyService.shortReply());
 			}
 
 			// 如果不存在，则检查是否是命令回复，去检查数据库talk_history表
-			// 若在talk_history中找到了，则说明是命令回复，将本次回复进行记录，进行对应的业务处理（学笑话，学外语等等）
-			UserTalkVO functionTalkVO = userTalkingService.getFunctionTalk(param.userId,param.petId);
-			if(functionTalkVO!=null){
-				functionTalkVO.setUserSaid(request.getContent());
-				userTalkingService.updateTalk(functionTalkVO);
-				//TODO 这里该如何回复?暂时固定
-				return buildResult(request,"嗯嗯，谢谢你的分享~");
-			}
-
 			return buildResult(request, replyService.shortReply());
 
 		} catch (Exception e) {
@@ -104,11 +117,11 @@ public class TextMsgService implements MessageHandler {
 	}
 
 	// TODO 经常这样删除,不知是否这样合适？
-	private void removeRedisKey(int userId, int petId) {
+	private void removeRedisKey(int userId, int petId, int i) {
 		Jedis redis = null;
 		try {
 			redis = redisHandler.getRedisClient();
-			redis.del(RedisKeyBuilder.buildSimpleTalkKey(userId, petId));
+			redis.del(RedisKeyBuilder.buildTalkKey(userId, petId, 0));
 		} catch (Exception e) {
 			logger.error("Redis操作removeRedisKey失败");
 		}
@@ -123,7 +136,7 @@ public class TextMsgService implements MessageHandler {
 		simpleTalkVO.setUserSaid(userSaid);
 		simpleTalkVO.setTalkFuncCode(0);
 		simpleTalkVO.setLastTalkTime(new Date());
-		userTalkingService.saveTalk(simpleTalkVO);
+		userTalkingService.saveSimpleTalk(simpleTalkVO);
 	}
 
 	/**
@@ -140,7 +153,7 @@ public class TextMsgService implements MessageHandler {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		String key = RedisKeyBuilder.buildSimpleTalkKey(param.userId, 1);
+		String key = RedisKeyBuilder.buildTalkKey(param.userId, 1, 0);
 		String content = redis.get(key);
 		return content;
 	}
@@ -188,7 +201,7 @@ public class TextMsgService implements MessageHandler {
 
 	@Autowired
 	UserService userService;
-	
+
 	@Autowired
 	UserTalkingService userTalkingService;
 
@@ -200,7 +213,7 @@ public class TextMsgService implements MessageHandler {
 
 	@Autowired
 	VoteHelper voteHelper;
-	
+
 	@Autowired
 	FunctionTalkHelper functionTalkHelper;
 

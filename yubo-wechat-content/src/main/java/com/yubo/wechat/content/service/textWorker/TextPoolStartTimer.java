@@ -27,14 +27,11 @@ public class TextPoolStartTimer extends TimerTask {
 
 	private TextPool textPool;
 
-	private MessageTextMapper messageTextMapper;
-	
 	private TextGuide textGuide;
 
-	public TextPoolStartTimer(TextPool textPool,TextGuide textGuide,MessageTextMapper messageTextMapper) {
+	public TextPoolStartTimer(TextPool textPool,TextGuide textGuide) {
 		this.textPool = textPool;
 		this.textGuide = textGuide;
-		this.messageTextMapper = messageTextMapper;
 	}
 
 	@Override
@@ -65,7 +62,7 @@ public class TextPoolStartTimer extends TimerTask {
 		
 		Map<String, Object> param = new HashMap<>();
 		param.put("periodId", textPool.getPeriodId());
-		int totalRows = messageTextMapper.countByParam(param);
+		int totalRows = textGuide.getMessageTextMapper().countByParam(param);
 
 		if (totalRows == 0) {
 			return contentlist;
@@ -78,7 +75,7 @@ public class TextPoolStartTimer extends TimerTask {
 			contentParam.put("periodId", textPool.getPeriodId());
 			contentParam.put("startRow", i * PAGE_ROWS);
 			contentParam.put("rowCount", PAGE_ROWS);
-			contentlist.addAll(buildReplyMessageList(messageTextMapper
+			contentlist.addAll(buildReplyMessageList(textGuide.getMessageTextMapper()
 					.pageByParam(contentParam)));
 		}
 

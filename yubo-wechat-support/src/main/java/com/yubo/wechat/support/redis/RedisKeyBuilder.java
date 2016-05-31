@@ -8,18 +8,31 @@ package com.yubo.wechat.support.redis;
  */
 public class RedisKeyBuilder {
 
-	public static final String PREFIX_SIMPLETALK = "SimpleTalk.";
+	public static final String PREFIX_SIMPLETALK = "Talk.";
 	public static final String PREFIX_FAVOR_LOCK = "FavorLock.";
+	public static final String PREFIX_FUNCTION_CODE = "FunctionCode.";
 
 	/**
-	 * 简单对话Redis Key 构建
+	 * 对话Redis Key 构建
 	 * 
 	 * @param userId
 	 * @param petId
 	 * @return
 	 */
-	public static String buildSimpleTalkKey(int userId, int petId) {
-		return buildByUserAndPet(PREFIX_SIMPLETALK, userId, petId);
+	public static String buildTalkKey(int userId, int petId,int functionCode) {
+		return buildByUserAndPet(PREFIX_SIMPLETALK, userId, petId,functionCode);
+	}
+	
+	
+	/**
+	 * 当前用户最近一次功能性对话的code
+	 * 
+	 * @param userId
+	 * @param petId
+	 * @return
+	 */
+	public static String buildFunctionCode(int userId, int petId) {
+		return buildByUserAndPet(PREFIX_FUNCTION_CODE,userId, petId);
 	}
 	
 	/**
@@ -36,6 +49,13 @@ public class RedisKeyBuilder {
 	public static String buildByUserAndPet(String prefix, int userId, int petId) {
 		StringBuffer keyBuf = new StringBuffer(prefix);
 		keyBuf.append(petId).append(".").append(userId);
+		String key = keyBuf.toString();
+		return key;
+	}
+	
+	public static String buildByUserAndPet(String prefix, int userId, int petId,int functionCode) {
+		StringBuffer keyBuf = new StringBuffer(prefix);
+		keyBuf.append(petId).append(".").append(userId).append(".").append(functionCode);
 		String key = keyBuf.toString();
 		return key;
 	}

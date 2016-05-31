@@ -1,10 +1,36 @@
 package com.yubo.wechat.support;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.TimeZone;
 
 public class TimeUtil {
 
+	
+	/**
+	 * 格式化时间,只输出日
+	 * 
+	 * @param date
+	 * @return
+	 */
+	public static String formatTime(Date date){
+		return formatTime(date, "yyyy-MM-dd HH:mm:ss");
+	}
+	
+	/**
+	 * 格式化时间
+	 * 
+	 * @param date
+	 * @param pattern
+	 * @return
+	 */
+	public static String formatTime(Date date,String pattern){
+		SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+		return sdf.format(date);
+	}
+	
+	
 	/**
 	 * 获取北京时间Calendar对象
 	 * 
