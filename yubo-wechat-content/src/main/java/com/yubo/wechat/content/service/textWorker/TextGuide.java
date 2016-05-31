@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Random;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.Timer;
@@ -92,10 +93,19 @@ public class TextGuide {
 
 	private MessageVO getRandomMessageInPool(TextPool textPool) {
 		List<MessageVO> list = textPool.getTextContent();
-		int idx = (int) (Math.random() * list.size());
+		Random random = new Random();
+		int idx = random.nextInt(list.size());
 		return list.get(idx);
 	}
-
+	
+	public static void main(String[] args) {
+		Random random = new Random();
+		for (int i = 0; i < 50; i++) {
+			int a =random.nextInt(10);
+			System.out.print(a+" ");
+		}
+	}
+	
 	/**
 	 * 对当前的activePool进行随机数概率的平分
 	 */
