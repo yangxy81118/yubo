@@ -79,7 +79,7 @@ public class TextMsgService implements MessageHandler {
 			String funcCodeStr = redisClient.get(RedisKeyBuilder
 					.buildFunctionCode(param.userId, param.petId));
 			if (funcCodeStr != null) {
-				if (userTalkingService.userRejection(request.getContent())) {
+				if (userTalkingService.userRejection(request.getContent().trim())) {
 					return buildResult(request, "好的，想到记得下次告诉我哦～");
 				} else {
 					UserTalkVO functionTalkVO = new UserTalkVO();

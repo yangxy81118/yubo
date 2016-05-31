@@ -107,7 +107,9 @@ public class UserTalkingService {
 	public boolean userRejection(String content) {
 		content = content.trim();
 		for (int i = 0; i < rejectionWords.length; i++) {
-			return content.equals(rejectionWords[i]);
+			if(content.equals(rejectionWords[i])){
+				return true;
+			}
 		}
 		return false;
 	}
