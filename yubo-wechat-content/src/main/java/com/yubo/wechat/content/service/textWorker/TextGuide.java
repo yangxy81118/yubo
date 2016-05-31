@@ -107,7 +107,8 @@ public class TextGuide {
 	}
 	
 	/**
-	 * 对当前的activePool进行随机数概率的平分
+	 * 对当前的activePool进行随机数概率的平分<br/>
+	 * activePool中只要发生任何变动，都要调用此方法
 	 */
 	private void prepareRadomRate() {
 		if (activeTextPool.size() == 0) {
@@ -280,6 +281,7 @@ public class TextGuide {
 	 */
 	public synchronized void addActivePool(TextPool pool) {
 		activeTextPool.add(pool);
+		prepareRadomRate();
 	}
 
 	/**
@@ -295,6 +297,7 @@ public class TextGuide {
 				it.remove();
 			}
 		}
+		prepareRadomRate();
 	}
 
 	public synchronized List<TextPool> getAllTextPool() {
