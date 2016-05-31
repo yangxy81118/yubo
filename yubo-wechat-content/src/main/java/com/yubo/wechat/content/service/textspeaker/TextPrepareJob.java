@@ -41,22 +41,21 @@ public class TextPrepareJob {
 	MessageTextMapper messageTextMapper;
 
 	// 对定时任务的处理进行加载
-	static {
-		Properties props = null;
-		try {
-			props = PropertiesLoaderUtils
-					.loadAllProperties("app-schedule.properties");
+//	static {
+//		Properties props = null;
+//		try {
+//			props = PropertiesLoaderUtils
+//					.loadAllProperties("app-schedule.properties");
+//
+//			buildScheduleList(props);
+//			Collections.sort(workdaySchedule, new TextScheduleSortComparetor());
+//			Collections.sort(weekendSchedule, new TextScheduleSortComparetor());
+//		} catch (Exception e) {
+//			logger.error(e.getMessage(), e);
+//		}
+//
+//	}
 
-			buildScheduleList(props);
-			Collections.sort(workdaySchedule, new TextScheduleSortComparetor());
-			Collections.sort(weekendSchedule, new TextScheduleSortComparetor());
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-
-	}
-
-	@PostConstruct
 	public void initJob() {
 
 		// 开始执行定时任务

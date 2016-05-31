@@ -13,6 +13,7 @@ import redis.clients.jedis.Jedis;
 
 import com.yubo.wechat.api.service.MessageHandler;
 import com.yubo.wechat.api.service.helper.AuthorizeHelper;
+import com.yubo.wechat.api.service.helper.FunctionTalkHelper;
 import com.yubo.wechat.api.service.helper.VoteHelper;
 import com.yubo.wechat.api.service.vo.MsgHandlerResult;
 import com.yubo.wechat.api.service.vo.MsgInputParam;
@@ -24,7 +25,8 @@ import com.yubo.wechat.pet.service.PetService;
 import com.yubo.wechat.support.redis.RedisHandler;
 import com.yubo.wechat.support.redis.RedisKeyBuilder;
 import com.yubo.wechat.user.service.UserService;
-import com.yubo.wechat.user.vo.SimpleTalkVO;
+import com.yubo.wechat.user.service.UserTalkingService;
+import com.yubo.wechat.user.vo.UserTalkVO;
 import com.yubo.wechat.vote.service.VoteService;
 
 /**
@@ -84,6 +86,13 @@ public class TextMsgService implements MessageHandler {
 
 			// 如果不存在，则检查是否是命令回复，去检查数据库talk_history表
 			// 若在talk_history中找到了，则说明是命令回复，将本次回复进行记录，进行对应的业务处理（学笑话，学外语等等）
+			UserTalkVO functionTalkVO = userTalkingService.getFunctionTalk(param.userId,param.petId);
+			if(functionTalkVO!=null){
+				functionTalkVO.setUserSaid(request.getContent());
+				userTalkingService.updateTalk(functionTalkVO);
+				//TODO 这里该如何回复?暂时固定
+				return buildResult(request,"嗯嗯，谢谢你的分享~");
+			}
 
 			return buildResult(request, replyService.shortReply());
 
@@ -107,14 +116,14 @@ public class TextMsgService implements MessageHandler {
 
 	private void saveSimpleTalk(String petSaid, MsgInputParam param,
 			String userSaid) {
-		SimpleTalkVO simpleTalkVO = new SimpleTalkVO();
+		UserTalkVO simpleTalkVO = new UserTalkVO();
 		simpleTalkVO.setPetId(1);
 		simpleTalkVO.setUserId(param.userId);
 		simpleTalkVO.setPetSaid(petSaid);
 		simpleTalkVO.setUserSaid(userSaid);
 		simpleTalkVO.setTalkFuncCode(0);
 		simpleTalkVO.setLastTalkTime(new Date());
-		userService.saveSimpleTalk(simpleTalkVO);
+		userTalkingService.saveTalk(simpleTalkVO);
 	}
 
 	/**
@@ -179,6 +188,9 @@ public class TextMsgService implements MessageHandler {
 
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	UserTalkingService userTalkingService;
 
 	@Autowired
 	ReplyService replyService;
@@ -188,6 +200,9 @@ public class TextMsgService implements MessageHandler {
 
 	@Autowired
 	VoteHelper voteHelper;
+	
+	@Autowired
+	FunctionTalkHelper functionTalkHelper;
 
 	@Autowired
 	AuthorizeHelper authorizeHelper;

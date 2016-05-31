@@ -3,11 +3,12 @@ package com.yubo.wechat.user.vo;
 import java.util.Date;
 
 /**
- * 简单对话VO 
+ * 对话VO
+ * 
  * @author young.jason
  *
  */
-public class SimpleTalkVO {
+public class UserTalkVO {
 
 	private int userId;
 
@@ -20,6 +21,16 @@ public class SimpleTalkVO {
 	private int talkFuncCode;
 
 	private Date lastTalkTime;
+
+	private Long talkId;
+
+	public Long getTalkId() {
+		return talkId;
+	}
+
+	public void setTalkId(Long talkId) {
+		this.talkId = talkId;
+	}
 
 	public int getUserId() {
 		return userId;

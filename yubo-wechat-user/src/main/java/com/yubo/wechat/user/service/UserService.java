@@ -16,7 +16,7 @@ import com.yubo.wechat.user.dao.UserIdentificationMapper;
 import com.yubo.wechat.user.dao.pojo.TalkHistory;
 import com.yubo.wechat.user.dao.pojo.UserBase;
 import com.yubo.wechat.user.dao.pojo.UserIdentification;
-import com.yubo.wechat.user.vo.SimpleTalkVO;
+import com.yubo.wechat.user.vo.UserTalkVO;
 import com.yubo.wechat.user.vo.UserVO;
 
 /**
@@ -82,24 +82,6 @@ public class UserService {
 	}
 
 	/**
-	 * 存储一次简单对话
-	 * 
-	 * @param simpleTalkVO
-	 */
-	public void saveSimpleTalk(SimpleTalkVO simpleTalkVO) {
-
-		TalkHistory record = new TalkHistory();
-		record.setUserId(simpleTalkVO.getUserId());
-		record.setPetId(simpleTalkVO.getPetId());
-		record.setLastTalkUserSaid(simpleTalkVO.getUserSaid());
-		record.setLastTalkPetSaid(simpleTalkVO.getPetSaid());
-		record.setLastTalkFuncCode(simpleTalkVO.getTalkFuncCode());
-		record.setLastTalkTime(simpleTalkVO.getLastTalkTime());
-		historyMapper.insertSelective(record);
-
-	}
-
-	/**
 	 * 对用户进行认证校验
 	 * 
 	 * @param code
@@ -134,9 +116,6 @@ public class UserService {
 	@Autowired
 	UserBaseMapper userBaseMapper;
 
-	@Autowired
-	TalkHistoryMapper historyMapper;
-	
 	@Autowired
 	User4WechatMapping user4WechatMapping;
 	

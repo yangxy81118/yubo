@@ -3,8 +3,8 @@ package com.yubo.wechat.vote.service.vo;
 public class AnswerResultEntry {
 	private String discription;
 	private String key;
-	private Integer count;
-	private Integer rate;
+	private Integer count = 0;
+	private Integer rate = 0;
 
 	public Integer getRate() {
 		return rate;

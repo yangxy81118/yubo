@@ -4,7 +4,7 @@
 	<classPathEntry location="/home/yangxy8/workspace/yubo/yubo-wechat-content/mysql-connector-java-5.1.37.jar" />
 	<context id="context1">
 		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
-			connectionURL="jdbc:mysql://139.129.58.4/db_yubo" userId="yubo_manager"
+			connectionURL="jdbc:mysql://mysql.db.yubo/db_yubo" userId="yubo_manager"
 			password="yubo2016" />
 		<javaModelGenerator targetPackage="com.yubo.wechat.user.dao.pojo"
 			targetProject="yubo-wechat-user">
@@ -19,7 +19,7 @@
 			targetProject="yubo-wechat-user" type="XMLMAPPER">
 			<property name="enableSubPackages" value="true" />
 		</javaClientGenerator>
-		<table tableName="user_base" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false">
+		<table tableName="talk_history" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false">
 		</table>
 		<!-- 
 		<table tableName="user_identification" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false">

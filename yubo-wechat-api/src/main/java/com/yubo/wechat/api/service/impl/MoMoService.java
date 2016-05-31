@@ -1,5 +1,7 @@
 package com.yubo.wechat.api.service.impl;
 
+import java.util.Date;
+
 import javax.xml.bind.JAXBException;
 
 import org.slf4j.Logger;
@@ -17,11 +19,15 @@ import com.yubo.wechat.api.xml.XMLHelper;
 import com.yubo.wechat.api.xml.request.EventMsgRequest;
 import com.yubo.wechat.api.xml.response.TextResponse;
 import com.yubo.wechat.content.service.ReplyService;
+import com.yubo.wechat.content.vo.MessageVO;
 import com.yubo.wechat.pet.service.PetService;
+import com.yubo.wechat.support.PetID;
 import com.yubo.wechat.support.redis.RedisHandler;
 import com.yubo.wechat.support.redis.RedisKeyBuilder;
 import com.yubo.wechat.user.service.UserPetFavorService;
 import com.yubo.wechat.user.service.UserService;
+import com.yubo.wechat.user.service.UserTalkingService;
+import com.yubo.wechat.user.vo.UserTalkVO;
 import com.yubo.wechat.user.vo.UserVO;
 
 /**
@@ -110,10 +116,9 @@ public class MoMoService implements MessageHandler {
 		StringBuffer content = new StringBuffer("");
 		
 		//主要回复内容
-		String mainText = replyService.smartReply(null);
+		MessageVO replyMessage = replyService.smartReply(null);
+		String mainText = replyMessage.getContent();
 		content.append(mainText);
-		
-//		UserVO userVO = userService.getUserVOByUserId(param.userId);
 		
 		//去缓存中检查，如果没有亲密度的标记了，则说明可以增加亲密度了
 		if(!favorLock(param)){
@@ -125,6 +130,19 @@ public class MoMoService implements MessageHandler {
 				content.append("\n【YUBO亲密度+").append(favorPoint).append("】");
 			}
 		}
+		
+		
+		//如果replyMessage中有functionCode，说明将期待用户的下次回复
+		if(null != replyMessage.getFunctionCode()){
+			UserTalkVO simpleTalkVO = new UserTalkVO();
+			simpleTalkVO.setPetId(param.petId);
+			simpleTalkVO.setUserId(param.userId);
+			simpleTalkVO.setPetSaid(mainText);
+			simpleTalkVO.setTalkFuncCode(replyMessage.getFunctionCode());
+			simpleTalkVO.setLastTalkTime(new Date());
+			userTalkingService.saveTalk(simpleTalkVO);
+		}
+		
 		return content.toString();
 	}
 
@@ -160,6 +178,9 @@ public class MoMoService implements MessageHandler {
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	UserTalkingService userTalkingService;
 	
 	@Autowired
 	UserPetFavorService userPetFavorService;
