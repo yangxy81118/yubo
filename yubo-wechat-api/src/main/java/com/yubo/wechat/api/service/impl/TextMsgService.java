@@ -84,6 +84,8 @@ public class TextMsgService implements MessageHandler {
 			if (funcCodeStr != null) {
 				if (userTalkingService.userRejection(request.getContent()
 						.trim())) {
+					redisClient.del(RedisKeyBuilder.buildFunctionCode(
+							param.userId, param.petId));
 					return buildResult(request, "好的，想到记得下次告诉我哦～");
 				} else {
 					UserTalkVO functionTalkVO = new UserTalkVO();
