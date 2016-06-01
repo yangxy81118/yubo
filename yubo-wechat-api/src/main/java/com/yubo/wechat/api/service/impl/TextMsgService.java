@@ -1,6 +1,7 @@
 package com.yubo.wechat.api.service.impl;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
@@ -21,6 +22,8 @@ import com.yubo.wechat.api.xml.XMLHelper;
 import com.yubo.wechat.api.xml.request.TextMsgRequest;
 import com.yubo.wechat.api.xml.response.TextResponse;
 import com.yubo.wechat.content.service.ReplyService;
+import com.yubo.wechat.content.service.textlearning.TextTeacher;
+import com.yubo.wechat.content.vo.FunctionTalkVO;
 import com.yubo.wechat.pet.service.PetService;
 import com.yubo.wechat.support.redis.RedisHandler;
 import com.yubo.wechat.support.redis.RedisKeyBuilder;
@@ -79,20 +82,23 @@ public class TextMsgService implements MessageHandler {
 			String funcCodeStr = redisClient.get(RedisKeyBuilder
 					.buildFunctionCode(param.userId, param.petId));
 			if (funcCodeStr != null) {
-				if (userTalkingService.userRejection(request.getContent().trim())) {
+				if (userTalkingService.userRejection(request.getContent()
+						.trim())) {
 					return buildResult(request, "好的，想到记得下次告诉我哦～");
 				} else {
 					UserTalkVO functionTalkVO = new UserTalkVO();
-					functionTalkVO.setTalkFuncCode(Integer
-							.parseInt(funcCodeStr));
+					Integer fCode = Integer.parseInt(funcCodeStr);
+					functionTalkVO.setTalkFuncCode(fCode);
 					functionTalkVO.setUserSaid(request.getContent());
 					functionTalkVO.setUserId(param.userId);
 					functionTalkVO.setPetId(param.petId);
 					userTalkingService.addUserTalk(functionTalkVO);
-					redisClient.del(RedisKeyBuilder.buildFunctionCode(param.userId, param.petId));
-					
+					redisClient.del(RedisKeyBuilder.buildFunctionCode(
+							param.userId, param.petId));
+
 					// TODO 这里该如何回复?暂时固定
-					return buildResult(request, "嗯嗯，谢谢你的分享~");
+					return buildResult(request,
+							getFTalkReply(textTeacher.getFTVOByCode(fCode)));
 				}
 			}
 
@@ -100,7 +106,7 @@ public class TextMsgService implements MessageHandler {
 			// TODO 这里有加入事务的必要性
 			if ((petLastTalk = petLastTalkInCache(param)) != null) {
 				saveSimpleTalk(petLastTalk, param, request.getContent());
-				removeRedisKey(param.userId, 1, 0);
+				removeRedisKey(param.userId, param.petId, 0);
 				logger.info("成功存储用户[{}]的回复[{}]", param.userId,
 						request.getContent());
 				return buildResult(request, replyService.shortReply());
@@ -114,6 +120,17 @@ public class TextMsgService implements MessageHandler {
 		}
 
 		return null;
+	}
+
+	/**
+	 * 随机获取功能性回答
+	 * @param ftvoByCode
+	 * @return
+	 */
+	private String getFTalkReply(FunctionTalkVO talkVO) {
+		List<String> reply = talkVO.getPetReply();
+		int idx = (int)(Math.random()*reply.size());
+		return reply.get(idx);
 	}
 
 	// TODO 经常这样删除,不知是否这样合适？
@@ -213,6 +230,9 @@ public class TextMsgService implements MessageHandler {
 
 	@Autowired
 	VoteHelper voteHelper;
+
+	@Autowired
+	TextTeacher textTeacher;
 
 	@Autowired
 	FunctionTalkHelper functionTalkHelper;
