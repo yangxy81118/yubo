@@ -1,9 +1,11 @@
 package com.yubo.wechat.content.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.yubo.wechat.content.service.textWorker.TextGuide;
+import com.yubo.wechat.content.service.textlearning.TextTeacher;
 import com.yubo.wechat.content.vo.MessageVO;
 import com.yubo.wechat.content.vo.ReplyInput;
 
@@ -17,9 +19,9 @@ import com.yubo.wechat.content.vo.ReplyInput;
 public class ReplyService {
 
 	static String[] shortSentences = new String[]{"sorry,YUBO还听不懂，不过我马上就会学会的～有空就摸摸我吧～"};
-	
-	@Autowired
-	TextGuide textGuide;
+
+	@Value("${functiontext.random.chance:0.05}")
+	private Double functionRdmChance;
 	
 	/**
 	 * 随机获取当前文本内容
@@ -28,7 +30,13 @@ public class ReplyService {
 	 * @return
 	 */
 	public MessageVO smartReply(ReplyInput replyInput) {
-		return textGuide.getRandomText();
+		double random = Math.random();
+		if (random < functionRdmChance) {
+			return textTeacher.getRandomText();
+		}else{
+			return textGuide.getRandomText();
+		}
+		
 	}
 	
 	/**
@@ -39,4 +47,11 @@ public class ReplyService {
 		int index = (int)(Math.random()*shortSentences.length);
 		return shortSentences[index];
 	}
+	
+	
+	@Autowired
+	TextGuide textGuide;
+	
+	@Autowired
+	TextTeacher textTeacher;
 }

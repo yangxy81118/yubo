@@ -11,7 +11,6 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Random;
 import java.util.Set;
-import java.util.TimeZone;
 import java.util.Timer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -22,14 +21,16 @@ import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.stereotype.Component;
 
 import com.yubo.wechat.content.dao.MessageTextMapper;
 import com.yubo.wechat.content.dao.pojo.MessageText;
+import com.yubo.wechat.content.service.textlearning.TextTeacher;
 import com.yubo.wechat.content.vo.MessageVO;
 import com.yubo.wechat.support.EmptyChecker;
-import com.yubo.wechat.support.MathUtil;
 import com.yubo.wechat.support.PageUtil;
 import com.yubo.wechat.support.TimeUtil;
 import com.yubo.wechat.support.thread.ThreadPool;
@@ -53,7 +54,7 @@ public class TextGuide {
 	private List<TextPool> allTextPool = new ArrayList<>();
 
 	/**
-	 * 当前正在生效的TextPool
+	 * 当前正在生效的一般性文本回复TextPool
 	 */
 	private List<TextPool> activeTextPool = new ArrayList<>();
 
@@ -78,6 +79,7 @@ public class TextGuide {
 	public MessageVO getRandomText() {
 
 		double random = Math.random();
+		// 首先看看是否会是功能性分享回复
 		for (int i = 0; i < activeTextPool.size(); i++) {
 			TextPool textPool = activeTextPool.get(i);
 			if (textPool.getAccessRdmEnd() > random
@@ -97,15 +99,15 @@ public class TextGuide {
 		int idx = random.nextInt(list.size());
 		return list.get(idx);
 	}
-	
+
 	public static void main(String[] args) {
 		Random random = new Random();
 		for (int i = 0; i < 50; i++) {
-			int a =random.nextInt(10);
-			System.out.print(a+" ");
+			int a = random.nextInt(10);
+			System.out.print(a + " ");
 		}
 	}
-	
+
 	/**
 	 * 对当前的activePool进行随机数概率的平分<br/>
 	 * activePool中只要发生任何变动，都要调用此方法
@@ -133,8 +135,8 @@ public class TextGuide {
 			textPool.setAccessRdmEnd(rate + lastEnd);
 			lastEnd = rate + lastEnd;
 		}
-		
-		logger.info("加载YUBO语言内容完毕，共{}条数据",(int)totalMsgCount);
+
+		logger.info("加载YUBO语言内容完毕，共{}条数据", (int) totalMsgCount);
 	}
 
 	/**
@@ -157,9 +159,11 @@ public class TextGuide {
 				logger.error(e.getMessage(), e);
 			}
 		}
+		futureList = null;
 
 		// 构建period_id为0（全天）的内容
 		buildAllTimeText();
+
 	}
 
 	private void buildAllTimeText() {
@@ -238,40 +242,6 @@ public class TextGuide {
 				allTextPool.add(textPool);
 			}
 		}
-	}
-
-	/**
-	 * 将配置中的小时换算成一个具体的时间
-	 * 
-	 * @param string
-	 * @return
-	 */
-	private static long parseTime(String hour) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTimeZone(TimeZone.getTimeZone("GMT+8"));
-		cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hour));
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
-
-		return cal.getTimeInMillis();
-	}
-
-	private List<Integer> getAllPeriodIds() {
-
-		Map<String, Object> param = null;
-		;
-		List<Map<String, Integer>> result = messageTextMapper
-				.countByGroup(param);
-		if (EmptyChecker.isEmpty(result)) {
-			return null;
-		}
-
-		List<Integer> allPeriodIds = new ArrayList<>();
-		for (Map<String, Integer> map : result) {
-			allPeriodIds.add(Integer.parseInt(map.get("periodId").toString()));
-		}
-
-		return allPeriodIds;
 	}
 
 	/**

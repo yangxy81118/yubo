@@ -52,7 +52,7 @@ public class TextPoolEndTimer extends TimerTask {
 		Date startDate = cal.getTime();
 		startTimer.schedule(new TextPoolStartTimer(textPool, textGuide),
 				startDate);
-		logger.info("TextPool[{}]在{}分钟后执行下一次Start任务", textPool.getPeriodId(),
+		logger.info("TextPool[{}]在{}执行下一次Start任务", textPool.getPeriodId(),
 				TimeUtil.formatTime(startDate));
 
 		cal.set(Calendar.HOUR_OF_DAY, textPool.getEndHour());

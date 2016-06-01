@@ -22,14 +22,14 @@ public class TextPool {
 	private List<MessageVO> textContent = new ArrayList<>();
 
 	private Integer periodId;
-
+	
 	/**
 	 * TextGuide进行随机数定位时，本TextPool所占的区间范围的起始数值
 	 */
 	private Double accessRdmStart;
 
 	private Double accessRdmEnd;
-
+	
 	public Double getAccessRdmStart() {
 		return accessRdmStart;
 	}
