@@ -1,0 +1,38 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.yubo</groupId>
+		<artifactId>yubo-wechat</artifactId>
+		<version>${yubo-version}</version>
+	</parent>
+	<groupId>com.yubo.feeder</groupId>
+	<artifactId>yubo-feeder</artifactId>
+	<packaging>war</packaging>
+	<description>feeder-back-end</description>
+
+
+	<dependencies>
+		<dependency>
+			<groupId>com.yubo</groupId>
+			<artifactId>yubo-wechat-support</artifactId>
+			<version>${yubo-version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>2.1.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.1.4</version>
+		</dependency>
+	</dependencies>
+</project>

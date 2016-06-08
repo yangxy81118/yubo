@@ -14,6 +14,7 @@ import redis.clients.jedis.Jedis;
 
 import com.yubo.wechat.api.service.MessageHandler;
 import com.yubo.wechat.api.service.helper.AuthorizeHelper;
+import com.yubo.wechat.api.service.helper.FeederLoginHelper;
 import com.yubo.wechat.api.service.helper.FunctionTalkHelper;
 import com.yubo.wechat.api.service.helper.VoteHelper;
 import com.yubo.wechat.api.service.vo.MsgHandlerResult;
@@ -51,9 +52,14 @@ public class TextMsgService implements MessageHandler {
 			TextMsgRequest request = XMLHelper.parseXml(param.requestBody,
 					TextMsgRequest.class);
 
-			// 激活验证流程第一
+			// 激活验证
 			if (isAuthorizing(request)) {
 				return authorizeHelper.execute(param, request);
+			}
+			
+			// 登录密码获取
+			if(isFeederLogin(request) && feederLoginHelper.checkFeeder(param)){
+				return feederLoginHelper.createLoginPwd(param,request);
 			}
 
 			// 如果是宠物还未出生的阶段，则直接回复
@@ -122,6 +128,11 @@ public class TextMsgService implements MessageHandler {
 		}
 
 		return null;
+	}
+
+	private boolean isFeederLogin(TextMsgRequest request) {
+		String content = request.getContent();
+		return content.startsWith("#denglu");
 	}
 
 	/**
@@ -232,6 +243,9 @@ public class TextMsgService implements MessageHandler {
 
 	@Autowired
 	VoteHelper voteHelper;
+	
+	@Autowired
+	FeederLoginHelper feederLoginHelper;
 
 	@Autowired
 	TextTeacher textTeacher;

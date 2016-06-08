@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+	<!-- 配置文件 -->
+	<context:property-placeholder location="classpath:app.properties"
+		ignore-resource-not-found="true" ignore-unresolvable="true"
+		file-encoding="UTF-8" />
+
+	<!-- 扫描 -->
+	<context:component-scan base-package="com.yubo.feeder.**">
+		<context:exclude-filter type="regex"
+			expression=".*TestCase" />
+	</context:component-scan>
+
+	<bean id="freemarkerConfig"
+		class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+		<property name="templateLoaderPath" value="/WEB-INF/view/" />
+		<property name="freemarkerVariables">
+			<map>
+				<entry key="statics"
+					value="#{T(freemarker.ext.beans.BeansWrapper).getDefaultInstance().getStaticModels()}"></entry>
+			</map>
+		</property>
+		<property name="freemarkerSettings">
+			<props>
+				<prop key="template_update_delay">3600000</prop>
+				<prop key="default_encoding">UTF-8</prop>
+				<prop key="number_format">0.##########</prop>
+				<prop key="datetime_format">yyyy-MM-dd HH:mm:ss</prop>
+				<prop key="classic_compatible">true</prop>
+				<prop key="template_exception_handler">ignore</prop>
+			</props>
+		</property>
+	</bean>
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+		<property name="cache" value="false" />
+		<property name="contentType" value="text/html;charset=UTF-8" />
+		<property name="requestContextAttribute" value="request" />
+	</bean>
+	
+	<!-- 异步接口JSON格式化输出 <mvc:annotation-driven> <mvc:message-converters> <bean 
+		class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"> 
+		<property name="objectMapper" value="#{T(com.bubugao.framework.util.UtilJson).JSON_MAPPER}" 
+		/> </bean> </mvc:message-converters> </mvc:annotation-driven> -->
+
+	<mvc:annotation-driven />
+
+	<mvc:resources location="/favicon.ico" mapping="/favicon.ico" />
+	<mvc:resources location="/js/" mapping="/js/**"></mvc:resources>
+	<mvc:resources location="/css/" mapping="/css/**"></mvc:resources>
+</beans>

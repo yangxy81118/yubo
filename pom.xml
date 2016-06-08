@@ -12,6 +12,7 @@
 		<module>yubo-wechat-content</module>
 		<module>yubo-wechat-support</module>
 		<module>yubo-wechat-vote</module>
+		<module>yubo-feeder</module>
 	</modules>
 
 	<properties>

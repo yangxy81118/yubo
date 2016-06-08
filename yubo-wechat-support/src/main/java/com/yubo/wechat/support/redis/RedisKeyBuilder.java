@@ -11,7 +11,23 @@ public class RedisKeyBuilder {
 	public static final String PREFIX_SIMPLETALK = "Talk.";
 	public static final String PREFIX_FAVOR_LOCK = "FavorLock.";
 	public static final String PREFIX_FUNCTION_CODE = "FunctionCode.";
+	public static final String PREFIX_FEEDER_LOGIN = "FeederLogin.";
 
+	/**
+	 * 对话Redis Key 构建
+	 * 
+	 * @param userId
+	 * @param petId
+	 * @return
+	 */
+	public static String buildKey(String... args) {
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < args.length; i++) {
+			sb.append(args[i]);
+		}
+		return sb.toString();
+	}
+	
 	/**
 	 * 对话Redis Key 构建
 	 * 

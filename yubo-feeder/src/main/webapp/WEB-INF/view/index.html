@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>小宠物饲养系统</title>
+<link rel="stylesheet" type="text/css"
+	href="http://www.jeasyui.com/easyui/themes/material/easyui.css">
+<link rel="stylesheet" type="text/css"
+	href="http://www.jeasyui.net/Public/js/easyui/themes/icon.css">
+<link rel="stylesheet" type="text/css"
+	href="http://www.jeasyui.net/Public/js/easyui/demo/demo.css">
+<script type="text/javascript"
+	src="http://www.jeasyui.net/Public/js/jquery.js"></script>
+<script type="text/javascript"
+	src="http://www.jeasyui.net/Public/js/easyui/jquery.easyui.min.js"></script>
+</head>
+<body>
+	<div style="margin: 100px auto; width: 400px;">
+		<div class="easyui-panel" title="系统登录" style="width: 400px;">
+			<div style="padding: 10px 60px 20px 60px;">
+				<form id="ff" class="easyui-form" method="post"
+					data-options="novalidate:true" action="/login"
+					enctype="application/x-www-form-urlencoded"
+					>
+					<table cellpadding="5" align="center" style="">
+						<tr>
+							<td>登录口令:</td>
+							<td><input class="easyui-textbox" type="password"
+								name="pwd" style="height: 30px; width: 180px;"
+								data-options="required:true"></input></td>
+						</tr>
+					</table>
+				</form>
+				<div style="text-align: center; padding: 5px">
+					<a href="javascript:void(0)" class="easyui-linkbutton"
+						onclick="$('#ff').form('submit')" iconCls="icon-man">Login</a> 
+				</div>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>
