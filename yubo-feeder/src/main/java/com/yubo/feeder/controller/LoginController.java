@@ -45,6 +45,7 @@ public class LoginController {
 		if(validWeChatId(wechatId)){
 			PrintWriter writer = response.getWriter();
 			writer.print("200");
+			setLoginToken(request);
 			return null;
 		}else{
 			PrintWriter writer = response.getWriter();
@@ -53,6 +54,11 @@ public class LoginController {
 		}
 	}
 	
+	private void setLoginToken(HttpServletRequest request) {
+		request.getSession().setAttribute("loginState", true);
+	}
+
+
 	private boolean validWeChatId(String wechatId) {
 		return !StringUtils.isEmpty(wechatId);
 	}
