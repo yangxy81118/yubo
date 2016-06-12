@@ -16,7 +16,7 @@
 		/> -->
 
 	<context:annotation-config />
-	<context:component-scan base-package="com.yubo.feeder.**" />
+	<context:component-scan base-package="com.yubo.**" />
 
 	<context:property-placeholder location="classpath*:*.properties"
 		ignore-resource-not-found="false" ignore-unresolvable="false"

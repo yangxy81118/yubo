@@ -24,39 +24,13 @@ import com.yubo.wechat.support.redis.RedisKeyBuilder;
  *
  */
 @Controller
-@RequestMapping("")
-public class LoginController {
+@RequestMapping("/home")
+public class HomeController {
 
 	@RequestMapping(value="/index")
 	public ModelAndView index(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		
-		return new ModelAndView("index.html");
+		return new ModelAndView("feeder-home.html");
 	}
-	
-	
-	@RequestMapping(value="/login",method=RequestMethod.POST)
-	public ModelAndView login(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		
-		String password = request.getParameter("pwd");
-		Jedis redis = redisHandler.getRedisClient();
-		String wechatId = redis.get(RedisKeyBuilder.buildKey(RedisKeyBuilder.PREFIX_FEEDER_LOGIN,password));
-		if(validWeChatId(wechatId)){
-			PrintWriter writer = response.getWriter();
-			writer.print("200");
-			return null;
-		}else{
-			PrintWriter writer = response.getWriter();
-			writer.print("Error!");
-			return null;
-		}
-	}
-	
-	private boolean validWeChatId(String wechatId) {
-		return !StringUtils.isEmpty(wechatId);
-	}
-
-	@Autowired
-	RedisHandler redisHandler;
 }

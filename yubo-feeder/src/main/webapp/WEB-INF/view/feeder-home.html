@@ -4,21 +4,30 @@
 <meta charset="UTF-8">
 <title>Restrict Date Range in DateBox - jQuery EasyUI Demo</title>
 <link rel="stylesheet" type="text/css"
-	href="http://www.jeasyui.com/easyui/themes/material/easyui.css">
+	href="http://o7pmdbbe0.bkt.clouddn.com/css/easyui/material/easyui.css">
 <link rel="stylesheet" type="text/css"
-	href="http://www.jeasyui.net/Public/js/easyui/themes/icon.css">
+	href="http://o7pmdbbe0.bkt.clouddn.com/css/easyui/icon.css">
 <link rel="stylesheet" type="text/css"
 	href="http://www.jeasyui.net/Public/js/easyui/demo/demo.css">
 <script type="text/javascript"
 	src="http://www.jeasyui.net/Public/js/jquery.js"></script>
 <script type="text/javascript"
-	src="http://www.jeasyui.net/Public/js/easyui/jquery.easyui.min.js"></script>
+	src="http://o7pmdbbe0.bkt.clouddn.com/js/easyui/jquery.easyui.min.js"></script>
+
+<style type="text/css">
+.layout-split-west .l-btn {
+	border-bottom: 1px solid #FFF;
+	border-top: 1px solid #FFF;
+	width:100%;
+}
+</style>
 </head>
 <body class="easyui-layout">
 	<div data-options="region:'north',border:false"
-		style="height: 60px; background: #FAFAFA; padding:10px 50px;font-size:22px;color:#05166B">Feeders Home</div>
+		style="height: 60px; background: #FAFAFA; padding: 10px 50px; font-size: 22px; color: #05166B">Feeders
+		Home</div>
 	<div data-options="region:'west',split:true,title:'主菜单'"
-		style="width: 150px; padding: 10px;">
+		style="width: 150px;">
 		<div style="padding: 5px 0;">
 			<a href="#" class="easyui-linkbutton"
 				data-options="iconCls:'icon-large-picture',size:'large',iconAlign:'top'">Picture</a>
@@ -33,116 +42,133 @@
 		</div>
 	</div>
 	<div data-options="region:'south',border:false"
-		style="height: 30px; background: #FAFAFA; padding:0 10px;line-height:30px;">底部状态栏</div>
-	<div id="#center-box" data-options="region:'center',title:'工作区'" style="padding:20px 40px;">
+		style="height: 30px; background: #FAFAFA; padding: 0 10px; line-height: 30px;">底部状态栏</div>
+	<div id="#center-box" data-options="region:'center',title:'工作区'"
+		style="padding: 20px 40px;">
 		<h2>SVG资源管理页面</h2>
-	    <p>svg图标用于在投票信息页等地方进行显示，优化用户体验</p>
-	    
-	    <table id="dg" title="图标管理" class="easyui-datagrid" style="width:700px;height:450px"
-	            data-options="rownumbers:true,singleSelect:true,pagination:true,url:'/pet/json/datagrid',method:'get',fitColumns:'true',toolbar:'#toolbar'">
-	        <thead>
-	            <tr>
-	                <th field="svgId" width="50">资源ID</th>
-	                <th field="svgTag" width="50">SVG标签</th>
-	                <th field="svgContent" width="50" data-options="styler:cellStyler">SVG预览</th>
-	            </tr>
-	        </thead>
-	    </table>
-	    <div id="toolbar">
-	        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="newSvg()">添加</a>
-	        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editSvg()">修改</a>
-	    </div>
-	    
-	    <div id="dlg" class="easyui-dialog" style="width:600px;height:auto;padding:10px 20px"
-	            closed="true" buttons="#dlg-buttons">
-	        <form id="fm" method="post" novalidate>
-	            <div class="fitem">
-	                <label>SVG标签:</label>
-	                <input name="svgTag" class="easyui-textbox" style="width:150px;height:26px;" data-options="prompt:'4个字以内，简单描述即可'"  >
-	            </div>
-	            <div class="fitem">
-	                <label>SVG内容:</label>
-	                <input name="svgContent" class="easyui-textbox" data-options="multiline:true,prompt:'举例：<svg>...</svg>'"  style="height:180px;width:360px" required="true"/>
-	            </div>
-	        </form>
-	    </div>
-	    <div id="dlg-buttons">
-	        <a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="saveSvg()" style="width:90px">Save</a>
-	        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')" style="width:90px">Cancel</a>
-	    </div>
+		<p>svg图标用于在投票信息页等地方进行显示，优化用户体验</p>
+
+		<table id="dg" title="图标管理" class="easyui-datagrid"
+			style="width: 700px; height: 450px"
+			data-options="rownumbers:true,singleSelect:true,pagination:true,url:'/pet/json/datagrid',method:'get',fitColumns:'true',toolbar:'#toolbar'">
+			<thead>
+				<tr>
+					<th field="svgId" width="50">资源ID</th>
+					<th field="svgTag" width="50">SVG标签</th>
+					<th field="svgContent" width="50" data-options="styler:cellStyler">SVG预览</th>
+				</tr>
+			</thead>
+		</table>
+		<div id="toolbar">
+			<a href="javascript:void(0)" class="easyui-linkbutton"
+				iconCls="icon-add" plain="true" onclick="newSvg()">添加</a> <a
+				href="javascript:void(0)" class="easyui-linkbutton"
+				iconCls="icon-edit" plain="true" onclick="editSvg()">修改</a>
+		</div>
+
+		<div id="dlg" class="easyui-dialog"
+			style="width: 600px; height: auto; padding: 10px 20px" closed="true"
+			buttons="#dlg-buttons">
+			<form id="fm" method="post" novalidate>
+				<div class="fitem">
+					<label>SVG标签:</label> <input name="svgTag" class="easyui-textbox"
+						style="width: 150px; height: 26px;"
+						data-options="prompt:'4个字以内，简单描述即可'">
+				</div>
+				<div class="fitem">
+					<label>SVG内容:</label> <input name="svgContent"
+						class="easyui-textbox"
+						data-options="multiline:true,prompt:'举例：<svg>...</svg>'"
+						style="height: 180px; width: 360px" required="true" />
+				</div>
+			</form>
+		</div>
+		<div id="dlg-buttons">
+			<a href="javascript:void(0)" class="easyui-linkbutton c6"
+				iconCls="icon-ok" onclick="saveSvg()" style="width: 90px">Save</a> <a
+				href="javascript:void(0)" class="easyui-linkbutton"
+				iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')"
+				style="width: 90px">Cancel</a>
+		</div>
 	</div>
-	
-	 <script type="text/javascript">
-        var url;
-        function newSvg(){
-            $('#dlg').dialog('open').dialog('center').dialog('setTitle','添加SVG图标');
-            $('#fm').form('clear');
-            url = 'save_user.php';
-        }
-        function editSvg(){
-            var row = $('#dg').datagrid('getSelected');
-            if (row){
-                $('#dlg').dialog('open').dialog('center').dialog('setTitle','修改SVG图标');
-                $('#fm').form('load',row);
-                url = 'update_user.php?id='+row.id;
-            }
-        }
-        function saveSvg(){
-            $('#fm').form('submit',{
-                url: url,
-                onSubmit: function(){
-                    return $(this).form('validate');
-                },
-                success: function(result){
-                    var result = eval('('+result+')');
-                    if (result.errorMsg){
-                        $.messager.show({
-                            title: 'Error',
-                            msg: result.errorMsg
-                        });
-                    } else {
-                        $('#dlg').dialog('close');        // close the dialog
-                        $('#dg').datagrid('reload');    // reload the user data
-                    }
-                }
-            });
-        }
-        
-        function cellStyler(value,row,index){
-        	return 'text-align:center;padding:5px;';
-        }
-        
-        $(function(){
-        	//$("svg").attr("width","32px").attr("height","32px");
-        	console.trace($("#shop").length);
-        });
-    </script>
-    <style type="text/css">
-        #fm{
-            margin:0;
-            padding:10px 30px;
-        }
-        .ftitle{
-            font-size:14px;
-            font-weight:bold;
-            padding:5px 0;
-            margin-bottom:10px;
-            border-bottom:1px solid #ccc;
-        }
-        .fitem{
-            margin-bottom:5px;
-        }
-        .fitem label{
-            display:inline-block;
-            width:80px;
-        }
-        .fitem input{
-            width:160px;
-        }
-        
-        #center-box{
-        	padding:20px;
-        }
-    </style>
+
+	<script type="text/javascript">
+		var url;
+		function newSvg() {
+			$('#dlg').dialog('open').dialog('center').dialog('setTitle',
+					'添加SVG图标');
+			$('#fm').form('clear');
+			url = 'save_user.php';
+		}
+		function editSvg() {
+			var row = $('#dg').datagrid('getSelected');
+			if (row) {
+				$('#dlg').dialog('open').dialog('center').dialog('setTitle',
+						'修改SVG图标');
+				$('#fm').form('load', row);
+				url = 'update_user.php?id=' + row.id;
+			}
+		}
+		function saveSvg() {
+			$('#fm').form('submit', {
+				url : url,
+				onSubmit : function() {
+					return $(this).form('validate');
+				},
+				success : function(result) {
+					var result = eval('(' + result + ')');
+					if (result.errorMsg) {
+						$.messager.show({
+							title : 'Error',
+							msg : result.errorMsg
+						});
+					} else {
+						$('#dlg').dialog('close'); // close the dialog
+						$('#dg').datagrid('reload'); // reload the user data
+					}
+				}
+			});
+		}
+
+		function cellStyler(value, row, index) {
+			return 'text-align:center;padding:5px;';
+		}
+
+		$(function() {
+			//$("svg").attr("width","32px").attr("height","32px");
+			console.trace($("#shop").length);
+		});
+	</script>
+	<style type="text/css">
+#fm {
+	margin: 0;
+	padding: 10px 30px;
+}
+
+.ftitle {
+	font-size: 14px;
+	font-weight: bold;
+	padding: 5px 0;
+	margin-bottom: 10px;
+	border-bottom: 1px solid #ccc;
+}
+
+.fitem {
+	margin-bottom: 5px;
+}
+
+.fitem label {
+	display: inline-block;
+	width: 80px;
+}
+
+.fitem input {
+	width: 160px;
+}
+
+#center-box {
+	padding: 20px;
+}
+</style>
 </body>
 </html>
