@@ -1,0 +1,145 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css"
+	href="http://o7pmdbbe0.bkt.clouddn.com/css/easyui/material/easyui.css">
+<link rel="stylesheet" type="text/css"
+	href="http://o7pmdbbe0.bkt.clouddn.com/css/easyui/icon.css">
+<link rel="stylesheet" type="text/css"
+	href="http://www.jeasyui.net/Public/js/easyui/demo/demo.css">
+<script type="text/javascript"
+	src="http://www.jeasyui.net/Public/js/jquery.js"></script>
+<script type="text/javascript"
+	src="http://o7pmdbbe0.bkt.clouddn.com/js/easyui/jquery.easyui.min.js"></script>
+</head>
+
+<body>
+	<div id="#center-box" data-options="region:'center',title:'工作区'"
+		style="padding: 10px 25px;">
+		<h2>SVG资源管理</h2>
+
+		<table id="dg" title="图标管理" class="easyui-datagrid"
+			style="width: 700px; height: 450px"
+			data-options="singleSelect:true,pagination:true,url:'/svg/load',method:'get',fitColumns:'true',toolbar:'#toolbar'">
+			<thead>
+				<tr>
+					<th field="svgId" width="50">资源ID</th>
+					<th field="svgTag" width="50">SVG标签</th>
+					<th field="svgContent" width="50" data-options="styler:cellStyler">SVG预览</th>
+				</tr>
+			</thead>
+		</table>
+		<div id="toolbar">
+			<a href="javascript:void(0)" class="easyui-linkbutton"
+				iconCls="icon-add" plain="true" onclick="newSvg()">添加</a> <a
+				href="javascript:void(0)" class="easyui-linkbutton"
+				iconCls="icon-edit" plain="true" onclick="editSvg()">修改</a>
+		</div>
+
+		<div id="dlg" class="easyui-dialog"
+			style="width: 600px; height: auto; padding: 10px 20px" closed="true"
+			buttons="#dlg-buttons" enctype="application/x-www-form-urlencoded">
+			<form id="fm" method="post" novalidate>
+				<div class="fitem">
+					<label>SVG标签:</label> <input name="svgTag" class="easyui-textbox"
+						style="width: 150px; height: 26px;"
+						data-options="prompt:'4个字以内，简单描述即可'">
+				</div>
+				<div class="fitem">
+					<label>SVG内容:</label> <input name="svgContent"
+						class="easyui-textbox"
+						data-options="multiline:true,prompt:'举例：<svg>...</svg>'"
+						style="height: 180px; width: 360px" required="true" />
+				</div>
+			</form>
+		</div>
+		<div id="dlg-buttons">
+			<a href="javascript:void(0)" class="easyui-linkbutton c6"
+				iconCls="icon-ok" onclick="saveSvg()" style="width: 90px">Save</a> <a
+				href="javascript:void(0)" class="easyui-linkbutton"
+				iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')"
+				style="width: 90px">Cancel</a>
+		</div>
+	</div>
+
+</body>
+</html>
+<script type="text/javascript">
+	var url;
+	function newSvg() {
+		$('#dlg').dialog('open').dialog('center').dialog('setTitle', '添加SVG图标');
+		$('#fm').form('clear');
+		url = '/svg/add';
+	}
+	function editSvg() {
+		var row = $('#dg').datagrid('getSelected');
+		if (row) {
+			$('#dlg').dialog('open').dialog('center').dialog('setTitle',
+					'修改SVG图标');
+			$('#fm').form('load', row);
+			url = '/svg/udpate';
+		}
+	}
+	function saveSvg() {
+		$('#fm').form('submit', {
+			url : url,
+			onSubmit : function() {
+				return $(this).form('validate');
+			},
+			success : function(result) {
+				var result = eval('(' + result + ')');
+				if (result != 200) {
+					$.messager.show({
+						title : 'Error',
+						msg : result.errorMsg
+					});
+				} else {
+					$('#dlg').dialog('close'); // close the dialog
+					$('#dg').datagrid('reload'); // reload the user data
+				}
+			}
+		});
+	}
+
+	function cellStyler(value, row, index) {
+		return 'text-align:center;padding:5px;';
+	}
+
+	$(function() {
+		$('#dg').datagrid({
+			onLoadSuccess : function(data) {
+				$('svg').attr('width', '24px').attr('height', '24px');
+			}
+		});
+	});
+</script>
+<style type="text/css">
+#fm {
+	margin: 0;
+	padding: 10px 30px;
+}
+
+.ftitle {
+	font-size: 14px;
+	font-weight: bold;
+	padding: 5px 0;
+	margin-bottom: 10px;
+	border-bottom: 1px solid #ccc;
+}
+
+.fitem {
+	margin-bottom: 5px;
+}
+
+.fitem label {
+	display: inline-block;
+	width: 80px;
+}
+
+.fitem input {
+	width: 160px;
+}
+
+#center-box {
+	padding: 20px;
+}
+</style>

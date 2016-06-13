@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.yubo.feeder.service.SvgService;
 import com.yubo.feeder.vo.SvgVO;
@@ -26,6 +27,12 @@ import com.yubo.feeder.vo.SvgVO;
 @RequestMapping("/svg")
 public class SvgController {
 
+	@RequestMapping("/view")
+	public ModelAndView view(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		return new ModelAndView("svg-manager.html");
+	}
+	
 	@RequestMapping("/load")
 	@ResponseBody
 	public Object load(HttpServletRequest request,
