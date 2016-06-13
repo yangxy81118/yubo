@@ -27,55 +27,9 @@
 		<property name="configLocation" value="classpath:/config/sqlmap-config.xml" />
 	</bean>
 
-	<bean id="userBaseMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
-		<property name="mapperInterface" value="com.yubo.wechat.user.dao.UserBaseMapper" />
+	<bean id="resourceSvgMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.yubo.feeder.dao.ResourceSvgMapper" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
 	</bean>
 
-	<bean id="messageTextMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
-		<property name="mapperInterface"
-			value="com.yubo.wechat.content.dao.MessageTextMapper" />
-		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
-	</bean>
-
-	<bean id="userPetFavorMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
-		<property name="mapperInterface" value="com.yubo.wechat.user.dao.UserPetFavorMapper" />
-		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
-	</bean>
-
-
-	<bean id="talkHistoryMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
-		<property name="mapperInterface" value="com.yubo.wechat.user.dao.TalkHistoryMapper" />
-		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
-	</bean>
-
-	<bean id="userIdentificationMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
-		<property name="mapperInterface"
-			value="com.yubo.wechat.user.dao.UserIdentificationMapper" />
-		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
-	</bean>
-
-
-	<bean id="voteBaseMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
-		<property name="mapperInterface" value="com.yubo.wechat.vote.dao.VoteBaseMapper" />
-		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
-	</bean>
-
-	<bean id="userVoteRecordMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
-		<property name="mapperInterface"
-			value="com.yubo.wechat.vote.dao.UserVoteRecordMapper" />
-		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
-	</bean>
-
-	<bean id="petBaseMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
-		<property name="mapperInterface"
-			value="com.yubo.wechat.pet.dao.PetBaseMapper" />
-		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
-	</bean>
-	
-	<bean id="feederBaseMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
-		<property name="mapperInterface"
-			value="com.yubo.wechat.user.dao.FeederBaseMapper" />
-		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
-	</bean>
 </beans>

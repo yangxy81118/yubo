@@ -22,5 +22,5 @@
 		ignore-resource-not-found="false" ignore-unresolvable="false"
 		file-encoding="UTF-8" />
 
-	<!--  <import resource="spring-dao.xml" />-->
+	<import resource="spring-dao.xml" />
 </beans>

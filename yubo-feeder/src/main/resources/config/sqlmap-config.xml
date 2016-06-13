@@ -12,15 +12,6 @@
 		<setting name="defaultExecutorType" value="BATCH" />
 	</settings>
 	<mappers>
-		<mapper resource="sql-mapping/SchoolBaseMapper.xml" />
-		<mapper resource="sql-mapping/TalkHistoryMapper.xml" />
-		<mapper resource="sql-mapping/UserBaseMapper.xml" />
-		<mapper resource="sql-mapping/UserIdentificationMapper.xml" />
-		<mapper resource="sql-mapping/UserPetFavorMapper.xml" />
-		<mapper resource="sql-mapping/PetBaseMapper.xml" />
-		<mapper resource="sql-mapping/MessageTextMapper.xml" />
-		<mapper resource="sql-mapping/VoteBaseMapper.xml" />
-		<mapper resource="sql-mapping/UserVoteRecordMapper.xml" />
-		<mapper resource="sql-mapping/FeederBaseMapper.xml" />
+		<mapper resource="sql-mapping/ResourceSvgMapper.xml" />
 	</mappers>
 </configuration>
