@@ -24,11 +24,11 @@ public class LoginFilter implements Filter {
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse resp = (HttpServletResponse) response;
 		Object loginState = req.getSession().getAttribute(SessionConstraint.ATTR_LOGIN_STATE);
-//		if(loginState!=null){
+		if(loginState!=null){
 				chain.doFilter(req, resp);
-//		}else{
-//			resp.sendRedirect("/index");
-//		}
+		}else{
+			resp.sendRedirect("/index");
+		}
 	}
 
 	public void init(FilterConfig arg0) throws ServletException {
