@@ -30,7 +30,7 @@ public class SvgController {
 	@RequestMapping("/view")
 	public ModelAndView view(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		return new ModelAndView("svg-manager.html");
+		return new ModelAndView("svg-manage.html");
 	}
 	
 	@RequestMapping("/load")
