@@ -8,6 +8,19 @@ public class SvgVO {
 
 	private String svgContent;
 
+	/**
+	 * svg文件大小（kb）
+	 */
+	private Double svgLength;
+
+	public Double getSvgLength() {
+		return svgLength;
+	}
+
+	public void setSvgLength(Double svgLength) {
+		this.svgLength = svgLength;
+	}
+
 	public Integer getSvgId() {
 		return svgId;
 	}

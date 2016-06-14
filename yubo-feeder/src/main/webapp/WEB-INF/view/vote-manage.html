@@ -15,17 +15,16 @@
 <body>
 	<div id="#center-box" data-options="region:'center',title:'工作区'"
 		style="padding: 10px 25px;">
-		<h2>SVG资源管理</h2>
+		<h2>投票管理</h2>
 
 		<table id="dg" title="图标管理" class="easyui-datagrid"
 			style="width: 700px; height: 450px"
 			data-options="singleSelect:true,pagination:true,url:'/svg/load',method:'get',fitColumns:'true',toolbar:'#toolbar'">
 			<thead>
 				<tr>
-					<th field="svgId" width="30">资源ID</th>
-					<th field="svgTag" width="80">SVG标签</th>
-					<th field="svgContent" width="40" data-options="styler:cellStyler" align="center">SVG预览</th>
-					<th field="svgLength" width="50" align="center">SVG内容大小(kb)</th>
+					<th field="svgId" width="50">资源ID</th>
+					<th field="svgTag" width="50">SVG标签</th>
+					<th field="svgContent" width="50" data-options="styler:cellStyler">SVG预览</th>
 				</tr>
 			</thead>
 		</table>
@@ -40,10 +39,9 @@
 			style="width: 600px; height: auto; padding: 10px 20px" closed="true"
 			buttons="#dlg-buttons" enctype="application/x-www-form-urlencoded">
 			<form id="fm" method="post" novalidate>
-				<input name="svgId" type="hidden" />
 				<div class="fitem">
 					<label>SVG标签:</label> <input name="svgTag" class="easyui-textbox"
-						style="width: 300px; height: 26px;"
+						style="width: 200px; height: 26px;"
 						data-options="prompt:'100字之内，可以将同义词写入，以空格做分割'">
 				</div>
 				<div class="fitem">
@@ -78,7 +76,7 @@
 			$('#dlg').dialog('open').dialog('center').dialog('setTitle',
 					'修改SVG图标');
 			$('#fm').form('load', row);
-			url = '/svg/update';
+			url = '/svg/udpate';
 		}
 	}
 	function saveSvg() {
@@ -103,18 +101,15 @@
 	}
 
 	function cellStyler(value, row, index) {
-		return 'text-align:center;padding:5px 0;';
+		return 'text-align:center;padding:5px;';
 	}
 
 	$(function() {
-		var wdHeight = $(window).height();
 		$('#dg').datagrid({
 			onLoadSuccess : function(data) {
 				$('svg').attr('width', '24px').attr('height', '24px');
 			}
 		});
-		
-		console.log(wdHeight*0.75);
 	});
 </script>
 <style type="text/css">

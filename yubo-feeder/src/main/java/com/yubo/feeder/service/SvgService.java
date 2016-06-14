@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.yubo.feeder.dao.ResourceSvgMapper;
 import com.yubo.feeder.dao.pojo.ResourceSvg;
+import com.yubo.feeder.vo.DatagridResponse;
 import com.yubo.feeder.vo.SvgVO;
 
 /**
@@ -21,8 +22,9 @@ import com.yubo.feeder.vo.SvgVO;
 @Service
 public class SvgService {
 
-	public List<SvgVO> paging(Integer page, Integer row) {
+	public DatagridResponse<SvgVO> paging(Integer page, Integer row) {
 
+		DatagridResponse<SvgVO> response = new DatagridResponse<>();
 		page = page == null ? 1 : page;
 		row = row == null ? 10 : row;
 
@@ -39,7 +41,11 @@ public class SvgService {
 			vo.setSvgTag(resourceSvg.getSvgTag());
 			list.add(vo);
 		}
-		return list;
+
+		int totalRow = resourceSvgMapper.countSelective(param);
+		response.setRows(list);
+		response.setTotal(totalRow);
+		return response;
 	}
 
 	public void add(SvgVO vo) {
@@ -48,8 +54,18 @@ public class SvgService {
 		record.setSvgContent(vo.getSvgContent());
 		resourceSvgMapper.insertSelective(record);
 	}
+	
+
+	public void update(SvgVO vo) {
+		ResourceSvg record = new ResourceSvg();
+		record.setSvgId(vo.getSvgId());
+		record.setSvgTag(vo.getSvgTag());
+		record.setSvgContent(vo.getSvgContent());
+		resourceSvgMapper.updateByPrimaryKeySelective(record);
+	}
 
 	@Autowired
 	ResourceSvgMapper resourceSvgMapper;
+
 
 }

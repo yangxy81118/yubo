@@ -59,4 +59,11 @@ public interface ResourceSvgMapper {
      * @return
      */
     List<ResourceSvg> paging(Map<String,Object> param);
+    
+    /**
+     * 记录条数查询
+     * @param param
+     * @return
+     */
+    int countSelective(Map<String,Object> param);
 }

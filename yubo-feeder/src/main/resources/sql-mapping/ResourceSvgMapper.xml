@@ -116,4 +116,15 @@
     from resource_svg
     LIMIT ${startRow},${rowCount}
   </select>
+  
+  
+  <select id="countSelective" resultType="java.lang.Integer" parameterType="java.util.Map" >
+    select count(*)
+    from resource_svg
+    <where>
+    	<if test="svgTag!=null">
+			svg_tag LIKE '%'||#{svgTag}||'%'   	
+    	</if>
+    </where>
+  </select>
 </mapper>
