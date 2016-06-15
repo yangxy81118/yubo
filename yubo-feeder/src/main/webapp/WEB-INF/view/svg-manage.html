@@ -10,6 +10,7 @@
 	src="http://www.jeasyui.net/Public/js/jquery.js"></script>
 <script type="text/javascript"
 	src="http://o7pmdbbe0.bkt.clouddn.com/js/easyui/jquery.easyui.min.js"></script>
+	
 </head>
 
 <body>
@@ -17,8 +18,8 @@
 		style="padding: 10px 25px;">
 		<h2>SVG资源管理</h2>
 
-		<table id="dg" title="图标管理" class="easyui-datagrid"
-			style="width: 700px; height: 450px"
+		<table id="dg" title="图标管理"
+			style="width: auto; height: 450px"
 			data-options="singleSelect:true,pagination:true,url:'/svg/load',method:'get',fitColumns:'true',toolbar:'#toolbar'">
 			<thead>
 				<tr>
@@ -107,16 +108,14 @@
 	}
 
 	$(function() {
-		var wdHeight = $(window).height();
 		$('#dg').datagrid({
 			onLoadSuccess : function(data) {
 				$('svg').attr('width', '24px').attr('height', '24px');
 			}
 		});
-		
-		console.log(wdHeight*0.75);
 	});
 </script>
+
 <style type="text/css">
 #fm {
 	margin: 0;

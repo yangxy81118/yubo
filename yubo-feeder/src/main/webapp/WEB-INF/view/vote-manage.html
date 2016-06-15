@@ -17,14 +17,17 @@
 		style="padding: 10px 25px;">
 		<h2>投票管理</h2>
 
-		<table id="dg" title="图标管理" class="easyui-datagrid"
-			style="width: 700px; height: 450px"
-			data-options="singleSelect:true,pagination:true,url:'/svg/load',method:'get',fitColumns:'true',toolbar:'#toolbar'">
+		<table id="dg" title="投票管理"
+			style="width: auto; height: 450px"
+			data-options="singleSelect:true,pagination:true,url:'/vote/load',method:'get',fitColumns:'true',toolbar:'#toolbar'">
 			<thead>
 				<tr>
-					<th field="svgId" width="50">资源ID</th>
-					<th field="svgTag" width="50">SVG标签</th>
-					<th field="svgContent" width="50" data-options="styler:cellStyler">SVG预览</th>
+					<th field="voteId" width="40">投票ID</th>
+					<th field="voteTitle" width="50" align="center">标题</th>
+					<th field="voteQuestion" width="120">问题</th>
+					<th field="voteAnswer" width="120" align="center" formatter="formatAnswer">答案</th>
+					<th field="activeDate" width="50" align="center">激活日期</th>
+					<th field="colorStyle" width="80" align="center">色彩方案</th>
 				</tr>
 			</thead>
 		</table>
@@ -33,6 +36,9 @@
 				iconCls="icon-add" plain="true" onclick="newSvg()">添加</a> <a
 				href="javascript:void(0)" class="easyui-linkbutton"
 				iconCls="icon-edit" plain="true" onclick="editSvg()">修改</a>
+				<a
+				href="javascript:void(0)" class="easyui-linkbutton"
+				iconCls="icon-edit" plain="true" onclick="editSvg()">删除</a>
 		</div>
 
 		<div id="dlg" class="easyui-dialog"
@@ -64,11 +70,29 @@
 </body>
 </html>
 <script type="text/javascript">
+
+	function getHeight(percent){  
+		var h = $(window).height()*percent;
+		console.log(h);
+	    return h;  
+	}  
+
+	function formatAnswer(val,row){
+		var returnStr = "";
+		for(var i=0;i<val.length;i++){
+			if(val[i].key!=undefined){
+				var item = '<div style="overflow:hidden"><ul style="list-style:none;text-align:left;float:left;padding:5px 0;margin:0 5px 0 20px;"><li>'+val[i].discription+'</li><li>【'+val[i].key+'】</li></ul><div style="float: right;margin:15px 50px 15px 0;">'+val[i].svg+'</div></div>';
+				returnStr = item + returnStr;
+			}
+		}
+		return returnStr;
+	}
+
 	var url;
 	function newSvg() {
 		$('#dlg').dialog('open').dialog('center').dialog('setTitle', '添加SVG图标');
 		$('#fm').form('clear');
-		url = '/svg/add';
+		url = '/vote/add';
 	}
 	function editSvg() {
 		var row = $('#dg').datagrid('getSelected');
@@ -76,7 +100,7 @@
 			$('#dlg').dialog('open').dialog('center').dialog('setTitle',
 					'修改SVG图标');
 			$('#fm').form('load', row);
-			url = '/svg/udpate';
+			url = '/vote/udpate';
 		}
 	}
 	function saveSvg() {
@@ -100,15 +124,12 @@
 		});
 	}
 
-	function cellStyler(value, row, index) {
-		return 'text-align:center;padding:5px;';
-	}
-
 	$(function() {
 		$('#dg').datagrid({
+			height:getHeight(0.85),
 			onLoadSuccess : function(data) {
 				$('svg').attr('width', '24px').attr('height', '24px');
-			}
+			},
 		});
 	});
 </script>
@@ -141,5 +162,9 @@
 
 #center-box {
 	padding: 20px;
+}
+
+.datagrid-cell-c2-voteQuestion{
+	white-space: normal;
 }
 </style>

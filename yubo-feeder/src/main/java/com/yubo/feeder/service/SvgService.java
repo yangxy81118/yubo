@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,8 @@ import com.yubo.feeder.dao.ResourceSvgMapper;
 import com.yubo.feeder.dao.pojo.ResourceSvg;
 import com.yubo.feeder.vo.DatagridResponse;
 import com.yubo.feeder.vo.SvgVO;
+import com.yubo.wechat.support.EmptyChecker;
+import com.yubo.wechat.support.PageUtil;
 
 /**
  * SVG CRUD服务
@@ -66,6 +69,39 @@ public class SvgService {
 
 	@Autowired
 	ResourceSvgMapper resourceSvgMapper;
+
+	private static final int svgBatchRows = 10;
+	
+	public Map<Integer, String> getSvgDataList(Set<Integer> svgIdSet) {
+		Map<Integer, String> result = new HashMap<>();
+		int pageCount = PageUtil.pageCount(svgIdSet.size(), svgBatchRows);
+		for (int i = 0; i < pageCount; i++) {
+			List<Integer> thisBatchIds = getThisBatchId(svgIdSet);
+			List<ResourceSvg> batchResult = resourceSvgMapper.searchBySvgId(thisBatchIds);
+			appendResult(result,batchResult);
+		}
+		return result;
+	}
+
+	private void appendResult(Map<Integer, String> result,
+			List<ResourceSvg> batchResult) {
+
+		if(EmptyChecker.isEmpty(batchResult)){
+			return;
+		}
+		
+		for (ResourceSvg resourceSvg : batchResult) {
+			result.put(resourceSvg.getSvgId(), resourceSvg.getSvgContent());
+		}
+	}
+
+	private List<Integer> getThisBatchId(Set<Integer> svgIdSet) {
+		List<Integer> thisBatchIds = new ArrayList<>();
+		for (Integer id : svgIdSet) {
+			thisBatchIds.add(id);
+		}
+		return thisBatchIds;
+	}
 
 
 }

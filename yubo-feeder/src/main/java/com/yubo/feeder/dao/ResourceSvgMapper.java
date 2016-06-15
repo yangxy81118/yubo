@@ -66,4 +66,10 @@ public interface ResourceSvgMapper {
      * @return
      */
     int countSelective(Map<String,Object> param);
+    
+    /**
+     * 指定批量查询
+     * @return
+     */
+    List<ResourceSvg> searchBySvgId(List<Integer> svgId);
 }

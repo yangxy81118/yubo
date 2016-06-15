@@ -31,5 +31,11 @@
 		<property name="mapperInterface" value="com.yubo.feeder.dao.ResourceSvgMapper" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
 	</bean>
+	
+	
+	<bean id="voteBaseMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.yubo.feeder.dao.VoteBaseMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
 
 </beans>
