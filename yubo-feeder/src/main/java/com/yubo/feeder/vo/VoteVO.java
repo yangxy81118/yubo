@@ -1,5 +1,6 @@
 package com.yubo.feeder.vo;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -16,10 +17,10 @@ public class VoteVO {
 
 	private String voteQuestion;
 
-	private String activeDate;
+	private Date activeDate;
 
 	private String colorStyle;
-	
+
 	private List<VoteAnswerViewEntry> voteAnswer;
 
 	public Long getVoteId() {
@@ -54,11 +55,11 @@ public class VoteVO {
 		this.voteAnswer = voteAnswer;
 	}
 
-	public String getActiveDate() {
+	public Date getActiveDate() {
 		return activeDate;
 	}
 
-	public void setActiveDate(String activeDate) {
+	public void setActiveDate(Date activeDate) {
 		this.activeDate = activeDate;
 	}
 

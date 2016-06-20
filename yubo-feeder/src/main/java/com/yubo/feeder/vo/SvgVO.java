@@ -13,6 +13,19 @@ public class SvgVO {
 	 */
 	private Double svgLength;
 
+	/**
+	 * 这个纯粹为了前端显示时定位用，js模块有bug
+	 */
+	private Integer svgIconIndex;
+
+	public Integer getSvgIconIndex() {
+		return svgIconIndex;
+	}
+
+	public void setSvgIconIndex(Integer svgIconIndex) {
+		this.svgIconIndex = svgIconIndex;
+	}
+
 	public Double getSvgLength() {
 		return svgLength;
 	}

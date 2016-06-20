@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,6 +25,7 @@ import com.yubo.feeder.service.VoteService;
 import com.yubo.feeder.vo.DatagridResponse;
 import com.yubo.feeder.vo.VoteAnswerViewEntry;
 import com.yubo.feeder.vo.VoteVO;
+import com.yubo.feeder.vo.form.VoteForm;
 import com.yubo.wechat.support.TimeUtil;
 
 /**
@@ -84,6 +86,40 @@ public class VoteController {
 		return dataResponse;
 	}
 	
+	
+	
+	@RequestMapping("/add")
+	@ModelAttribute
+	public void add(HttpServletRequest request,
+			HttpServletResponse response,VoteForm voteForm
+			) throws Exception {
+		
+		VoteVO voteVO = new VoteVO();
+		voteVO.setVoteQuestion(voteForm.getVoteQuestion());
+		voteVO.setVoteTitle(voteForm.getVoteTitle());
+		voteVO.setActiveDate(TimeUtil.parseDate(voteForm.getVoteDate(),",MM/dd/yyyy"));
+		voteVO.setVoteAnswer(buildAnswerList(voteForm));
+		voteService.add(voteVO);
+	}
+	
+	private List<VoteAnswerViewEntry> buildAnswerList(VoteForm voteForm) {
+
+		List<VoteAnswerViewEntry> list = new ArrayList<>();
+		VoteAnswerViewEntry entryOne = new VoteAnswerViewEntry();
+		entryOne.setDiscription(voteForm.getVoteAnswerOneDiscription());
+		entryOne.setKey(voteForm.getVoteAnswerOneKey());
+		entryOne.setSvgId(voteForm.getVoteAnswerOneIconId());
+		
+		VoteAnswerViewEntry entryTwo = new VoteAnswerViewEntry();
+		entryTwo.setDiscription(voteForm.getVoteAnswerTwoDiscription());
+		entryTwo.setKey(voteForm.getVoteAnswerTwoKey());
+		entryTwo.setSvgId(voteForm.getVoteAnswerTwoIconId());
+		
+		list.add(entryOne);
+		list.add(entryTwo);
+		return list;
+	}
+
 	private Map<Integer, String> getSvgMapping(Set<Integer> svgIdSet) {
 		Map<Integer, String> svgMap = svgService.getSvgDataList(svgIdSet);
 		return svgMap;
@@ -103,8 +139,8 @@ public class VoteController {
 		vo.setVoteId(voteBase.getVoteId());
 		vo.setVoteQuestion(voteBase.getQuestion());
 		vo.setVoteTitle(voteBase.getTitle());
-		vo.setActiveDate(TimeUtil.formatTime(voteBase.getStartTime(),"yyyy-MM-dd"));
 		vo.setVoteAnswer(buildAnswerSimpleView(voteBase,lookJSON.getJSONObject("answer-icon")));
+		vo.setActiveDate(voteBase.getStartTime());
 		return vo;
 	}
 
