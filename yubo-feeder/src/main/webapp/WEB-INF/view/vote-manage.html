@@ -92,7 +92,7 @@
 		<div id="svgDlg" class="easyui-dialog"
 			style="width: 800px; height: auto; padding: 10px 20px" closed="true"
 			buttons="#svgDlg-buttons" enctype="application/x-www-form-urlencoded">
-			<table id="svgTb" title="svg备选" style="width: auto; height: 450px" class="easyui-datagrid"
+			<table id="svgTb" title="本窗口第一次打开的时候会出现布局错乱的情况，请点击“取消”后重新打开一次即可" style="width: auto; height: 450px" class="easyui-datagrid"
 				data-options="pagination:true,showPageList:false,showRefresh:false,url:'/svg/load/select',method:'get',fitColumns:'true',onClickCell:svgIconClick">
 				<thead>
 					<tr>
@@ -114,10 +114,10 @@
 
 		<div id="dlg-buttons">
 			<a href="javascript:void(0)" class="easyui-linkbutton c6"
-				iconCls="icon-ok" onclick="saveVote()" style="width: 90px">Save</a>
+				iconCls="icon-ok" onclick="saveVote()" style="width: 90px">保存</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton"
 				iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')"
-				style="width: 90px">Cancel</a>
+				style="width: 90px">取消</a>
 		</div>
 
 		<div id="svgDlg-buttons">
@@ -126,7 +126,7 @@
 			<a href="javascript:void(0)" class="easyui-linkbutton"
 				iconCls="icon-cancel"
 				onclick="javascript:$('#svgDlg').dialog('close')"
-				style="width: 90px">Cancel</a>
+				style="width: 90px">取消</a>
 		</div>
 	</div>
 
@@ -236,6 +236,7 @@
 
 	function newSvgSelect(tag){
 		$('#svgDlg').dialog('open').dialog('center').dialog('setTitle', '选择投票答案图标');
+		$('#svgDlg .panel-title').css("color","#999").css("font-weight","200");
 		selectAnswerIdx = $(tag).attr('iconIdx');
 	}
 	
