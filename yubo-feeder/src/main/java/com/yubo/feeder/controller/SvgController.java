@@ -99,6 +99,7 @@ public class SvgController {
 				vo.setSvgIconIndex(i-1);
 				putSvgToSelect(selectVO,offset,vo);
 			}else{
+				vo.setSvgIconIndex(i-1);
 				selectVO.setSvgTen(vo);
 				svgSelectRows.add(selectVO);
 				selectVO = new SvgSelectVO();

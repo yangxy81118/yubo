@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:svg="http://www.w3.org/2000/svg">
+<head>
+<title>YUBO手册</title>
+<meta charset="utf-8">
+<meta name="apple-touch-fullscreen" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no,email=no,address=no">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+<script
+	src="http://o7pmdbbe0.bkt.clouddn.com/js/framework/jquery-2.2.4.min.js"></script>
+<script
+	src="http://apps.bdimg.com/libs/jquerymobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+<link rel="stylesheet"
+	href="http://apps.bdimg.com/libs/jquerymobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+<style type="text/css">
+body {
+	position: relative;
+	overflow: hidden;
+}
+
+div {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+}
+</style>
+</head>
+<body>
+	<div class="page" idx="0" id="page-0">
+		<img id="img-0" src="http://o7pmdbbe0.bkt.clouddn.com/pic/pet_manual/Cover.jpg"
+			data-original="http://o7pmdbbe0.bkt.clouddn.com/pic/pet_manual/Cover.jpg"
+			style="width: 100%;" />
+	</div>
+	<div class="page" idx="1" id="page-1">
+		<img id="img-1"
+			data-original="http://o7pmdbbe0.bkt.clouddn.com/pic/pet_manual/Feed%20Manual-01.jpg"
+			style="width: 100%;" />
+	</div>
+	<div class="page" idx="2" id="page-2">
+		<img id="img-2"
+			data-original="http://o7pmdbbe0.bkt.clouddn.com/pic/pet_manual/Feed%20Manual-02.jpg"
+			style="width: 100%;" />
+	</div>
+	<div class="page" idx="3" id="page-3">
+		<img id="img-3"
+			data-original="http://o7pmdbbe0.bkt.clouddn.com/pic/pet_manual/Feed%20Manual-03.jpg"
+			style="width: 100%;" />
+	</div>
+	<div class="page" idx="4" id="page-4">
+		<img id="img-4"
+			data-original="http://o7pmdbbe0.bkt.clouddn.com/pic/pet_manual/Feed%20Manual-04.jpg"
+			style="width: 100%;" />
+	</div>
+	<div class="page" idx="5" id="page-5">
+		<img id="img-5"
+			data-original="http://o7pmdbbe0.bkt.clouddn.com/pic/pet_manual/Feed%20Manual-05.jpg"
+			style="width: 100%;" />
+	</div>
+	<div class="page" idx="6" id="page-6">
+		<img id="img-6"
+			data-original="http://o7pmdbbe0.bkt.clouddn.com/pic/pet_manual/Feed%20Manual-06.jpg"
+			style="width: 100%;" />
+	</div>
+	<div class="page" idx="7" id="page-7">
+		<img id="img-7"
+			data-original="http://o7pmdbbe0.bkt.clouddn.com/pic/pet_manual/Feed%20Manual-07.jpg"
+			style="width: 100%;" />
+	</div>
+	<div class="page" idx="8" id="page-8">
+		<img id="img-8"
+			data-original="http://o7pmdbbe0.bkt.clouddn.com/pic/pet_manual/Feed%20Manual-08.jpg"
+			style="width: 100%;" />
+	</div>
+	<div class="page" idx="9" id="page-9">
+		<img id="img-9"
+			data-original="http://o7pmdbbe0.bkt.clouddn.com/pic/pet_manual/Feed%20Manual-09.jpg"
+			style="width: 100%;" />
+	</div>
+	<div class="page" idx="10" id="page-10">
+		<img id="img-10"
+			data-original="http://o7pmdbbe0.bkt.clouddn.com/pic/pet_manual/Feed%20Manual-10.jpg"
+			style="width: 100%;" />
+	</div>
+</body>
+<script type="text/javascript">
+	function loadImage(id, src, callback) {
+		var imgloader = new window.Image();
+		//当图片成功加载到浏览器缓存
+		imgloader.onload = function(evt) {
+			if (typeof (imgloader.readyState) == 'undefined') {
+				imgloader.readyState = 'undefined';
+			}
+			//在IE8以及以下版本中需要判断readyState而不是complete
+			if ((imgloader.readyState == 'complete' || imgloader.readyState == "loaded")
+					|| imgloader.complete) {
+				//console.log('width='+imgloader.width+',height='+imageloader.height);//读取原始图片大小
+				callback({
+					'msg' : 'ok',
+					'src' : src,
+					'id' : id
+				});
+			} else {
+				imgloader.onreadystatechange(evt);
+			}
+		};
+
+		imgloader.onerror = function(evt) {
+			callback({
+				'msg' : 'error',
+				'id' : id
+			});
+		};
+
+		imgloader.onreadystatechange = function(e) {
+			//此方法只有IE8以及一下版本会调用		
+		};
+		imgloader.src = src;
+	}
+
+	var loadResult = function(data) {
+		data = data || {};
+		if (typeof (data.msg) != 'undefined') {
+			if (data.msg == 'ok') {
+				$('#img-'+data.id).attr('src',data.src);
+			} else {
+				$('#img-'+data.id).attr('src','unload.png');
+			}
+		}
+	}
+
+	var lastPageIdx = -1;
+	$(function() {
+
+		$("body").css("height", $(window).height() + "px");
+		$(".ui-page").css("height", $(window).height() + "px");
+
+		var page = $(".page");
+		for (var i = 0; i < page.length; i++) {
+			$(page[i]).css("z-index", (page.length - i)).on("swipeleft",
+					function() {
+						if (lastPageIdx < page.length - 2) {
+							$(this).animate({
+								left : ($(this).width() * (-1)) + "px"
+							}, "slow");
+							lastPageIdx++;
+							var $nextPage = $(this).next();
+							var $img = $nextPage.find("img");
+							if($img.src==undefined){
+								loadImage($nextPage.attr('idx'),$img.attr('data-original'),loadResult);
+							}
+						}
+					}).on("swiperight", function() {
+				if (lastPageIdx >= 0) {
+					$("#page-" + lastPageIdx).animate({
+						left : 0
+					}, "slow");
+					lastPageIdx--;
+				}
+			});
+		}
+
+	});
+</script>
+</html>
