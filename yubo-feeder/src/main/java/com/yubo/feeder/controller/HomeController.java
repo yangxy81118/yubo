@@ -23,4 +23,11 @@ public class HomeController {
 		
 		return new ModelAndView("feeder-home.html");
 	}
+	
+	@RequestMapping(value="/test")
+	public ModelAndView test(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		
+		return new ModelAndView("test.html");
+	}
 }

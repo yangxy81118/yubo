@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class VoteVO {
 
-	private Long voteId;
+	private Integer voteId;
 
 	private String voteTitle;
 
@@ -23,11 +23,11 @@ public class VoteVO {
 
 	private List<VoteAnswerViewEntry> voteAnswer;
 
-	public Long getVoteId() {
+	public Integer getVoteId() {
 		return voteId;
 	}
 
-	public void setVoteId(Long voteId) {
+	public void setVoteId(Integer voteId) {
 		this.voteId = voteId;
 	}
 

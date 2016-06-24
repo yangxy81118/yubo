@@ -1,5 +1,7 @@
 package com.yubo.feeder.controller;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -97,9 +99,33 @@ public class VoteController {
 		VoteVO voteVO = new VoteVO();
 		voteVO.setVoteQuestion(voteForm.getVoteQuestion());
 		voteVO.setVoteTitle(voteForm.getVoteTitle());
-		voteVO.setActiveDate(TimeUtil.parseDate(voteForm.getVoteDate(),",MM/dd/yyyy"));
+		voteVO.setActiveDate(TimeUtil.parseDate(voteForm.getVoteDate(),"MM/dd/yyyy"));
 		voteVO.setVoteAnswer(buildAnswerList(voteForm));
 		voteService.add(voteVO);
+		write(response,"200");
+	}
+	
+	
+	private void write(HttpServletResponse response, String message) throws IOException {
+		response.setCharacterEncoding("utf-8");
+		PrintWriter writer = response.getWriter();
+		writer.write(message);
+	}
+
+	@RequestMapping("/update")
+	@ModelAttribute
+	public void update(HttpServletRequest request,
+			HttpServletResponse response,VoteForm voteForm
+			) throws Exception {
+		
+		VoteVO voteVO = new VoteVO();
+		voteVO.setVoteId(voteForm.getVoteId());
+		voteVO.setVoteQuestion(voteForm.getVoteQuestion());
+		voteVO.setVoteTitle(voteForm.getVoteTitle());
+		voteVO.setActiveDate(TimeUtil.parseDate(voteForm.getVoteDate(),"yyyy-MM-dd"));
+		voteVO.setVoteAnswer(buildAnswerList(voteForm));
+		voteService.update(voteVO);
+		write(response,"200");
 	}
 	
 	private List<VoteAnswerViewEntry> buildAnswerList(VoteForm voteForm) {
@@ -136,7 +162,7 @@ public class VoteController {
 	private VoteVO bulidSimpleVoteVO(VoteBase voteBase, JSONObject lookJSON) {
 
 		VoteVO vo = new VoteVO();
-		vo.setVoteId(voteBase.getVoteId());
+		vo.setVoteId(voteBase.getVoteId().intValue());
 		vo.setVoteQuestion(voteBase.getQuestion());
 		vo.setVoteTitle(voteBase.getTitle());
 		vo.setVoteAnswer(buildAnswerSimpleView(voteBase,lookJSON.getJSONObject("answer-icon")));

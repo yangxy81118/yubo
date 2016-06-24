@@ -10,6 +10,10 @@
 	src="http://www.jeasyui.net/Public/js/jquery.js"></script>
 <script type="text/javascript"
 	src="http://o7pmdbbe0.bkt.clouddn.com/js/easyui/jquery.easyui.min.js"></script>
+<script>
+	var str='<script type="text/javascript" src="http://o7pmdbbe0.bkt.clouddn.com/js/yubo/vote-mgr.js?v='+Math.random()+'"><\/script>';
+	document.write(str);
+</script>
 </head>
 
 <body>
@@ -26,7 +30,8 @@
 					<th field="voteQuestion" width="120">问题</th>
 					<th field="voteAnswer" width="120" align="center"
 						formatter="formatAnswer">答案</th>
-					<th field="activeDate" width="50" align="center" formatter="formatDate">激活日期</th>
+					<th field="activeDate" width="50" align="center"
+						formatter="formatDate">激活日期</th>
 					<th field="colorStyle" width="80" align="center">色彩方案</th>
 				</tr>
 			</thead>
@@ -47,44 +52,44 @@
 				<div class="fitem">
 					<label>标题:</label> <input name="voteTitle" class="easyui-textbox"
 						style="width: 200px; height: 26px;"
-						data-options="prompt:'20字之内，暂时不展示，用来搜索',required:true,validType:{length:[0,20]}">
+						data-options="prompt:'20字之内，暂时不展示，用来搜索',required:true,validType:{length:[0,20]},validateOnCreate:false,validateOnBlur:true">
 				</div>
 				<div class="fitem">
 					<label>问题:</label> <input name="voteQuestion"
 						class="easyui-textbox" style="width: 300px; height: 26px;"
-						data-options="prompt:'投票问题内容，不超过30个字',required:true,validType:{length:[0,30]}">
+						data-options="prompt:'投票问题内容，不超过30个字',required:true,validType:{length:[0,30]},validateOnCreate:false,validateOnBlur:true">
 				</div>
 				<div class="fitem">
-					<label>激活日期:</label> <input id="voteDate" name="voteDate"
-						style="width: 160px; height: 26px">
+					<label>激活日期:</label> <input id="voteDate" name="voteDate" class="easyui-datebox"
+						style="width: 160px; height: 26px" data-options="formatter:myformatter,parser:myparser,required:true" >
 				</div>
 
 				<div class="fitem">
 					<label>答案1:</label> <input name="voteAnswerOneDiscription"
 						class="easyui-textbox" style="width: 200px; height: 26px;"
-						data-options="prompt:'描述，不超过20个字',required:true,validType:{length:[0,20]}" />
+						data-options="prompt:'描述，不超过20个字',required:true,validType:{length:[0,20]},validateOnCreate:false" />
 					<input name="voteAnswerOneKey" class="easyui-textbox"
 						style="width: 160px; height: 26px;"
-						data-options="prompt:'投票关键字，不超过4个字',required:true,validType:{length:[0,4]}" />
+						data-options="prompt:'投票关键字，不超过4个字',required:true,validType:{length:[0,4]},validateOnCreate:false" />
 					<a href="javascript:void(0)" class="easyui-linkbutton c6"
 						onclick="newSvgSelect(this)" style="width: 90px" iconIdx="1">图标</a>
-					<span class="icon-preview-1"></span>
-					<input name="voteAnswerOneIconId" type="hidden" />
+					<span class="icon-preview-1"></span> <input id="iconOne"
+						name="voteAnswerOneIconId" type="hidden" />
 				</div>
 
 				<div class="fitem">
 					<label>答案2:</label> <input name="voteAnswerTwoDiscription"
 						class="easyui-textbox" style="width: 200px; height: 26px;"
-						data-options="prompt:'描述，不超过20个字',required:true,validType:{length:[0,20]}" />
+						data-options="prompt:'描述，不超过20个字',required:true,validType:{length:[0,20]},validateOnCreate:false" />
 					<input name="voteAnswerTwoKey" class="easyui-textbox"
 						style="width: 160px; height: 26px;"
-						data-options="prompt:'投票关键字，不超过4个字',required:true,validType:{length:[0,4]}" />
+						data-options="prompt:'投票关键字，不超过4个字',required:true,validType:{length:[0,4]},validateOnCreate:false" />
 					<a href="javascript:void(0)" class="easyui-linkbutton c6"
 						onclick="newSvgSelect(this)" style="width: 90px" iconIdx="2">图标</a>
-					<span class="icon-preview-2"></span>
-					<input name="voteAnswerTwoIconId" type="hidden" />
+					<span class="icon-preview-2"></span> <input id="iconTwo"
+						name="voteAnswerTwoIconId" type="hidden" />
 				</div>
-
+				<input type="hidden" name="voteId" />
 			</form>
 		</div>
 
@@ -92,20 +97,31 @@
 		<div id="svgDlg" class="easyui-dialog"
 			style="width: 800px; height: auto; padding: 10px 20px" closed="true"
 			buttons="#svgDlg-buttons" enctype="application/x-www-form-urlencoded">
-			<table id="svgTb" title="本窗口第一次打开的时候会出现布局错乱的情况，请点击“取消”后重新打开一次即可" style="width: auto; height: 450px" class="easyui-datagrid"
+			<table id="svgTb" title="本窗口第一次打开的时候会出现布局错乱的情况，请点击“取消”后重新打开一次即可"
+				style="width: auto; height: 450px" class="easyui-datagrid"
 				data-options="pagination:true,showPageList:false,showRefresh:false,url:'/svg/load/select',method:'get',fitColumns:'true',onClickCell:svgIconClick">
 				<thead>
 					<tr>
-						<th field="svgOne" width="100px" formatter="formatSVG" align="center"></th>
-						<th field="svgTwo" width="100px" formatter="formatSVG" align="center"></th>
-						<th field="svgThree" width="100px" formatter="formatSVG" align="center"></th>
-						<th field="svgFour" width="100px" formatter="formatSVG" align="center"></th>
-						<th field="svgFive" width="100px" formatter="formatSVG" align="center"></th>
-						<th field="svgSix" width="100px" formatter="formatSVG" align="center"></th>
-						<th field="svgSeven" width="100px" formatter="formatSVG" align="center"></th>
-						<th field="svgEight" width="100px" formatter="formatSVG" align="center"></th>
-						<th field="svgNine" width="100px" formatter="formatSVG" align="center"></th>
-						<th field="svgTen" width="100px" formatter="formatSVG" align="center"></th>
+						<th field="svgOne" width="100px" formatter="formatSVG"
+							align="center"></th>
+						<th field="svgTwo" width="100px" formatter="formatSVG"
+							align="center"></th>
+						<th field="svgThree" width="100px" formatter="formatSVG"
+							align="center"></th>
+						<th field="svgFour" width="100px" formatter="formatSVG"
+							align="center"></th>
+						<th field="svgFive" width="100px" formatter="formatSVG"
+							align="center"></th>
+						<th field="svgSix" width="100px" formatter="formatSVG"
+							align="center"></th>
+						<th field="svgSeven" width="100px" formatter="formatSVG"
+							align="center"></th>
+						<th field="svgEight" width="100px" formatter="formatSVG"
+							align="center"></th>
+						<th field="svgNine" width="100px" formatter="formatSVG"
+							align="center"></th>
+						<th field="svgTen" width="100px" formatter="formatSVG"
+							align="center"></th>
 					</tr>
 				</thead>
 			</table>
@@ -114,16 +130,16 @@
 
 		<div id="dlg-buttons">
 			<a href="javascript:void(0)" class="easyui-linkbutton c6"
-				iconCls="icon-ok" onclick="saveVote()" style="width: 90px">保存</a>
-			<a href="javascript:void(0)" class="easyui-linkbutton"
+				iconCls="icon-ok" onclick="saveVote()" style="width: 90px">保存</a> <a
+				href="javascript:void(0)" class="easyui-linkbutton"
 				iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')"
 				style="width: 90px">取消</a>
 		</div>
 
 		<div id="svgDlg-buttons">
 			<a href="javascript:void(0)" class="easyui-linkbutton c6"
-				iconCls="icon-ok" onclick="chooseSvg()" style="width: 90px">选择</a>
-			<a href="javascript:void(0)" class="easyui-linkbutton"
+				iconCls="icon-ok" onclick="chooseSvg()" style="width: 90px">选择</a> <a
+				href="javascript:void(0)" class="easyui-linkbutton"
 				iconCls="icon-cancel"
 				onclick="javascript:$('#svgDlg').dialog('close')"
 				style="width: 90px">取消</a>
@@ -132,159 +148,7 @@
 
 </body>
 </html>
-<script type="text/javascript">
 
-	Date.prototype.format = function(format) {
-	    var date = {
-	           "M+": this.getMonth() + 1,
-	           "d+": this.getDate(),
-	           "h+": this.getHours(),
-	           "m+": this.getMinutes(),
-	           "s+": this.getSeconds(),
-	           "q+": Math.floor((this.getMonth() + 3) / 3),
-	           "S+": this.getMilliseconds()
-	    };
-	    if (/(y+)/i.test(format)) {
-	           format = format.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));
-	    }
-	    for (var k in date) {
-	           if (new RegExp("(" + k + ")").test(format)) {
-	                  format = format.replace(RegExp.$1, RegExp.$1.length == 1
-	                         ? date[k] : ("00" + date[k]).substr(("" + date[k]).length));
-	           }
-	    }
-	    return format;
-	}
-
-	var answerIcon1 = {};
-	var answerIcon2 = {};
-	var selectAnswerIdx;
-	var selectSvgId;
-	var selectSvgContent;
-	var clickIconTbIdx;
-	
-	function getHeight(percent) {
-		var h = $(window).height() * percent;
-		return h;
-	}
-
-	function formatAnswer(val, row) {
-		var returnStr = "";
-		for (var i = 0; i < val.length; i++) {
-			if (val[i].key != undefined) {
-				var item = '<div style="overflow:hidden"><ul style="list-style:none;text-align:left;float:left;padding:5px 0;margin:0 5px 0 20px;"><li>'
-						+ val[i].discription
-						+ '</li><li>【'
-						+ val[i].key
-						+ '】</li></ul><div style="float: right;margin:15px 50px 15px 0;">'
-						+ val[i].svg + '</div></div>';
-				returnStr = item + returnStr;
-			}
-		}
-		return returnStr;
-	}
-	
-	function formatDate(val, row) {
-		var date = new Date();
-		date.setTime(val);
-		return date.format('yyyy-MM-dd');
-	}
-
-	var url;
-	function newVote() {
-		$('#dlg').dialog('open').dialog('center').dialog('setTitle', '添加投票');
-		$('#fm').form('clear');
-		url = '/vote/add';
-	}
-	function editVote() {
-		var row = $('#dg').datagrid('getSelected');
-		if (row) {
-			$('#dlg').dialog('open').dialog('center')
-					.dialog('setTitle', '修改投票');
-			$('#fm').form('load', row);
-			url = '/vote/udpate';
-		}
-	}
-	function saveVote() {
-		$('#fm').form('submit', {
-			url : url,
-			onSubmit : function() {
-				return $(this).form('validate');
-			},
-			success : function(result) {
-				var result = eval('(' + result + ')');
-				if (result != 200) {
-					$.messager.show({
-						title : 'Error',
-						msg : result.errorMsg
-					});
-				} else {
-					$('#dlg').dialog('close'); // close the dialog
-					$('#dg').datagrid('reload'); // reload the user data
-				}
-			}
-		});
-	}
-	
-	function chooseSvg(){
-		$('#svgDlg').dialog('close');
-		$('.icon-preview-'+selectAnswerIdx).html(selectSvgContent).next().val(selectSvgId);
-		if(clickIconTbIdx!=undefined){
-			$($('#svgDlg .datagrid-btable td')[clickIconTbIdx]).css("backgroud","#FFF");
-		}
-	}
-
-	function newSvgSelect(tag){
-		$('#svgDlg').dialog('open').dialog('center').dialog('setTitle', '选择投票答案图标');
-		$('#svgDlg .panel-title').css("color","#999").css("font-weight","200");
-		selectAnswerIdx = $(tag).attr('iconIdx');
-	}
-	
-	function formatSVG(val, row) {
-		var text = "";
-		if(val!=undefined){
-	    	text = '<div style="text-align:center;padding-top:15px;">'+val.svgContent+'</div><p style="font-size:12px;text-align:center">'+val.svgTag+'</p>';
-		}
-        return text;
-     }
-
-	function svgIconClick(index,field,value){
-		if(value!=undefined){
-			var currentIdx = value.svgIconIndex;
-			if(currentIdx!=clickIconTbIdx){
-				selectSvgId = value.svgId;
-				selectSvgContent = value.svgContent;
-				var tdArray = $('#svgDlg .datagrid-btable td');
-				if(clickIconTbIdx==undefined){
-					clickIconTbIdx = value.svgIconIndex;
-					$(tdArray[clickIconTbIdx]).css("background","#E7E3F1")
-				}else{
-					
-					$(tdArray[clickIconTbIdx]).css("background","#FFF");
-					$(tdArray[currentIdx]).css("background","#E7E3F1");
-					clickIconTbIdx = currentIdx;
-				}
-			}
-		}
-	}
-	
-	$(function() {
-		$('#dg').datagrid({
-			height : getHeight(0.85),
-			onLoadSuccess : function(data) {
-				$('svg').attr('width', '24px').attr('height', '24px');
-			},
-		});
-		
-		 $('#voteDate').datebox().datebox('calendar').calendar({
-             validator: function(date){
-                 var now = new Date();
-                 return date > now;
-             }
-         });
-		
-	});
-</script>
 <style type="text/css">
 #fm {
 	margin: 0;
@@ -324,19 +188,18 @@
 	box-shadow: 0 0 2px #FF0B0B;
 }
 
-.datagrid-row-over{
+#svgDlg .datagrid-row-over {
 	background-color: #FFF;
-	color:#000;
+	color: #000;
 }
 
-#svgDlg td:hover{
+#svgDlg td:hover {
 	cursor: pointer;
 	background-color: #E2E2E2;
 }
 
-#svgDlg .datagrid-row-selected{
+#svgDlg .datagrid-row-selected {
 	background-color: #FFF;
-	color:#000;
+	color: #000;
 }
-
 </style>

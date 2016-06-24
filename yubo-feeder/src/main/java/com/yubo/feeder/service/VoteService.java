@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONObject;
 import com.yubo.feeder.dao.VoteBaseMapper;
 import com.yubo.feeder.dao.pojo.VoteBase;
-import com.yubo.feeder.vo.SvgVO;
 import com.yubo.feeder.vo.VoteAnswerViewEntry;
 import com.yubo.feeder.vo.VoteVO;
 
@@ -71,12 +70,15 @@ public class VoteService {
 		return answerJSON.toJSONString();
 	}
 
-	public void update(SvgVO vo) {
-		// ResourceSvg record = new ResourceSvg();
-		// record.setSvgId(vo.getSvgId());
-		// record.setSvgTag(vo.getSvgTag());
-		// record.setSvgContent(vo.getSvgContent());
-		// resourceSvgMapper.updateByPrimaryKeySelective(record);
+	public void update(VoteVO voteVO) {
+		VoteBase voteBase = new VoteBase();
+		voteBase.setVoteId((long)voteVO.getVoteId());
+		voteBase.setQuestion(voteVO.getVoteQuestion());
+		voteBase.setStartTime(voteVO.getActiveDate());
+		voteBase.setTitle(voteVO.getVoteTitle());
+		voteBase.setAnswers(buildAnswers(voteVO.getVoteAnswer()));
+		voteBase.setLookConfig(buildLookConfig(voteVO));
+		voteBaseMapper.updateByPrimaryKeySelective(voteBase);
 	}
 
 	@Autowired
