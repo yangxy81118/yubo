@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.yubo.feeder.service.SvgService;
 import com.yubo.feeder.vo.DatagridResponse;
+import com.yubo.feeder.vo.Query;
 import com.yubo.feeder.vo.SvgSelectVO;
 import com.yubo.feeder.vo.SvgVO;
 import com.yubo.wechat.support.MathUtil;
@@ -37,13 +38,21 @@ public class SvgController {
 		return new ModelAndView("svg-manage.html");
 	}
 	
+	/**
+	 * SVG查询
+	 * @param word 查询关键字
+	 * @param sort 排序字段
+	 * @param order 排序规则
+	 * @param page
+	 * @param rows
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping("/load")
 	@ResponseBody
 	public DatagridResponse<SvgVO> load(HttpServletRequest request,
-			HttpServletResponse response,
-			@RequestParam(required = false) Integer page,
-			@RequestParam(required = false) Integer rows) throws Exception {
-		DatagridResponse<SvgVO> svgList = svgService.paging(page, rows);
+			HttpServletResponse response,Query<SvgVO> query) throws Exception {
+		DatagridResponse<SvgVO> svgList = svgService.paging(query);
 		
 		//计算svg大小
 		List<SvgVO> list = svgList.getRows();
@@ -69,13 +78,10 @@ public class SvgController {
 	@RequestMapping("/load/select")
 	@ResponseBody
 	public DatagridResponse<SvgSelectVO> loadSelect(HttpServletRequest request,
-			HttpServletResponse response,
-			@RequestParam(required = false) Integer page,
-			@RequestParam(required = false) Integer rows) throws Exception {
-		
-		//强制固定60个
-		rows = 60;
-		DatagridResponse<SvgVO> svgList = svgService.paging(page, rows);
+			HttpServletResponse response,Query<SvgVO> query) throws Exception {
+		//强制固定50个
+		query.setRows(50);
+		DatagridResponse<SvgVO> svgList = svgService.paging(query);
 		DatagridResponse<SvgSelectVO> svgSelectList = formatSvgSelect(svgList);
 		return svgSelectList;
 	}

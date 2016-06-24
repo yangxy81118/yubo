@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.yubo.feeder.dao.ResourceSvgMapper;
 import com.yubo.feeder.dao.pojo.ResourceSvg;
 import com.yubo.feeder.vo.DatagridResponse;
+import com.yubo.feeder.vo.Query;
 import com.yubo.feeder.vo.SvgVO;
 import com.yubo.wechat.support.EmptyChecker;
 import com.yubo.wechat.support.PageUtil;
@@ -25,15 +26,26 @@ import com.yubo.wechat.support.PageUtil;
 @Service
 public class SvgService {
 
-	public DatagridResponse<SvgVO> paging(Integer page, Integer row) {
+	/**
+	 * 分页查询 TODO 待优化
+	 * @param page
+	 * @param row
+	 * @param word 查询的关键字，目前采用最简单的LIKE方法
+	 * @return
+	 */
+	public DatagridResponse<SvgVO> paging(Query<SvgVO> query) {
 
 		DatagridResponse<SvgVO> response = new DatagridResponse<>();
-		page = page == null ? 1 : page;
-		row = row == null ? 10 : row;
+		query.setPage(query.getPage() == null? 1 : query.getPage());
+		query.setRows(query.getRows() == null? 10 : query.getRows());
 
 		Map<String, Object> param = new HashMap<>();
-		param.put("startRow", (page - 1) * row);
-		param.put("rowCount", row);
+		param.put("startRow", (query.getPage() - 1) * query.getRows());
+		param.put("rowCount", query.getRows());
+		param.put("svgTag", query.getWord());
+		param.put("sort", query.getSort());
+		param.put("order", query.getOrder());
+		
 		List<ResourceSvg> result = resourceSvgMapper.paging(param);
 
 		List<SvgVO> list = new ArrayList<>();

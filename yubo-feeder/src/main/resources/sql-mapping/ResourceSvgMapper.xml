@@ -114,6 +114,23 @@
     select 
     <include refid="Base_Column_List" />
     from resource_svg
+    <where>
+    	<if test="svgTag!=null">
+    		svg_tag LIKE '%${svgTag}%'
+    	</if>
+    </where>
+    <if test="sort!=null">
+    	ORDER BY 
+    	<choose>
+    		<when test="sort=='svgTag'">
+    			convert(svg_tag USING gbk) COLLATE gbk_chinese_ci
+    		</when>
+    		<when test="sort=='svgId'">
+    			svg_id
+    		</when>
+    	</choose>
+		 ${order} 
+    </if>
     LIMIT ${startRow},${rowCount}
   </select>
   
@@ -123,7 +140,7 @@
     from resource_svg
     <where>
     	<if test="svgTag!=null">
-			svg_tag LIKE '%'||#{svgTag}||'%'   	
+			svg_tag LIKE '%${svgTag}%'   	
     	</if>
     </where>
   </select>

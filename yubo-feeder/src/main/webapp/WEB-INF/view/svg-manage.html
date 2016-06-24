@@ -23,8 +23,8 @@
 			data-options="singleSelect:true,pagination:true,url:'/svg/load',method:'get',fitColumns:'true',toolbar:'#toolbar'">
 			<thead>
 				<tr>
-					<th field="svgId" width="30">资源ID</th>
-					<th field="svgTag" width="80">SVG标签</th>
+					<th field="svgId" width="30" sortable="true">资源ID</th>
+					<th field="svgTag" width="80" sortable="true">SVG标签</th>
 					<th field="svgContent" width="40" data-options="styler:cellStyler" align="center">SVG预览</th>
 					<th field="svgLength" width="50" align="center">SVG内容大小(kb)</th>
 				</tr>
@@ -32,9 +32,12 @@
 		</table>
 		<div id="toolbar">
 			<a href="javascript:void(0)" class="easyui-linkbutton"
-				iconCls="icon-add" plain="true" onclick="newSvg()">添加</a> <a
-				href="javascript:void(0)" class="easyui-linkbutton"
-				iconCls="icon-edit" plain="true" onclick="editSvg()">修改</a>
+			   iconCls="icon-add" plain="true" onclick="newSvg()">添加</a> 
+			<a href="javascript:void(0)" class="easyui-linkbutton"
+			   iconCls="icon-edit" plain="true" onclick="editSvg()">修改</a>
+			<span style="margin-left:50px;">标签查询:</span>
+			<input id="searchKey" style="line-height:20px;margin:5px 0;border:1px solid #ccc;position:relative;top:2px;">
+			<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="doSearch()">查询</a>	 				
 		</div>
 
 		<div id="dlg" class="easyui-dialog"
@@ -105,6 +108,15 @@
 
 	function cellStyler(value, row, index) {
 		return 'text-align:center;padding:5px 0;';
+	}
+	
+	function doSearch(){
+		var word = $('#searchKey').val();
+		$('#dg').datagrid('load',{
+	        word: word,
+	        page: 1,
+	        rows: 10
+	    });
 	}
 
 	$(function() {
