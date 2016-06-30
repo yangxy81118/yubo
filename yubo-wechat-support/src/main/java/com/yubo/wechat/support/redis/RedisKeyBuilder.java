@@ -12,6 +12,7 @@ public class RedisKeyBuilder {
 	public static final String PREFIX_FAVOR_LOCK = "FavorLock.";
 	public static final String PREFIX_FUNCTION_CODE = "FunctionCode.";
 	public static final String PREFIX_FEEDER_LOGIN = "FeederLogin.";
+	public static final String PREFIX_PET_LEVEL = "PetLevel.";
 
 	/**
 	 * 对话Redis Key 构建
@@ -27,7 +28,7 @@ public class RedisKeyBuilder {
 		}
 		return sb.toString();
 	}
-	
+
 	/**
 	 * 对话Redis Key 构建
 	 * 
@@ -35,11 +36,10 @@ public class RedisKeyBuilder {
 	 * @param petId
 	 * @return
 	 */
-	public static String buildTalkKey(int userId, int petId,int functionCode) {
-		return buildByUserAndPet(PREFIX_SIMPLETALK, userId, petId,functionCode);
+	public static String buildTalkKey(int userId, int petId, int functionCode) {
+		return buildByUserAndPet(PREFIX_SIMPLETALK, userId, petId, functionCode);
 	}
-	
-	
+
 	/**
 	 * 当前用户最近一次功能性对话的code
 	 * 
@@ -48,9 +48,9 @@ public class RedisKeyBuilder {
 	 * @return
 	 */
 	public static String buildFunctionCode(int userId, int petId) {
-		return buildByUserAndPet(PREFIX_FUNCTION_CODE,userId, petId);
+		return buildByUserAndPet(PREFIX_FUNCTION_CODE, userId, petId);
 	}
-	
+
 	/**
 	 * 亲密度定时锁
 	 * 
@@ -68,10 +68,12 @@ public class RedisKeyBuilder {
 		String key = keyBuf.toString();
 		return key;
 	}
-	
-	public static String buildByUserAndPet(String prefix, int userId, int petId,int functionCode) {
+
+	public static String buildByUserAndPet(String prefix, int userId,
+			int petId, int functionCode) {
 		StringBuffer keyBuf = new StringBuffer(prefix);
-		keyBuf.append(petId).append(".").append(userId).append(".").append(functionCode);
+		keyBuf.append(petId).append(".").append(userId).append(".")
+				.append(functionCode);
 		String key = keyBuf.toString();
 		return key;
 	}

@@ -5,6 +5,7 @@ import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import redis.clients.jedis.Jedis;
@@ -40,7 +41,7 @@ public class RedisHandler {
 	
 	private JedisPool jedisPool;
 	
-	private Jedis redisClient;
+	private static ThreadLocal<Jedis> jedisLocalPool = new ThreadLocal<Jedis>();
 	
 	@PostConstruct
 	public void initRedisPool(){
@@ -50,18 +51,18 @@ public class RedisHandler {
 		config.setMaxIdle(maxIdle);
 		config.setMaxWait(maxWait);
 		config.setTestOnBorrow(false);
-		
-		
-		jedisPool = new JedisPool(config, host, port,5);
+		jedisPool = new JedisPool(config, host, port,5000);
 	}
 	
 	
 	public Jedis getRedisClient() throws Exception {
 		try{
-			if(redisClient==null){
-				redisClient =  jedisPool.getResource();
+			Jedis client = jedisLocalPool.get();
+			if(jedisLocalPool.get()==null){
+				client = jedisPool.getResource();
+				jedisLocalPool.set(client);
 			}
-			return redisClient;
+			return client;
 		}catch(JedisConnectionException connException){
 			logger.error("获取Redis链接出错,{}",connException.getMessage(),connException);
 		}catch (Exception e) {
@@ -69,6 +70,11 @@ public class RedisHandler {
 			throw e;
 		}
 		return null;
+	}
+	
+	public void returnResource(Jedis client){
+		jedisPool.returnResource(client);
+		jedisLocalPool.set(null);
 	}
 	
 }

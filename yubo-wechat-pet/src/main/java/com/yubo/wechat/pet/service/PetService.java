@@ -24,6 +24,7 @@ public class PetService {
 		pet.setPetId(petId);
 		pet.setPetLevel(growUpPoint + pet.getPetLevel());
 		petBaseMapper.updateByPrimaryKeySelective(pet);
+		petStateListener.addLevel(petId,growUpPoint);
 	}
 
 	/**
@@ -32,13 +33,14 @@ public class PetService {
 	 * @return
 	 */
 	public boolean stillInEgg(int petId) {
-		
-		PetBase pet = petBaseMapper.selectByPrimaryKey(1);
-		return pet.getPetLevel() < 1;
+		return petStateListener.getPetLevel(1) < 1;
 	}
 	
 	
 	@Autowired
 	PetBaseMapper petBaseMapper;
+	
+	@Autowired
+	PetStateListener petStateListener;
 
 }
