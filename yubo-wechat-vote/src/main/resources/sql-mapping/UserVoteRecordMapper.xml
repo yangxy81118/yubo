@@ -179,6 +179,13 @@
 	     <if test="voteId!=null">
 	    	AND vote_id = #{voteId,jdbcType=INTEGER}
 	    </if> 
+	    <if test="sort!=null">
+	    	ORDER BY 
+	    	<if test="sort=='voteId'">
+	    		vote_id 
+	    	</if>
+	    	${order}
+	    </if>
 	    LIMIT ${startRow},${rowCount}
   </select>
   

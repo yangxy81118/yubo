@@ -309,6 +309,8 @@ public class VoteService {
 		param.put("userId", userId);
 		param.put("startRow", startRow);
 		param.put("rowCount", rowCount);
+		param.put("sort", "voteId");
+		param.put("order", "desc");
 
 		List<UserVoteRecord> result = userVoteRecordMapper.selectByParam(param);
 		if (result == null || result.size() <= 0) {
