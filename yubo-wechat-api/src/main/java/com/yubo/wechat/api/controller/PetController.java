@@ -46,11 +46,11 @@ public class PetController {
 	}
 	
 	
-	@RequestMapping("/test")
+	@RequestMapping("/show")
 	public ModelAndView test(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		ModelAndView view = new ModelAndView();
-		view.setViewName("manual.html");
+		view.setViewName("builds.html");
 		return view;
 	}
 	
