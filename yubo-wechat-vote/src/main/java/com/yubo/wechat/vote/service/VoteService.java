@@ -209,6 +209,9 @@ public class VoteService {
 	public UserVoteVO vote(UserVoteVO answerParam) {
 
 		// 之前是否已经投票过?
+		
+		
+		
 		List<UserVoteRecord> voteHistory = getPreviousAnswerRecord(answerParam
 				.getVoteVO().getVoteId(), answerParam.getUserId(), 0, 1);
 		UserVoteRecord perviousRecord = null;

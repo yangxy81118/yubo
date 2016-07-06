@@ -8,15 +8,13 @@ import javax.xml.bind.JAXBException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.yubo.wechat.api.service.vo.MsgContextParam;
 import com.yubo.wechat.api.service.vo.MsgHandlerResult;
-import com.yubo.wechat.api.service.vo.MsgInputParam;
 import com.yubo.wechat.api.xml.XMLHelper;
-import com.yubo.wechat.api.xml.request.TextMsgRequest;
+import com.yubo.wechat.api.xml.request.WeChatRequest;
 import com.yubo.wechat.api.xml.response.ArticleItem;
-import com.yubo.wechat.api.xml.response.TextResponse;
 import com.yubo.wechat.api.xml.response.ViewResponse;
 import com.yubo.wechat.user.service.UserPetFavorService;
-import com.yubo.wechat.user.service.UserService;
 import com.yubo.wechat.vote.service.VoteService;
 import com.yubo.wechat.vote.service.vo.AnswerEntry;
 import com.yubo.wechat.vote.service.vo.UserVoteVO;
@@ -49,7 +47,7 @@ public class VoteHelper {
 	 * @return
 	 * @throws JAXBException 
 	 */
-	public MsgHandlerResult testForQuestion(TextMsgRequest request) throws JAXBException {
+	public MsgHandlerResult testForQuestion(WeChatRequest request) throws JAXBException {
 
 		String word = request.getContent().trim();
 		if(!word.equals("今天的问题")){
@@ -80,47 +78,16 @@ public class VoteHelper {
 	 * @return
 	 * @throws JAXBException 
 	 */
-	public MsgHandlerResult execute(MsgInputParam param, TextMsgRequest request) throws JAXBException {
+	public MsgHandlerResult execute(MsgContextParam param, WeChatRequest request) throws JAXBException {
 
 		String currentAnswer = request.getContent().trim();
 		Long voteId = voteService.getVoteIdByWord(currentAnswer);
 		UserVoteVO answerResult  = answer(voteId, param.userId, currentAnswer);
 		petFavorService.addFavor(param.userId, param.petId, 1);
-		return buildResult(request,answerResult);
+		String url = "http://www.yubo.space/vote/detail?userId="+answerResult.getUserId()+"&voteId="+answerResult.getVoteVO().getVoteId();
+		return XMLHelper.buildSingleViewResponse(request, answerResult.getFeedBackText(), "谢谢回答", url, answerResult.getFeedBackPicUrl());
 	}
 	
-	/**
-	 * 构建结果
-	 * TODO URL等常量配置化
-	 * @param request
-	 * @param feedbackText
-	 * @return
-	 * @throws JAXBException
-	 */
-	private MsgHandlerResult buildResult(TextMsgRequest request,UserVoteVO answerResult)
-			throws JAXBException {
-
-		ViewResponse response = new ViewResponse();
-		response.setCreateTime(System.currentTimeMillis());
-		response.setFromUserName(request.getToUserName());
-		response.setToUserName(request.getFromUserName());
-		response.setArticleCount(1);
-
-		List<ArticleItem> articles = new ArrayList<>();
-		ArticleItem item = new ArticleItem();
-		item.setDescription(answerResult.getFeedBackText());
-		item.setTitle("谢谢回答");
-		item.setUrl("http://www.yubo.space/vote/detail?userId="+answerResult.getUserId()+"&voteId="+answerResult.getVoteVO().getVoteId());
-		item.setPicUrl(answerResult.getFeedBackPicUrl());
-		articles.add(item);
-		response.setItems(articles);
-
-		MsgHandlerResult result = new MsgHandlerResult();
-		result.setXmlResponse(XMLHelper.buildXMLStr(response,
-				ViewResponse.class));
-		return result;
-	}
-
 	private UserVoteVO answer(Long voteId, int userId, String currentAnswer) {
 		UserVoteVO answerParam = new UserVoteVO();
 		VoteVO vote = new VoteVO();

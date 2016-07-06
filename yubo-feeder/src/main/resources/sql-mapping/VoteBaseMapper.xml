@@ -214,8 +214,17 @@
 	    <if test="timeEnd!=null">
 	    	<![CDATA[ AND start_time < #{timeEnd,jdbcType=TIMESTAMP} ]]>
 	    </if> 
-	    <if test="orderField!=null">
-	    	ORDER BY ${orderField} ${orderType}
+	    <if test="sort!=null">
+		    ORDER BY 
+	    	<choose>
+	    		<when test="sort=='activeDate'">
+	    			start_time
+	    		</when>
+	    		<when test="sort=='voteId'">
+	    			vote_id
+	    		</when>
+	    	</choose>
+			 ${order} 
 	    </if>
 	    LIMIT ${startRow},${rowCount}
   </select>

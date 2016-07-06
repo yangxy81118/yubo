@@ -2,16 +2,23 @@ package com.yubo.wechat.api.xml;
 
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 import com.yubo.wechat.api.service.vo.MsgHandlerResult;
 import com.yubo.wechat.api.xml.request.TextMsgRequest;
+import com.yubo.wechat.api.xml.request.WeChatRequest;
+import com.yubo.wechat.api.xml.response.ArticleItem;
 import com.yubo.wechat.api.xml.response.TextResponse;
+import com.yubo.wechat.api.xml.response.ViewResponse;
 import com.yubo.wechat.vote.service.vo.AnswerEntry;
 
 /**
@@ -46,40 +53,43 @@ public class XMLHelper {
 		return xmlResult;
 	}
 
-	public static <T> T parseXml(String xml, Class<T> clz) throws JAXBException {
+	public static <T> T parseXml(String xml, Class<T> clz)
+			throws JAXBException, XMLStreamException {
 
+		long s = System.currentTimeMillis();
 		JAXBContext context = JAXBContext.newInstance(clz);
 		Unmarshaller un = context.createUnmarshaller();
+
+		XMLInputFactory xmlif = XMLInputFactory.newInstance();
 		StringReader reader = new StringReader(xml);
-		Object obj = un.unmarshal(reader);
+		XMLStreamReader xmler = xmlif.createXMLStreamReader(reader);
+
+		Object obj = un.unmarshal(xmler);
 		T unpackObj = (T) obj;
+		// System.out.println("parse:"+(System.currentTimeMillis()-s));
 		return unpackObj;
 	}
 
-	public static void main(String[] args) throws JAXBException {
+	public static void main(String[] args) throws JAXBException,
+			XMLStreamException {
 
-		// TextResponse rsp = new TextResponse();
-		// rsp.setContent("123");
-		// rsp.setCreateTime(41234324l);
-		// rsp.setFromUserName("abc");
-		// rsp.setToUserName("bbbccc");
-		//
-		// System.out.println(buildXMLStr(rsp,TextResponse.class));
-
-		TextMsgRequest obj = parseXml(
+		long s = System.currentTimeMillis();
+		WeChatRequest obj = parseXml(
 				"<xml><ToUserName><![CDATA[toUser]]></ToUserName><FromUserName><![CDATA[fromUser]]></FromUserName><CreateTime>1348831860</CreateTime><MsgType><![CDATA[text]]></MsgType><Content><![CDATA[thisisatest]]></Content><MsgId>1234567890123456</MsgId></xml>",
-				TextMsgRequest.class);
-		System.out.println(obj);
+				WeChatRequest.class);
+		System.out.println(System.currentTimeMillis() - s);
+
+		// System.out.println(obj);
 
 	}
 
-	public static MsgHandlerResult buildTextResponse(String content, TextMsgRequest request) throws JAXBException {
+	public static MsgHandlerResult buildTextResponse(String content,
+			WeChatRequest request) throws JAXBException {
 		TextResponse response = new TextResponse();
 		response.setContent(content);
 		response.setCreateTime(System.currentTimeMillis());
 		response.setFromUserName(request.getToUserName());
 		response.setToUserName(request.getFromUserName());
-
 		MsgHandlerResult result = new MsgHandlerResult();
 		result.setXmlResponse(XMLHelper.buildXMLStr(response,
 				TextResponse.class));
@@ -87,4 +97,28 @@ public class XMLHelper {
 		return result;
 	}
 
+	public static MsgHandlerResult buildSingleViewResponse(
+			WeChatRequest request, String description,
+			String title, String url,String picUrl) throws JAXBException {
+
+		ViewResponse response = new ViewResponse();
+		response.setCreateTime(System.currentTimeMillis());
+		response.setFromUserName(request.getToUserName());
+		response.setToUserName(request.getFromUserName());
+		response.setArticleCount(1);
+
+		List<ArticleItem> articles = new ArrayList<>();
+		ArticleItem item = new ArticleItem();
+		item.setDescription(description);
+		item.setTitle(title);
+		item.setUrl(url);
+		item.setPicUrl(picUrl);
+		articles.add(item);
+		response.setItems(articles);
+
+		MsgHandlerResult result = new MsgHandlerResult();
+		result.setXmlResponse(XMLHelper.buildXMLStr(response,
+				ViewResponse.class));
+		return result;
+	}
 }

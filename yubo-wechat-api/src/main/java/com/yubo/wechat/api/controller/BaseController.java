@@ -11,6 +11,7 @@ import com.yubo.wechat.api.xml.request.UserWeChatIdHelper;
 
 /**
  * Controller公共父类
+ * 
  * @author yangxy8
  *
  */
@@ -18,6 +19,7 @@ public class BaseController {
 
 	/**
 	 * 获取微信XML报文
+	 * 
 	 * @param request
 	 * @return
 	 * @throws IOException
@@ -33,21 +35,22 @@ public class BaseController {
 			while ((inputLine = br.readLine()) != null) {
 				requestBody += inputLine;
 			}
-			br.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+		} finally {
+			br.close();
 		}
 
 		return requestBody;
 	}
-	
+
 	/**
 	 * 获取微信ID
+	 * 
 	 * @param requestBody
 	 * @return
 	 * @throws JAXBException
 	 */
-	protected String getWeChatID(String requestBody) throws JAXBException {
+	protected String getWeChatID(String requestBody) throws Exception {
 		UserWeChatIdHelper helper = XMLHelper.parseXml(requestBody,
 				UserWeChatIdHelper.class);
 		return helper.getFromUserName();

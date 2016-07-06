@@ -99,7 +99,7 @@ public class VoteRealTimeHandler {
 		
 		activeVoteId = getFirstId();
 		activeVoteDate = getVoteDate();
-		logger.info("今日的投票ID与答案关键字的映射加载完毕，一共{}条数据", answer4VoteMapping.size());
+		logger.info("今日的投票ID与答案关键字的映射加载完毕，投票答案为{}", answer4VoteMapping);
 	}
 
 	/**

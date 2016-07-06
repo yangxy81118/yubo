@@ -14,9 +14,10 @@ import redis.clients.jedis.Jedis;
 
 import com.yubo.wechat.api.service.MessageHandler;
 import com.yubo.wechat.api.service.vo.MsgHandlerResult;
-import com.yubo.wechat.api.service.vo.MsgInputParam;
+import com.yubo.wechat.api.service.vo.MsgContextParam;
 import com.yubo.wechat.api.xml.XMLHelper;
 import com.yubo.wechat.api.xml.request.EventMsgRequest;
+import com.yubo.wechat.api.xml.request.WeChatRequest;
 import com.yubo.wechat.api.xml.response.TextResponse;
 import com.yubo.wechat.content.service.ReplyService;
 import com.yubo.wechat.content.vo.MessageVO;
@@ -39,17 +40,14 @@ import com.yubo.wechat.user.vo.UserVO;
 @Service
 public class MoMoService implements MessageHandler {
 
-	public MsgHandlerResult execute(MsgInputParam param) {
+	public MsgHandlerResult execute(MsgContextParam param) {
 
 		logger.info("摸Mo业务处理");
 
 		try {
-			EventMsgRequest request = XMLHelper.parseXml(param.requestBody,
-					EventMsgRequest.class);
-
 			// 如果是宠物还未出生的阶段，则直接回复
 			if (petService.stillInEgg(1)) {
-				return buildResult(request,
+				return buildResult(param.request,
 						"神秘旁白:\n小宠物还在孵化之中，还需要更多同学来激活，完成小宠物的孵化。\n快去告诉身边的同学吧~");
 			}
 
@@ -57,7 +55,7 @@ public class MoMoService implements MessageHandler {
 			// 根据目前的时间段，获取一个回复
 			String replyContent = buildContent(param);
 
-			return buildResult(request, replyContent);
+			return XMLHelper.buildTextResponse(replyContent,param.request);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -73,7 +71,7 @@ public class MoMoService implements MessageHandler {
 	 * @param replyContent
 	 * @param functionCode
 	 */
-	private void insertReplyToCache(MsgInputParam param, String replyContent,
+	private void insertReplyToCache(MsgContextParam param, String replyContent,
 			Integer functionCode) {
 		functionCode = functionCode == null ? 0 : functionCode;
 		Jedis redis = null;
@@ -96,7 +94,7 @@ public class MoMoService implements MessageHandler {
 	 * @return
 	 * @throws JAXBException
 	 */
-	private MsgHandlerResult buildResult(EventMsgRequest request, String content)
+	private MsgHandlerResult buildResult(WeChatRequest request, String content)
 			throws JAXBException {
 
 		TextResponse response = new TextResponse();
@@ -117,7 +115,7 @@ public class MoMoService implements MessageHandler {
 	 * @param param
 	 * @return
 	 */
-	private String buildContent(MsgInputParam param) {
+	private String buildContent(MsgContextParam param) {
 
 		StringBuffer content = new StringBuffer("");
 
@@ -165,7 +163,7 @@ public class MoMoService implements MessageHandler {
 		return content.toString();
 	}
 	
-	private void addFavorLock(MsgInputParam param) {
+	private void addFavorLock(MsgContextParam param) {
 		Jedis redis = null;
 		try {
 			redis = redisHandler.getRedisClient();
@@ -179,7 +177,7 @@ public class MoMoService implements MessageHandler {
 		}
 	}
 
-	private boolean favorLock(MsgInputParam param) {
+	private boolean favorLock(MsgContextParam param) {
 		Jedis redis = null;
 		try {
 			redis = redisHandler.getRedisClient();

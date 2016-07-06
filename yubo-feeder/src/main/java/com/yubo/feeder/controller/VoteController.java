@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -25,6 +24,7 @@ import com.yubo.feeder.dao.pojo.VoteBase;
 import com.yubo.feeder.service.SvgService;
 import com.yubo.feeder.service.VoteService;
 import com.yubo.feeder.vo.DatagridResponse;
+import com.yubo.feeder.vo.Query;
 import com.yubo.feeder.vo.VoteAnswerViewEntry;
 import com.yubo.feeder.vo.VoteVO;
 import com.yubo.feeder.vo.form.VoteForm;
@@ -49,14 +49,11 @@ public class VoteController {
 	@RequestMapping("/load")
 	@ResponseBody
 	public DatagridResponse<VoteVO> load(HttpServletRequest request,
-			HttpServletResponse response,
-			@RequestParam(required = false) Integer page,
-			@RequestParam(required = false) Integer rows) throws Exception {
+			HttpServletResponse response,Query<VoteVO> query) throws Exception {
 		
 		DatagridResponse<VoteVO> dataResponse = new DatagridResponse<>();
 		
-		List<VoteBase> voteList = voteService.paging(page, rows);
-		
+		List<VoteBase> voteList = voteService.paging(query);
 		Set<Integer> svgIdSet = new HashSet<>();
 		//构建VoteVO
 		List<VoteVO> voList = new ArrayList<VoteVO>();

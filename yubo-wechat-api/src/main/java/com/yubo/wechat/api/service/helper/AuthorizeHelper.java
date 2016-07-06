@@ -7,11 +7,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
+import com.yubo.wechat.api.service.vo.MsgContextParam;
 import com.yubo.wechat.api.service.vo.MsgHandlerResult;
-import com.yubo.wechat.api.service.vo.MsgInputParam;
 import com.yubo.wechat.api.xml.XMLHelper;
-import com.yubo.wechat.api.xml.request.TextMsgRequest;
-import com.yubo.wechat.api.xml.response.TextResponse;
+import com.yubo.wechat.api.xml.request.WeChatRequest;
 import com.yubo.wechat.pet.service.PetService;
 import com.yubo.wechat.user.service.UserAuthorizeService;
 import com.yubo.wechat.user.vo.AuthorizeVO;
@@ -37,10 +36,10 @@ public class AuthorizeHelper {
 	 * @return
 	 * @throws JAXBException 
 	 */
-	public MsgHandlerResult execute(MsgInputParam param, TextMsgRequest request) throws JAXBException{
+	public MsgHandlerResult execute(MsgContextParam param, WeChatRequest request) throws JAXBException{
 		
 		if(userAuthorizeService.userIsAuthorized(param.userId)){
-			return buildResult(request,"你已经激活过了，不需要再进行激活了~");
+			return XMLHelper.buildTextResponse("你已经激活过了，不需要再进行激活了~", request);
 		}
 		
 		String code = request.getContent().replace("#JH", "").trim();
@@ -50,7 +49,7 @@ public class AuthorizeHelper {
 		
 		//如果无法对应到任何记录，即不正确，提示错误
 		if(vo==null){
-			return buildResult(request,"对不起您的验证码好像不正确，请再仔细核对一下验证码哦");
+			return XMLHelper.buildTextResponse("对不起您的验证码好像不正确，请再仔细核对一下验证码哦", request);
 		}
 		
 		//如果正确，对宠物的成长进行加入成长指数
@@ -60,7 +59,7 @@ public class AuthorizeHelper {
 		//给出相关的信息
 		String sayHello = buildHello(vo);
 		
-		return buildResult(request,sayHello);
+		return XMLHelper.buildTextResponse(sayHello, request);
 	}
 	
 	
@@ -80,29 +79,6 @@ public class AuthorizeHelper {
 	}
 
 
-	/**
-	 * 构建结果
-	 * 
-	 * @param request
-	 * @param content
-	 * @return
-	 * @throws JAXBException
-	 */
-	private MsgHandlerResult buildResult(TextMsgRequest request, String content)
-			throws JAXBException {
-
-		TextResponse response = new TextResponse();
-		response.setContent(content);
-		response.setCreateTime(System.currentTimeMillis());
-		response.setFromUserName(request.getToUserName());
-		response.setToUserName(request.getFromUserName());
-
-		MsgHandlerResult result = new MsgHandlerResult();
-		result.setXmlResponse(XMLHelper.buildXMLStr(response,
-				TextResponse.class));
-		return result;
-	}
-	
 	@Autowired
 	UserAuthorizeService userAuthorizeService;
 	

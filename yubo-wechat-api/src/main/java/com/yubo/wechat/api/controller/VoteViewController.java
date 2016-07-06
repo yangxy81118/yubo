@@ -21,7 +21,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.yubo.wechat.api.controller.model.VoteChoiceItem;
 import com.yubo.wechat.api.service.MessageHandler;
 import com.yubo.wechat.api.service.impl.DefaultService;
-import com.yubo.wechat.api.service.vo.MsgInputParam;
+import com.yubo.wechat.api.service.vo.MsgContextParam;
 import com.yubo.wechat.api.xml.XMLHelper;
 import com.yubo.wechat.api.xml.request.EventMsgRequest;
 import com.yubo.wechat.user.service.UserService;

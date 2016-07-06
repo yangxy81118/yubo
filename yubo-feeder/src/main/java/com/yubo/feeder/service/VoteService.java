@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONObject;
 import com.yubo.feeder.dao.VoteBaseMapper;
 import com.yubo.feeder.dao.pojo.VoteBase;
+import com.yubo.feeder.vo.Query;
 import com.yubo.feeder.vo.VoteAnswerViewEntry;
 import com.yubo.feeder.vo.VoteVO;
 
@@ -22,13 +23,17 @@ import com.yubo.feeder.vo.VoteVO;
 @Service
 public class VoteService {
 
-	public List<VoteBase> paging(Integer page, Integer row) {
-		page = page == null ? 1 : page;
-		row = row == null ? 10 : row;
+	public List<VoteBase> paging(Query<VoteVO> query) {
+		query.setPage(query.getPage() == null? 1 : query.getPage());
+		query.setRows(query.getRows() == null? 10 : query.getRows());
+		query.setSort(query.getSort() == null? "activeDate" : query.getSort());
+		query.setOrder(query.getOrder() == null? "desc" : query.getOrder());
 
 		Map<String, Object> param = new HashMap<>();
-		param.put("startRow", (page - 1) * row);
-		param.put("rowCount", row);
+		param.put("startRow", (query.getPage() - 1) * query.getRows());
+		param.put("rowCount", query.getRows());
+		param.put("sort", query.getSort());
+		param.put("order", query.getOrder());
 		List<VoteBase> result = voteBaseMapper.selectByParam(param);
 		return result;
 	}

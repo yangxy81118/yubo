@@ -22,16 +22,24 @@
 		<h2>投票管理</h2>
 
 		<table id="dg" title="投票管理" style="width: auto; height: 450px"
-			data-options="singleSelect:true,pagination:true,url:'/vote/load',method:'get',fitColumns:'true',toolbar:'#toolbar'">
+			data-options=
+			"singleSelect:true,
+			pagination:true,
+			pageList:[5,10,20],
+			pageSize:5,
+			url:'/vote/load',
+			method:'get',
+			fitColumns:'true',
+			toolbar:'#toolbar'">
 			<thead>
 				<tr>
-					<th field="voteId" width="40">投票ID</th>
+					<th field="voteId" width="40" sortable="true">投票ID</th>
 					<th field="voteTitle" width="50" align="center">标题</th>
 					<th field="voteQuestion" width="120">问题</th>
 					<th field="voteAnswer" width="120" align="center"
 						formatter="formatAnswer">答案</th>
 					<th field="activeDate" width="50" align="center"
-						formatter="formatDate">激活日期</th>
+						formatter="formatDate" sortable="true">激活日期</th>
 					<th field="colorStyle" width="80" align="center">色彩方案</th>
 				</tr>
 			</thead>
@@ -42,7 +50,7 @@
 				href="javascript:void(0)" class="easyui-linkbutton"
 				iconCls="icon-edit" plain="true" onclick="editVote()">修改</a> <a
 				href="javascript:void(0)" class="easyui-linkbutton"
-				iconCls="icon-edit" plain="true" onclick="editVote()">删除</a>
+				iconCls="icon-edit" plain="true" onclick="deleteVote()">删除</a>
 		</div>
 
 		<div id="dlg" class="easyui-dialog"

@@ -10,9 +10,10 @@ import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 
 import com.yubo.wechat.api.service.vo.MsgHandlerResult;
-import com.yubo.wechat.api.service.vo.MsgInputParam;
+import com.yubo.wechat.api.service.vo.MsgContextParam;
 import com.yubo.wechat.api.xml.XMLHelper;
 import com.yubo.wechat.api.xml.request.TextMsgRequest;
+import com.yubo.wechat.api.xml.request.WeChatRequest;
 import com.yubo.wechat.api.xml.response.TextResponse;
 import com.yubo.wechat.support.MathUtil;
 import com.yubo.wechat.support.redis.RedisHandler;
@@ -34,7 +35,7 @@ public class FeederLoginHelper {
 	 * @param param
 	 * @return
 	 */
-	public boolean checkFeeder(MsgInputParam param) {
+	public boolean checkFeeder(MsgContextParam param) {
 		return feederService.getFeederInfoByWechatId(param.wechatId) != null;
 	}
 
@@ -45,8 +46,8 @@ public class FeederLoginHelper {
 	 * @return
 	 * 
 	 */
-	public MsgHandlerResult createLoginPwd(MsgInputParam param,
-			TextMsgRequest request) {
+	public MsgHandlerResult createLoginPwd(MsgContextParam param,
+			WeChatRequest request) {
 
 		String password = MathUtil.getRandomString(8);
 		String key = RedisKeyBuilder.buildKey(
@@ -55,40 +56,19 @@ public class FeederLoginHelper {
 			Jedis redis = redisHandler.getRedisClient();
 			redis.set(key, param.wechatId);
 			redis.expire(key, 60 * 15);
-			return buildResult(request, "请在15分钟内用密码" + password
-					+ "登录小宠物饲养系统~");
+
+			return XMLHelper.buildTextResponse("请在15分钟内用密码" + password
+					+ "登录小宠物饲养系统~", request);
 		} catch (Exception e) {
 			logger.error("创建管理员登录密码失败" + e.getMessage(), e);
 			try {
-				return buildResult(request, "宠物系统出现一些问题，稍等片刻哦~ *o*");
+				return XMLHelper.buildTextResponse("宠物系统出现一些问题，稍等片刻哦~ *o*",
+						request);
 			} catch (JAXBException e1) {
 				return null;
 			}
 		}
 
-	}
-
-	/**
-	 * 构建结果
-	 * 
-	 * @param request
-	 * @param content
-	 * @return
-	 * @throws JAXBException
-	 */
-	private MsgHandlerResult buildResult(TextMsgRequest request, String content)
-			throws JAXBException {
-
-		TextResponse response = new TextResponse();
-		response.setContent(content);
-		response.setCreateTime(System.currentTimeMillis());
-		response.setFromUserName(request.getToUserName());
-		response.setToUserName(request.getFromUserName());
-
-		MsgHandlerResult result = new MsgHandlerResult();
-		result.setXmlResponse(XMLHelper.buildXMLStr(response,
-				TextResponse.class));
-		return result;
 	}
 
 	private static final Logger logger = LoggerFactory

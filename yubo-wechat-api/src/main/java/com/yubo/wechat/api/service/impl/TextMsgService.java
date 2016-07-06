@@ -17,10 +17,10 @@ import com.yubo.wechat.api.service.helper.AuthorizeHelper;
 import com.yubo.wechat.api.service.helper.FeederLoginHelper;
 import com.yubo.wechat.api.service.helper.FunctionTalkHelper;
 import com.yubo.wechat.api.service.helper.VoteHelper;
+import com.yubo.wechat.api.service.vo.MsgContextParam;
 import com.yubo.wechat.api.service.vo.MsgHandlerResult;
-import com.yubo.wechat.api.service.vo.MsgInputParam;
 import com.yubo.wechat.api.xml.XMLHelper;
-import com.yubo.wechat.api.xml.request.TextMsgRequest;
+import com.yubo.wechat.api.xml.request.WeChatRequest;
 import com.yubo.wechat.api.xml.response.TextResponse;
 import com.yubo.wechat.content.service.ReplyService;
 import com.yubo.wechat.content.service.textlearning.TextTeacher;
@@ -42,30 +42,29 @@ import com.yubo.wechat.vote.service.VoteService;
 @Service
 public class TextMsgService implements MessageHandler {
 
-	public MsgHandlerResult execute(MsgInputParam param) {
-
-		logger.info("TextMsg业务处理");
+	public MsgHandlerResult execute(MsgContextParam param) {
 
 		param.petId = 1;
 
 		try {
-			TextMsgRequest request = XMLHelper.parseXml(param.requestBody,
-					TextMsgRequest.class);
+
+			WeChatRequest request = param.request;
 
 			// 激活验证
 			if (isAuthorizing(request)) {
 				return authorizeHelper.execute(param, request);
 			}
-			
+
 			// 登录密码获取
-			if(isFeederLogin(request) && feederLoginHelper.checkFeeder(param)){
-				return feederLoginHelper.createLoginPwd(param,request);
+			if (isFeederLogin(request) && feederLoginHelper.checkFeeder(param)) {
+				return feederLoginHelper.createLoginPwd(param, request);
 			}
 
 			// 如果是宠物还未出生的阶段，则直接回复
 			if (petService.stillInEgg(1)) {
-				return buildResult(request,
-						"神秘旁白:\n小宠物还在孵化之中，还需要更多同学来激活，完成小宠物的孵化。\n快去告诉身边的同学吧~");
+				return XMLHelper.buildTextResponse(
+						"神秘旁白:\n小宠物还在孵化之中，还需要更多同学来激活，完成小宠物的孵化。\n快去告诉身边的同学吧~",
+						request);
 			}
 
 			// 临时测试用
@@ -92,7 +91,7 @@ public class TextMsgService implements MessageHandler {
 						.trim())) {
 					redisClient.del(RedisKeyBuilder.buildFunctionCode(
 							param.userId, param.petId));
-					return buildResult(request, "好的，想到记得下次告诉我哦～");
+					return XMLHelper.buildTextResponse("好的，想到记得下次告诉我哦～",request);
 				} else {
 					UserTalkVO functionTalkVO = new UserTalkVO();
 					Integer fCode = Integer.parseInt(funcCodeStr);
@@ -105,8 +104,7 @@ public class TextMsgService implements MessageHandler {
 							param.userId, param.petId));
 
 					// TODO 这里该如何回复?暂时固定
-					return buildResult(request,
-							getFTalkReply(textTeacher.getFTVOByCode(fCode)));
+					return XMLHelper.buildTextResponse(getFTalkReply(textTeacher.getFTVOByCode(fCode)),request);
 				}
 			}
 
@@ -117,11 +115,10 @@ public class TextMsgService implements MessageHandler {
 				removeRedisKey(param.userId, param.petId, 0);
 				logger.info("成功存储用户[{}]的回复[{}]", param.userId,
 						request.getContent());
-				return buildResult(request, replyService.shortReply());
+				return XMLHelper.buildTextResponse(replyService.shortReply(),request);
 			}
 
-			// 如果不存在，则检查是否是命令回复，去检查数据库talk_history表
-			return buildResult(request, replyService.shortReply());
+			return XMLHelper.buildTextResponse(replyService.shortReply(),request);
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -130,19 +127,20 @@ public class TextMsgService implements MessageHandler {
 		return null;
 	}
 
-	private boolean isFeederLogin(TextMsgRequest request) {
+	private boolean isFeederLogin(WeChatRequest request) {
 		String content = request.getContent();
 		return content.startsWith("#denglu");
 	}
 
 	/**
 	 * 随机获取功能性回答
+	 * 
 	 * @param ftvoByCode
 	 * @return
 	 */
 	private String getFTalkReply(FunctionTalkVO talkVO) {
 		List<String> reply = talkVO.getPetReply();
-		int idx = (int)(Math.random()*reply.size());
+		int idx = (int) (Math.random() * reply.size());
 		return reply.get(idx);
 	}
 
@@ -157,7 +155,7 @@ public class TextMsgService implements MessageHandler {
 		}
 	}
 
-	private void saveSimpleTalk(String petSaid, MsgInputParam param,
+	private void saveSimpleTalk(String petSaid, MsgContextParam param,
 			String userSaid) {
 		UserTalkVO simpleTalkVO = new UserTalkVO();
 		simpleTalkVO.setPetId(1);
@@ -176,7 +174,7 @@ public class TextMsgService implements MessageHandler {
 	 * 
 	 * @return
 	 */
-	private String petLastTalkInCache(MsgInputParam param) {
+	private String petLastTalkInCache(MsgContextParam param) {
 		Jedis redis = null;
 		try {
 			redis = redisHandler.getRedisClient();
@@ -189,36 +187,13 @@ public class TextMsgService implements MessageHandler {
 	}
 
 	/**
-	 * 构建结果
-	 * 
-	 * @param request
-	 * @param content
-	 * @return
-	 * @throws JAXBException
-	 */
-	private MsgHandlerResult buildResult(TextMsgRequest request, String content)
-			throws JAXBException {
-
-		TextResponse response = new TextResponse();
-		response.setContent(content);
-		response.setCreateTime(System.currentTimeMillis());
-		response.setFromUserName(request.getToUserName());
-		response.setToUserName(request.getFromUserName());
-
-		MsgHandlerResult result = new MsgHandlerResult();
-		result.setXmlResponse(XMLHelper.buildXMLStr(response,
-				TextResponse.class));
-		return result;
-	}
-
-	/**
 	 * 检查是否是激活操作
 	 * 
 	 * @param request
 	 * 
 	 * @return
 	 */
-	private boolean isAuthorizing(TextMsgRequest request) {
+	private boolean isAuthorizing(WeChatRequest request) {
 		String content = request.getContent();
 		return content.startsWith("#JH");
 	}
@@ -243,7 +218,7 @@ public class TextMsgService implements MessageHandler {
 
 	@Autowired
 	VoteHelper voteHelper;
-	
+
 	@Autowired
 	FeederLoginHelper feederLoginHelper;
 

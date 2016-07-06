@@ -6,9 +6,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
@@ -19,7 +16,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import com.alibaba.fastjson.JSONObject;
 import com.yubo.wechat.vote.dao.VoteBaseMapper;
 import com.yubo.wechat.vote.dao.pojo.VoteBase;
 import com.yubo.wechat.vote.service.vo.AnswerResultEntry;
