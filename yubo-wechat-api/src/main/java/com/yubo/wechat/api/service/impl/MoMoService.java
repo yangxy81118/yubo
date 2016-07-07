@@ -40,27 +40,21 @@ import com.yubo.wechat.user.vo.UserVO;
 @Service
 public class MoMoService implements MessageHandler {
 
-	public MsgHandlerResult execute(MsgContextParam param) {
+	public MsgHandlerResult execute(MsgContextParam param) throws Exception {
 
 		logger.info("摸Mo业务处理");
 
-		try {
-			// 如果是宠物还未出生的阶段，则直接回复
-			if (petService.stillInEgg(1)) {
-				return buildResult(param.request,
-						"神秘旁白:\n小宠物还在孵化之中，还需要更多同学来激活，完成小宠物的孵化。\n快去告诉身边的同学吧~");
-			}
-
-			// 获取回复语句
-			// 根据目前的时间段，获取一个回复
-			String replyContent = buildContent(param);
-
-			return XMLHelper.buildTextResponse(replyContent,param.request);
-		} catch (Exception e) {
-			e.printStackTrace();
+		// 如果是宠物还未出生的阶段，则直接回复
+		if (petService.stillInEgg(1)) {
+			return buildResult(param.request,
+					"神秘旁白:\n小宠物还在孵化之中，还需要更多同学来激活，完成小宠物的孵化。\n快去告诉身边的同学吧~");
 		}
 
-		return null;
+		// 获取回复语句
+		// 根据目前的时间段，获取一个回复
+		String replyContent = buildContent(param);
+
+		return XMLHelper.buildTextResponse(replyContent, param.request);
 	}
 
 	/**
@@ -143,7 +137,6 @@ public class MoMoService implements MessageHandler {
 				Jedis redisClient = redisHandler.getRedisClient();
 				redisClient.set(RedisKeyBuilder.buildFunctionCode(param.userId,
 						param.petId), replyMessage.getFunctionCode() + "");
-				//redisHandler.returnResource(redisClient);
 			} catch (Exception e) {
 				logger.error("存储用户功能性回复的FunctionCode失败:" + e.getMessage(), e);
 			}
@@ -152,7 +145,6 @@ public class MoMoService implements MessageHandler {
 				Jedis redisClient = redisHandler.getRedisClient();
 				redisClient.del(RedisKeyBuilder.buildFunctionCode(param.userId,
 						param.petId));
-				//redisHandler.returnResource(redisClient);
 			} catch (Exception e) {
 				logger.error("清除用户功能性回复的FunctionCode失败:" + e.getMessage(), e);
 			}
@@ -162,7 +154,7 @@ public class MoMoService implements MessageHandler {
 		}
 		return content.toString();
 	}
-	
+
 	private void addFavorLock(MsgContextParam param) {
 		Jedis redis = null;
 		try {
@@ -171,7 +163,6 @@ public class MoMoService implements MessageHandler {
 					param.petId);
 			redis.set(key, "1");
 			redis.expire(key, favorLockDuration);
-			redisHandler.returnResource(redis);
 		} catch (Exception e) {
 			logger.error("Redis操作addFavorLock失败", e);
 		}
@@ -183,7 +174,6 @@ public class MoMoService implements MessageHandler {
 			redis = redisHandler.getRedisClient();
 			String lock = redis.get(RedisKeyBuilder.buildFavorLockKey(
 					param.userId, param.petId));
-			redisHandler.returnResource(redis);
 			return lock != null;
 		} catch (Exception e) {
 			logger.error("Redis操作favorLock失败，无法加亲密度", e);

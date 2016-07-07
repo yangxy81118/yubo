@@ -92,6 +92,7 @@ public class MsgController extends BaseController {
 		MsgContextParam contextParam = new MsgContextParam();
 		contextParam.userId = userId;
 		contextParam.wechatId = weChatId;
+		contextParam.request = req;
 		return contextParam;
 	}
 

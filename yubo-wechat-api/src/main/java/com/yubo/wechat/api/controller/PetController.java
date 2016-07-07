@@ -38,11 +38,31 @@ public class PetController {
 			HttpServletResponse response) throws Exception {
 		response.setContentType("text/html;charset=UTF-8");
 		response.setCharacterEncoding("UTF-8");
+		JSONObject obj = new JSONObject();
+		obj.put("animation", random(10));
+		obj.put("question", "今天做点什么，嘻嘻哈哈,54323,What should I eat today");
+		
+		JSONArray answerArray = new JSONArray();
+		JSONObject a1 = new JSONObject();
+		a1.put("key", "吃饭");
+		a1.put("voteCcount",  random(50));
+		
+		JSONObject a2 = new JSONObject();
+		a2.put("key", "睡觉");
+		a2.put("voteCcount",  random(50));
+		
+		answerArray.add(a1);
+		answerArray.add(a2);
+		
+		obj.put("answer", answerArray);
+		
 		PrintWriter writer = response.getWriter();
-		writer.write("Hello,小宠物等级:1\n");
-		writer.write("当前投票结果：\n");
-		writer.write(handler.getVoteResult().toString());
+		writer.write(obj.toJSONString());
 		return null;
+	}
+	
+	private static int random(int max){
+		return (int)(Math.random()*max);
 	}
 	
 	

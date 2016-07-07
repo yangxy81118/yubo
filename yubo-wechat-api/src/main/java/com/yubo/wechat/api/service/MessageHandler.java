@@ -1,7 +1,7 @@
 package com.yubo.wechat.api.service;
 
-import com.yubo.wechat.api.service.vo.MsgHandlerResult;
 import com.yubo.wechat.api.service.vo.MsgContextParam;
+import com.yubo.wechat.api.service.vo.MsgHandlerResult;
 
 public interface MessageHandler {
 	
@@ -11,6 +11,6 @@ public interface MessageHandler {
 	 * @param requestBody 微信推送请求内容
 	 * @return
 	 */
-	public MsgHandlerResult execute(MsgContextParam contextParam);
+	public MsgHandlerResult execute(MsgContextParam contextParam) throws Exception;
 	
 }
