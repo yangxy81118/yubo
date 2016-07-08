@@ -29,7 +29,7 @@ import com.yubo.wechat.support.MathUtil;
  *
  */
 @Controller
-@RequestMapping("/svg")
+@RequestMapping("/home/svg")
 public class SvgController {
 
 	@RequestMapping("/view")

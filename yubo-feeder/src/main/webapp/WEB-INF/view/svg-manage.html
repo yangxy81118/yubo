@@ -10,7 +10,7 @@
 	src="http://www.jeasyui.net/Public/js/jquery.js"></script>
 <script type="text/javascript"
 	src="http://o7pmdbbe0.bkt.clouddn.com/js/easyui/jquery.easyui.min.js"></script>
-	
+
 </head>
 
 <body>
@@ -18,26 +18,27 @@
 		style="padding: 10px 25px;">
 		<h2>SVG资源管理</h2>
 
-		<table id="dg" title="图标管理"
-			style="width: auto; height: 470px"
-			data-options="singleSelect:true,pagination:true,url:'/svg/load',method:'get',fitColumns:'true',toolbar:'#toolbar'">
+		<table id="dg" title="图标管理" style="width: auto; height: 470px"
+			data-options="singleSelect:true,pagination:true,url:'/home/svg/load?ajax=1',method:'get',fitColumns:'true',toolbar:'#toolbar'">
 			<thead>
 				<tr>
 					<th field="svgId" width="30" sortable="true">资源ID</th>
 					<th field="svgTag" width="80" sortable="true">SVG标签</th>
-					<th field="svgContent" width="40" data-options="styler:cellStyler" align="center">SVG预览</th>
+					<th field="svgContent" width="40" data-options="styler:cellStyler"
+						align="center">SVG预览</th>
 					<th field="svgLength" width="50" align="center">SVG内容大小(kb)</th>
 				</tr>
 			</thead>
 		</table>
 		<div id="toolbar">
 			<a href="javascript:void(0)" class="easyui-linkbutton"
-			   iconCls="icon-add" plain="true" onclick="newSvg()">添加</a> 
-			<a href="javascript:void(0)" class="easyui-linkbutton"
-			   iconCls="icon-edit" plain="true" onclick="editSvg()">修改</a>
-			<span style="margin-left:50px;">标签查询:</span>
-			<input id="searchKey" style="line-height:20px;margin:5px 0;border:1px solid #ccc;position:relative;top:2px;">
-			<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="doSearch()">查询</a>	 				
+				iconCls="icon-add" plain="true" onclick="newSvg()">添加</a> <a
+				href="javascript:void(0)" class="easyui-linkbutton"
+				iconCls="icon-edit" plain="true" onclick="editSvg()">修改</a> <span
+				style="margin-left: 50px;">标签查询:</span> <input id="searchKey"
+				style="line-height: 20px; margin: 5px 0; border: 1px solid #ccc; position: relative; top: 2px;">
+			<a href="#" class="easyui-linkbutton" iconCls="icon-search"
+				onclick="doSearch()">查询</a>
 		</div>
 
 		<div id="dlg" class="easyui-dialog"
@@ -74,7 +75,7 @@
 	function newSvg() {
 		$('#dlg').dialog('open').dialog('center').dialog('setTitle', '添加SVG图标');
 		$('#fm').form('clear');
-		url = '/svg/add';
+		url = '/home/svg/add';
 	}
 	function editSvg() {
 		var row = $('#dg').datagrid('getSelected');
@@ -82,12 +83,12 @@
 			$('#dlg').dialog('open').dialog('center').dialog('setTitle',
 					'修改SVG图标');
 			$('#fm').form('load', row);
-			url = '/svg/update';
+			url = '/home/svg/update';
 		}
 	}
 	function saveSvg() {
 		$('#fm').form('submit', {
-			url : url,
+			url : url + "?ajax=1",
 			onSubmit : function() {
 				return $(this).form('validate');
 			},
@@ -109,19 +110,20 @@
 	function cellStyler(value, row, index) {
 		return 'text-align:center;padding:5px 0;';
 	}
-	
-	function doSearch(){
+
+	function doSearch() {
 		var word = $('#searchKey').val();
-		$('#dg').datagrid('load',{
-	        word: word,
-	        page: 1,
-	        rows: 10
-	    });
+		$('#dg').datagrid('load', {
+			word : word,
+			page : 1,
+			rows : 10
+		});
 	}
 
 	$(function() {
 		$('#dg').datagrid({
 			onLoadSuccess : function(data) {
+				console.log(data);
 				$('svg').attr('width', '24px').attr('height', '24px');
 			}
 		});

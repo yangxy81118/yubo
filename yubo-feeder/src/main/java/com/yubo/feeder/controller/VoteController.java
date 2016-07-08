@@ -37,7 +37,7 @@ import com.yubo.wechat.support.TimeUtil;
  *
  */
 @Controller
-@RequestMapping("/vote")
+@RequestMapping("/home/vote")
 public class VoteController {
 
 	@RequestMapping("/view")
