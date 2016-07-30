@@ -8,6 +8,7 @@ import javax.xml.bind.JAXBException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.yubo.wechat.api.PropertiesHolder;
 import com.yubo.wechat.api.service.vo.MsgContextParam;
 import com.yubo.wechat.api.service.vo.MsgHandlerResult;
 import com.yubo.wechat.api.xml.XMLHelper;
@@ -84,7 +85,7 @@ public class VoteHelper {
 		Long voteId = voteService.getVoteIdByWord(currentAnswer);
 		UserVoteVO answerResult  = answer(voteId, param.userId, currentAnswer);
 		petFavorService.addFavor(param.userId, param.petId, 1);
-		String url = "http://www.yubo.space/vote/detail?userId="+answerResult.getUserId()+"&voteId="+answerResult.getVoteVO().getVoteId();
+		String url = propertiesHolder.getYuboUrl() + "/vote/detail?userId="+answerResult.getUserId()+"&voteId="+answerResult.getVoteVO().getVoteId();
 		return XMLHelper.buildSingleViewResponse(request, answerResult.getFeedBackText(), "谢谢回答", url, answerResult.getFeedBackPicUrl());
 	}
 	
@@ -104,5 +105,8 @@ public class VoteHelper {
 	
 	@Autowired
 	UserPetFavorService petFavorService;
+	
+	@Autowired
+	PropertiesHolder propertiesHolder;
 
 }

@@ -12,7 +12,7 @@
 		file-encoding="UTF-8" />
 
 	<!-- 扫描 -->
-	<context:component-scan base-package="com.yubo.feeder.**">
+	<context:component-scan base-package="com.yubo.**,org.yxy.**">
 		<context:exclude-filter type="regex"
 			expression=".*TestCase" />
 	</context:component-scan>

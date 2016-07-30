@@ -31,4 +31,8 @@ public class DatagridResponse<T> {
 		this.rows = rows;
 	}
 
+	@Override
+	public String toString() {
+		return "DatagridResponse [total=" + total + ", rows=" + rows + "]";
+	}
 }

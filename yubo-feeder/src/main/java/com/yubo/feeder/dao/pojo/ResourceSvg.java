@@ -96,4 +96,12 @@ public class ResourceSvg {
     public void setSvgContent(String svgContent) {
         this.svgContent = svgContent == null ? null : svgContent.trim();
     }
+
+	@Override
+	public String toString() {
+		return "ResourceSvg [svgId=" + svgId + ", svgTag=" + svgTag
+				+ ", svgContent=" + svgContent + "]";
+	}
+    
+    
 }

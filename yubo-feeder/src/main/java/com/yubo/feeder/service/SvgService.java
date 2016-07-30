@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,16 +31,22 @@ public class SvgService {
 
 	/**
 	 * 分页查询 TODO 待优化
+	 * 
 	 * @param page
 	 * @param row
-	 * @param word 查询的关键字，目前采用最简单的LIKE方法
+	 * @param word
+	 *            查询的关键字，目前采用最简单的LIKE方法
 	 * @return
 	 */
 	public DatagridResponse<SvgVO> paging(Query<SvgVO> query) {
 
 		DatagridResponse<SvgVO> response = new DatagridResponse<>();
-		query.setPage(query.getPage() == null? 1 : query.getPage());
-		query.setRows(query.getRows() == null? 10 : query.getRows());
+		query.setPage(query.getPage() == null ? 1 : query.getPage());
+		query.setRows(query.getRows() == null ? 10 : query.getRows());
+		logger.debug("paging query:{}", query);
+		slf4jLogger.debug("debug!!!!!!!!!!!!!!!!!!!!!!");
+		slf4jLogger.info("info!!!!!!!!!!!!!!!!!!!!!!");
+		slf4jLogger.error("error!!!!!!!!!!!!!!!!!!!!!!");
 
 		Map<String, Object> param = new HashMap<>();
 		param.put("startRow", (query.getPage() - 1) * query.getRows());
@@ -45,8 +54,10 @@ public class SvgService {
 		param.put("svgTag", query.getWord());
 		param.put("sort", query.getSort());
 		param.put("order", query.getOrder());
-		
+		logger.debug("param,{}", param);
+
 		List<ResourceSvg> result = resourceSvgMapper.paging(param);
+		logger.debug("result,{}", result);
 
 		List<SvgVO> list = new ArrayList<>();
 		for (ResourceSvg resourceSvg : result) {
@@ -56,10 +67,13 @@ public class SvgService {
 			vo.setSvgTag(resourceSvg.getSvgTag());
 			list.add(vo);
 		}
+		logger.debug("SvgVO List,{}", list);
 
 		int totalRow = resourceSvgMapper.countSelective(param);
 		response.setRows(list);
 		response.setTotal(totalRow);
+		logger.debug("response,{}", response);
+
 		return response;
 	}
 
@@ -69,7 +83,6 @@ public class SvgService {
 		record.setSvgContent(vo.getSvgContent());
 		resourceSvgMapper.insertSelective(record);
 	}
-	
 
 	public void update(SvgVO vo) {
 		ResourceSvg record = new ResourceSvg();
@@ -83,14 +96,15 @@ public class SvgService {
 	ResourceSvgMapper resourceSvgMapper;
 
 	private static final int svgBatchRows = 10;
-	
+
 	public Map<Integer, String> getSvgDataList(Set<Integer> svgIdSet) {
 		Map<Integer, String> result = new HashMap<>();
 		int pageCount = PageUtil.pageCount(svgIdSet.size(), svgBatchRows);
 		for (int i = 0; i < pageCount; i++) {
 			List<Integer> thisBatchIds = getThisBatchId(svgIdSet);
-			List<ResourceSvg> batchResult = resourceSvgMapper.searchBySvgId(thisBatchIds);
-			appendResult(result,batchResult);
+			List<ResourceSvg> batchResult = resourceSvgMapper
+					.searchBySvgId(thisBatchIds);
+			appendResult(result, batchResult);
 		}
 		return result;
 	}
@@ -98,10 +112,10 @@ public class SvgService {
 	private void appendResult(Map<Integer, String> result,
 			List<ResourceSvg> batchResult) {
 
-		if(EmptyChecker.isEmpty(batchResult)){
+		if (EmptyChecker.isEmpty(batchResult)) {
 			return;
 		}
-		
+
 		for (ResourceSvg resourceSvg : batchResult) {
 			result.put(resourceSvg.getSvgId(), resourceSvg.getSvgContent());
 		}
@@ -115,5 +129,10 @@ public class SvgService {
 		return thisBatchIds;
 	}
 
+	private static final Logger logger = LogManager.getLogger(SvgService.class
+			.getName());
+
+	private static final org.slf4j.Logger slf4jLogger = LoggerFactory
+			.getLogger(SvgService.class);
 
 }

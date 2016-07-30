@@ -2,8 +2,10 @@ package com.yubo.wechat.api.service.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.yubo.wechat.api.PropertiesHolder;
 import com.yubo.wechat.api.service.MessageHandler;
 import com.yubo.wechat.api.service.vo.MsgContextParam;
 import com.yubo.wechat.api.service.vo.MsgHandlerResult;
@@ -21,50 +23,21 @@ public class MyVoteService implements MessageHandler {
 
 	public MsgHandlerResult execute(MsgContextParam param) throws Exception  {
 
-		String redirectUrl = "http://www.yubo.space/vote/list?userId="
+		String redirectUrl = propertiesHolder.getYuboUrl() + "/vote/list?userId="
 				+ param.userId;
 		String title = "问答记录";
 		String description = "YUBO每天都有各种各样的问题，多谢大家帮忙解答~";
 		return XMLHelper.buildSingleViewResponse(param.request, description,
 				title, redirectUrl, DEFAULT_FEEDBACK_PIC_URL);
+		
 	}
-
-	// /**
-	// * 构建结果
-	// * TODO URL等常量配置化
-	// * @param request
-	// * @param feedbackText
-	// * @return
-	// * @throws JAXBException
-	// */
-	// private MsgHandlerResult buildResult(WeChatRequest request,Integer
-	// userId)
-	// throws JAXBException {
-	//
-	// ViewResponse response = new ViewResponse();
-	// response.setCreateTime(System.currentTimeMillis());
-	// response.setFromUserName(request.getToUserName());
-	// response.setToUserName(request.getFromUserName());
-	// response.setArticleCount(1);
-	//
-	// List<ArticleItem> articles = new ArrayList<>();
-	// ArticleItem item = new ArticleItem();
-	// item.setDescription("YUBO每天都有各种各样的问题，多谢大家帮忙解答~");
-	// item.setTitle("问答记录");
-	// item.setUrl("http://www.yubo.space/vote/list?userId="+userId);
-	// item.setPicUrl(DEFAULT_FEEDBACK_PIC_URL);
-	// articles.add(item);
-	// response.setItems(articles);
-	//
-	// MsgHandlerResult result = new MsgHandlerResult();
-	// result.setXmlResponse(XMLHelper.buildXMLStr(response,
-	// ViewResponse.class));
-	// return result;
-	// }
 
 	private static final String DEFAULT_FEEDBACK_PIC_URL = "http://pic.58pic.com/58pic/11/38/72/858PICc58PICbTC.jpg";
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(MyVoteService.class);
+	
+	@Autowired
+	PropertiesHolder propertiesHolder;
 
 }

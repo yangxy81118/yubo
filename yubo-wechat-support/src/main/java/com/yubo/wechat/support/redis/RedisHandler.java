@@ -20,6 +20,7 @@ import redis.clients.jedis.exceptions.JedisConnectionException;
  *
  */
 @Component
+@PropertySource("classpath:app-db.properties")
 public class RedisHandler {
 
 	private static final Logger logger = LoggerFactory.getLogger(RedisHandler.class);

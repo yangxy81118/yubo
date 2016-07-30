@@ -16,11 +16,20 @@
 		/> -->
 
 	<context:annotation-config />
-	<context:component-scan base-package="com.yubo.**" />
+	<context:component-scan base-package="com.yubo.**,org.yxy.**" />
 
 	<context:property-placeholder location="classpath*:*.properties"
 		ignore-resource-not-found="false" ignore-unresolvable="false"
 		file-encoding="UTF-8" />
 
 	<import resource="spring-dao.xml" />
+
+<!--
+	<bean class="mine.xmz.loghunter.distribute.client.ClientRegister">
+		<property name="registerServerPort" value="54110" />
+		<property name="registerServerIp" value="127.0.0.1" />
+		<property name="registerClientPort" value="18118" />
+		<property name="registerClientName" value="yubo-feeder" />
+	</bean>
+	   -->
 </beans>

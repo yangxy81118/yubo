@@ -40,5 +40,9 @@ public class MathUtil {
 	}
 
 	private static final int MILLS_PET_MINUTE = 60 * 1000;
+	
+	public static void main(String[] args) {
+		System.out.println(getRint(1.232321, 2));
+	}
 
 }

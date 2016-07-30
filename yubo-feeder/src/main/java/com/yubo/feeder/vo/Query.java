@@ -69,4 +69,11 @@ public class Query<T> {
 		this.serviceVO = serviceVO;
 	}
 
+	@Override
+	public String toString() {
+		return "Query [page=" + page + ", rows=" + rows + ", word=" + word
+				+ ", sort=" + sort + ", order=" + order + ", serviceVO="
+				+ serviceVO + "]";
+	}
+
 }

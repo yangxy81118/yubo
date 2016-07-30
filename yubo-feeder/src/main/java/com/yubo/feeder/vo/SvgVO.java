@@ -58,4 +58,11 @@ public class SvgVO {
 		this.svgContent = svgContent;
 	}
 
+	@Override
+	public String toString() {
+		return "SvgVO [svgId=" + svgId + ", svgTag=" + svgTag + ", svgContent="
+				+ svgContent + ", svgLength=" + svgLength + ", svgIconIndex="
+				+ svgIconIndex + "]";
+	}
+
 }

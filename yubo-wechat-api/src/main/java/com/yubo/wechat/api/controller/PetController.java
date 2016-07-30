@@ -34,7 +34,7 @@ public class PetController {
 	VoteRealTimeHandler handler;
 
 	@RequestMapping("/level")
-	public ModelAndView shopIndex(HttpServletRequest request,
+	public ModelAndView showLevel(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		response.setContentType("text/html;charset=UTF-8");
 		response.setCharacterEncoding("UTF-8");
@@ -61,8 +61,43 @@ public class PetController {
 		return null;
 	}
 	
-	private static int random(int max){
+	
+	
+	
+	
+	@RequestMapping("/state")
+	public ModelAndView showState(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		response.setContentType("text/html;charset=UTF-8");
+		response.setCharacterEncoding("UTF-8");
+		JSONObject obj = new JSONObject();
+		obj.put("animation", randomAnimation());
+		obj.put("question", "今天做点什么，嘻嘻哈哈,54323,What should I eat today");
+		obj.put("firstAnswerKey", "吃饭");
+		obj.put("firstAnswerCount",random(50));
+		obj.put("secondAnswerKey","睡觉");
+		obj.put("secondAnswerCount",random(50));
+		
+		PrintWriter writer = response.getWriter();
+		writer.write(obj.toJSONString());
+		return null;
+	}
+	
+	public static String randomAnimation() {
+
+		StringBuffer sb= new StringBuffer();
+		sb.append(random(3)+1).append("00").append("000").append(random(4));
+		return sb.toString();
+	}
+
+	public static int random(int max){
 		return (int)(Math.random()*max);
+	}
+	
+	public static void main(String[] args) {
+		for (int i = 0; i < 50; i++) {
+			System.out.println(randomAnimation());
+		}
 	}
 	
 	
