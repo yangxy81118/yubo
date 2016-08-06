@@ -19,8 +19,6 @@
 			targetProject="yubo-wechat-user" type="XMLMAPPER">
 			<property name="enableSubPackages" value="true" />
 		</javaClientGenerator>
-		<table tableName="feeder_base" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false">
-		</table>
 		<!-- 
 		<table tableName="user_identification" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false">
 		</table>
@@ -33,7 +31,11 @@
 		<table tableName="talk_history" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false">
 		</table>
 		 -->
-		 
-		 
+		<table tableName="arg_question" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false">
+		</table>
+		
+		<table tableName="arg_user_progress" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false">
+		</table>
+		
 	</context>
 </generatorConfiguration>

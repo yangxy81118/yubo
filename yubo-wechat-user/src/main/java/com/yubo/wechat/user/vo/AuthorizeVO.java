@@ -15,6 +15,15 @@ public class AuthorizeVO {
 	private Integer schoolId;
 	private String schoolName;
 	private String identiCode;
+	private Integer identiId;
+
+	public Integer getIdentiId() {
+		return identiId;
+	}
+
+	public void setIdentiId(Integer identiId) {
+		this.identiId = identiId;
+	}
 
 	public String getStudentName() {
 		return studentName;
@@ -70,6 +79,15 @@ public class AuthorizeVO {
 
 	public void setIdentiCode(String identiCode) {
 		this.identiCode = identiCode;
+	}
+
+	@Override
+	public String toString() {
+		return "AuthorizeVO [studentName=" + studentName + ", studentClass="
+				+ studentClass + ", studentNo=" + studentNo + ", studentSex="
+				+ studentSex + ", schoolId=" + schoolId + ", schoolName="
+				+ schoolName + ", identiCode=" + identiCode + ", identiId="
+				+ identiId + "]";
 	}
 
 }

@@ -176,8 +176,8 @@
     select count(*)
     from user_base
     where valid = 1 
-    <if test="petId!=null">
-    	AND pet_id = #{petId,jdbcType=VARCHAR}
+    <if test="argTopicId!=null">
+    	AND arg_topic_id = #{argTopicId,jdbcType=VARCHAR}
     </if>
   </select>
   

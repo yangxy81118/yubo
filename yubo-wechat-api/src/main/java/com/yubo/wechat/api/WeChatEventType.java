@@ -28,5 +28,9 @@ public enum WeChatEventType {
 	/**
 	 * 未知
 	 */
-	UNKNOWN;
+	UNKNOWN, 
+	/**
+	 * 关注
+	 */
+	SUBSCRIBE;
 }

@@ -16,6 +16,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.yubo.wechat.api.WeChatEventType;
 import com.yubo.wechat.api.service.MessageHandler;
+import com.yubo.wechat.api.service.impl.ARGMsgService;
+import com.yubo.wechat.api.service.impl.ARGSubscribeService;
 import com.yubo.wechat.api.service.impl.DefaultService;
 import com.yubo.wechat.api.service.impl.MoMoService;
 import com.yubo.wechat.api.service.impl.MyVoteService;
@@ -25,6 +27,7 @@ import com.yubo.wechat.api.service.vo.MsgHandlerResult;
 import com.yubo.wechat.api.xml.XMLHelper;
 import com.yubo.wechat.api.xml.request.WeChatRequest;
 import com.yubo.wechat.support.redis.RedisHandler;
+import com.yubo.wechat.user.service.ArgService;
 import com.yubo.wechat.user.service.UserService;
 
 /**
@@ -63,11 +66,14 @@ public class MsgController extends BaseController {
 			messageHandler = moMoService;
 			break;
 		case TEXT:
-			messageHandler = textMsgService;
+//			messageHandler = textMsgService;
+			messageHandler = argMsgService;
 			break;
 		case CLICK_MY_VOTE:
 			messageHandler = myFavorService;
 			break;
+		case SUBSCRIBE:
+			messageHandler = argSubscribeService;
 		default:
 			break;
 		}
@@ -122,6 +128,8 @@ public class MsgController extends BaseController {
 			return WeChatEventType.CLICK_MOMO;
 		} else if (requestBody.indexOf("CLICK_MY_VOTE") > 0) {
 			return WeChatEventType.CLICK_MY_VOTE;
+		} else if (requestBody.contains("<![CDATA[subscribe]]>")){
+			return WeChatEventType.SUBSCRIBE;
 		}
 
 		// 其余均认为未知
@@ -142,6 +150,12 @@ public class MsgController extends BaseController {
 
 	@Autowired
 	RedisHandler redisHandler;
+	
+	@Autowired
+	ARGMsgService argMsgService;
+	
+	@Autowired
+	ARGSubscribeService argSubscribeService;
 	
 	private static final Logger logger = LoggerFactory
 			.getLogger(MsgController.class);

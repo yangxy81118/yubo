@@ -206,6 +206,6 @@ public class SvgController {
 	@Autowired
 	SvgService svgService;
 	
-	private static final Logger logger = LogManager.getLogger(SvgController.class.getName());
+	private static final Logger logger = LogManager.getLogger(SvgController.class);
 
 }
