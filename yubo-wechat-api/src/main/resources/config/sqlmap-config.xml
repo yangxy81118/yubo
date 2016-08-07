@@ -22,5 +22,7 @@
 		<mapper resource="sql-mapping/VoteBaseMapper.xml" />
 		<mapper resource="sql-mapping/UserVoteRecordMapper.xml" />
 		<mapper resource="sql-mapping/FeederBaseMapper.xml" />
+		<mapper resource="sql-mapping/ArgQuestionMapper.xml" />
+		<mapper resource="sql-mapping/ArgUserProgressMapper.xml" />
 	</mappers>
 </configuration>

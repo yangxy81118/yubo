@@ -56,6 +56,7 @@ public class ArgService {
 		ArgUserProgress progress = new ArgUserProgress();
 		progress.setArgUserProgressId(argPlayVO.getAuthIdentificationId());
 		progress.setUserIdentificationId(argPlayVO.getAuthIdentificationId());
+		progress.setArgStep(argPlayVO.getCurrentStep());
 		argUserProgressMapper.updateByPrimaryKeySelective(progress);
 	}
 

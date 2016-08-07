@@ -172,13 +172,16 @@
   </select>
   
   
-   <select id="countByParam" parameterType="com.yubo.wechat.user.dao.pojo.UserBase" resultType="java.lang.Integer">
+  <select id="countByParam" parameterType="com.yubo.wechat.user.dao.pojo.UserBase" resultType="java.lang.Integer">
     select count(*)
     from user_base
     where valid = 1 
-    <if test="argTopicId!=null">
-    	AND arg_topic_id = #{argTopicId,jdbcType=VARCHAR}
+    <if test="petId!=null">
+    	AND pet_id = #{petId,jdbcType=VARCHAR}
     </if>
   </select>
+  
+  
+
   
 </mapper>

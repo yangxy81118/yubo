@@ -54,6 +54,7 @@ public class ARGMsgService implements MessageHandler {
 			// 如果当前进度不是0，则直接调用play
 			ArgPlayVO argPlayVO = new ArgPlayVO();
 			argPlayVO.setUserId(param.userId);
+			argPlayVO.setUserMessage(param.request.getContent());
 			ArgPlayResponseVO response = argService.play(argPlayVO);
 			return XMLHelper.buildTextResponse(response.getResponseMessage(),
 					param.request);
@@ -62,8 +63,7 @@ public class ARGMsgService implements MessageHandler {
 	}
 
 	private boolean authCodeCorrect(String userContent) {
-
-		return false;
+		return userAuthorizeService.getAuthorizeByCode(userContent)!=null;
 	}
 
 	private static final Logger logger = LoggerFactory
