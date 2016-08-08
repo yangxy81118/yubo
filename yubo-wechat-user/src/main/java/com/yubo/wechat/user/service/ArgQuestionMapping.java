@@ -62,9 +62,13 @@ public class ArgQuestionMapping {
 	private ArgQuestionVO buildServiceVO(ArgQuestion argQuestion) {
 		ArgQuestionVO bo = new ArgQuestionVO();
 		bo.setAnswer(argQuestion.getAnswser());
-		bo.setQuestion(argQuestion.getQuestion());
+		bo.setQuestion(wrapLine(argQuestion.getQuestion()));
 		bo.setWrongReply(argQuestion.getReplyForWrong());
 		return bo;
+	}
+
+	private String wrapLine(String question) {
+		return question.replace("\\n", "\n");
 	}
 
 	private int getCount() {
@@ -80,4 +84,10 @@ public class ArgQuestionMapping {
 	
 	private static final Logger logger = LoggerFactory
 			.getLogger(ArgQuestionMapping.class);
+	
+	
+	public static void main(String[] args) {
+		String a = "123\\n456".replace("\\n", "\n");
+		System.out.println(a);
+	}
 }

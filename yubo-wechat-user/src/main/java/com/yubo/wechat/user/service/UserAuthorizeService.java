@@ -62,6 +62,10 @@ public class UserAuthorizeService {
 
 		UserIdentification identification = userIdentificationMapper
 				.selectByCode(authCode);
+		
+		if(identification==null){
+			return null;
+		}
 
 		AuthorizeVO vo = new AuthorizeVO();
 		vo.setStudentName(identification.getStudentName());

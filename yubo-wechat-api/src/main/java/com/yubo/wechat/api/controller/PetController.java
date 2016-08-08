@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,8 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.util.IOUtils;
-import com.mysql.jdbc.Buffer;
+import com.yubo.wechat.user.service.ArgWinnerNameList;
 import com.yubo.wechat.vote.service.VoteRealTimeHandler;
 
 /**
@@ -77,6 +77,10 @@ public class PetController {
 		obj.put("firstAnswerCount",random(50));
 		obj.put("secondAnswerKey","睡觉");
 		obj.put("secondAnswerCount",random(50));
+		
+		List<String> winners = winnerNameList.getNameList();
+		obj.put("winnerCount", winners.size());
+		obj.put("winners", winners);
 		
 		PrintWriter writer = response.getWriter();
 		writer.write(obj.toJSONString());
@@ -182,4 +186,7 @@ public class PetController {
 		writer.write(j);
 		return null;
 	}
+	
+	@Autowired
+	ArgWinnerNameList winnerNameList;
 }
